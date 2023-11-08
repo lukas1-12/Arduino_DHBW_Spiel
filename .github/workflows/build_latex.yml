@@ -31,4 +31,4 @@ jobs:
         prerelease: true
         title: "Latex PDF"
         files: |
-          Management_Development/coding_rules/DOC_MAD_SR_coding_rules.tex
+          Management_Development/coding_rules/DOC_MAD_SR_coding_rules.pdf
