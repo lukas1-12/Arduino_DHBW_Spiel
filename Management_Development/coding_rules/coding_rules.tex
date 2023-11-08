@@ -1,40 +1,40 @@
-\begin{itemize}
+\begin{enumerate}
     \item Code and comments must be written in English.
     \item Code must be written in C/C++.
     \item Every function must have a doxygen comment above.
     % doxygen rules
     \item Comments must be written above the code descripted.
-    \item Pre-defined values must be defined using #define.
+    \item Pre-defined values must be defined using \lstinline{#define}.
     \item include guards must end with six random letters or numbers.
     \item naming
-    \begin{itemize}
-        \item spaces are written as underscores _.
+    \begin{enumerate}[label=\arabic*.]
+        \item spaces are written as underscores \lstinline{_}.
         \item functions
-        \begin{itemize}
+        \begin{enumerate}[label=\arabic*.]
             \item First letter must be written in Capital.
-        \end{itemize}
+        \end{enumerate}
         \item variables
-        \begin{enumerate}
+        \begin{enumerate}[label=\arabic*.]
             \item Capital letters must not be used.
-            \item int variables must start with i_
-            \item long variables must start with l_
-            \item long long variables must start with ll_
-            \item uint8_t variables must start with u8_
-            \item uint16_t variables must start with u16_
-            \item uint32_t variables must start with u32_
-            \item uint64_t variables must start with u64_
-            \item bool variables must start with bool_
-            \item float variables must start with fl_
-            \item char variables must start with ch_
-            \item strings must start with str_
-            \item vectors must start with vec_
-            \item transfer parameters begin with an underscore _.
+            \item \lstinline{int} variables must start with \lstinline{i_}
+            \item \lstinline{long} variables must start with \lstinline{l_}
+            \item \lstinline{long long} variables must start with \lstinline{ll_}
+            \item \lstinline{uint8_t} variables must start with \lstinline{u8_}
+            \item \lstinline{uint16_t} variables must start with \lstinline{u16_}
+            \item \lstinline{uint32_t} variables must start with \lstinline{u32_}
+            \item \lstinline{uint64_t} variables must start with \lstinline{u64_}
+            \item \lstinline{bool} variables must start with \lstinline{bool_}
+            \item \lstinline{float} variables must start with \lstinline{fl_}
+            \item \lstinline{char} variables must start with \lstinline{ch_}
+            \item strings must start with \lstinline{str_}
+            \item vectors must start with \lstinline{vec_}
+            \item transfer parameters begin with an underscore \lstinline{_}.
         \end{enumerate}
         \item classes
-        \begin{itemize}
-            \item classes must start with cla_
-        \end{itemize}
-    \end{itemize}
+        \begin{enumerate}[label=\arabic*.]
+            \item classes must start with \lstinline{cla_}
+        \end{enumerate}
+    \end{enumerate}
     \item All variables in classes must be protected or private.
     % clang-format rules.
-\end{itemize}
+\end{enumerate}
