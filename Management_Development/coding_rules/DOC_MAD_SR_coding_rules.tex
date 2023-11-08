@@ -71,8 +71,14 @@ usenglisch
 	title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
 }
 
+% define the titlepage contents...
+\newcommand{\doctitle}{Coding rules}
+\newcommand{\docsubtitle}{}
+\newcommand{\docname}{\lstinline{DOC_MAD_SR_coding_rules}}
+
 \begin{document}
 
+\include{titlepage.tex}
 \include{coding_rules.tex}
 
 % ENABLE IF FIGURES ARE IN THE DOCUMENT
