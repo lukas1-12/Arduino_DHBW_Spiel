@@ -3,6 +3,8 @@ name: Build and release Latex files
 on:
     push:
       branches: [ "main" ]
+      paths: 
+        - /Management_Development/coding_rules
     pull_request:
       branches: [ "main" ]
  
