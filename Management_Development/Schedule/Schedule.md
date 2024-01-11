@@ -16,11 +16,11 @@ gantt
     section Management
         writing Prototype Documentation     :c1, 2024-01-18, 2024-02-22
         Define Requirements                 :c2, 2024-01-08, 2024-01-13
-    section Milestones
-        Entering Engineering Phase          :milestone, 2023-12-07
-        Entering Design Phase               :milestone, 2024-01-13
-        Entering Implementation Phase       :milestone, with a2
-        Entering Validation Phase           :milestone, 2024-02-12
+    section Phases
+        Engineering Phase                   :d1, 2023-12-07, 2024-01-13
+        Design Phase                        :d2, after d1, 3d
+        Implementation Phase                :d3, after d2, 2024-02-12
+        Validation Phase                    :d4, after d3, 2024-02-22
         working Prototype                   :milestone, 2024-02-22 
         Prototype Presentation              :milestone, 2024-03-14
         Product Release                     :milestone, 2024-08-14
