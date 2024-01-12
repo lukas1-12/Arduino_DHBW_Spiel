@@ -30,6 +30,7 @@
             \item vectors must start with \lstinline{vec_}
             \item \item \lstinline{enum} variables must start with \lstinline{en_}
             \item transfer parameters begin with an underscore \lstinline{_} in addition to the above.
+            \item Variables of a \lstinline{typedef enum} start with the starting letters of the originating type listed above.
         \end{enumerate}
         \item classes
         \begin{enumerate}[label=\arabic*.]
@@ -37,6 +38,6 @@
             \item objects created from a class must start with \lstinline{obj_}
         \end{enumerate}
     \end{enumerate}
-    \item All variables in classes must be protected or private.
+    \item All variables in classes must be protected or private, if getter and setter methods don't exceed proportionate effort.
     % clang-format rules.
 \end{enumerate}
