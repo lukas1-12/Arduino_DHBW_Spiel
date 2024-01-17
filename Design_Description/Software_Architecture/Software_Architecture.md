@@ -1,3 +1,37 @@
+## Software Architecture
+
+```mermaid
+    classDiagram
+    class Arduino_Sketch {
+        the Sketch from Arduino IDE
+    }
+    Arduino_Sketch *--  Game_Logic
+    class Game_Logic{
+        Library with all 
+        classes and methods 
+        for the Game Logic
+    }
+    ASL *-- RGBmatrixPanel
+    class RGBmatrixPanel{
+        Hardware Abstraction Layer:*
+        Library provided by 
+        the matrix manufacturer
+    }
+    class ASL{
+        Application service Layer*
+        Roll_Dice()
+        Button_01_Interrupt_Handler()
+        Button_02_Interrupt_Handler()
+        ...()
+    }
+    Arduino_Sketch *-- ASL
+    ASL *-- HAL
+    RGBmatrixPanel *-- HAL
+    class HAL{
+        Hardware Abstraction Layer*
+    }
+```
+
 ## Finite State Machine
 
 ```mermaid
@@ -14,7 +48,7 @@
         s3 --> s1 : Button pressed.
 ```
 
-## Class Diagram Game Logic
+## Class Diagram Game Logic Library
 
 ### Class Diagram
 ---
