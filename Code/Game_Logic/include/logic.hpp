@@ -8,7 +8,7 @@ class cla_session {
 public:
   /**
    * @brief Constructor for the cla_session class.
-   * @param _u8_player_quantity Number of human players.
+   * @param _u8_player_quantity Number of all players.
    * @param _u8_computer_quantity Number of computer-controlled players.
    */
   cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity);
@@ -36,7 +36,7 @@ private:
  * @class cla_player
  * @brief Description of the cla_player class.
  */
-class cla_player {
+class cla_player : public cla_session {     // Vererbung richtig?
 public:
   /**
    * @brief Constructor for the cla_player class.
@@ -79,7 +79,7 @@ public:
    * @brief Outputs the status of a token.
    * @param _u8_token_number The token number.
    */
-  void Get_Status(uint8_t _u8_token_number);
+  status Get_Status(uint8_t _u8_token_number);
 
   /**
    * @brief Returns the overall progress of the player.
