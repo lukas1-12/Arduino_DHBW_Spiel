@@ -40,6 +40,6 @@ RUN \
     && cd /usr/src \
     && rm -rf catch2 \
     # Install python venv
-    && sudo apt-get install python3-venv \
+    && sudo apt-get install -y python3-venv \
     # clean up
     && sudo rm -rf /var/lib/apt/lists/*
