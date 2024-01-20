@@ -20,17 +20,19 @@ gantt
         Prototype Hardware Purchasing       :b1, 2024-01-10, 5d
         Prototype build                     :after b1, 24d
         Prototype testing                   :2024-01-20, 24d
-        Hardware finalisation and testing   :2024-02-22, 2024-08-01
+        Hardware finalisation and testing   :2024-02-22, 2024-04-01
     section Management
         writing Prototype Documentation     :c1, 2024-01-18, 2024-02-22
         Define Requirements                 :c2, 2024-01-08, 2024-01-13
-    section Phases
+    section Phases*
         Pitch                               :milestone, 2023-12-07
         Engineering Phase                   :d1, 2023-12-07, 2024-01-13
         Design Phase                        :d2, after d1, 3d
+        Requirements Verification           : milestone, 2024-01-26
         Implementation Phase                :d3, after d2, 2024-02-12
         Validation Phase                    :d4, after d3, 2024-02-22
         working Prototype                   :milestone, 2024-02-22 
         Prototype Presentation              :milestone, 2024-03-14
         Product Release                     :milestone, 2024-08-14
 ```
+*Phases according to PMBOK (Project Management Body of Knowledge) 
