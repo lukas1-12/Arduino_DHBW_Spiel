@@ -45,7 +45,8 @@
 				"ElecTreeFrying.insert-random-text",
                 "James-Yu.latex-workshop",
 				"vsciot-vscode.vscode-arduino",
-				"bierner.markdown-mermaid"
+				"bierner.markdown-mermaid",
+				"platformio.platformio-ide"
 			]
 		}
 	}
