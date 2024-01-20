@@ -39,5 +39,7 @@ RUN \
     && cmake --install build \
     && cd /usr/src \
     && rm -rf catch2 \
+    # Install python venv
+    && sudo apt install python3-venv \
     # clean up
     && sudo rm -rf /var/lib/apt/lists/*
