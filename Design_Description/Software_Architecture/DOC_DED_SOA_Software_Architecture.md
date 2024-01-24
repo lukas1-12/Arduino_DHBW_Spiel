@@ -231,15 +231,26 @@ AutoMove() might need two return parameters. This could be done like this:
     return std::make_pair(intValue, doubleValue);
 ```
 
+## Class Diagram ASL
 
+```mermaid
+  classDiagram
+  class cla_board {
+        - RGBmatrixPanel *obj_matrix
+        - uint8_t u8_track_positions[40][3]
+        - uint8_t u8_home_positions[4][4][2]
+        - uint8_t u8_finished_positions[4][4][2]
+        - uint8_t u8_dice_position[2]
+        - int16_t u16_player_color[4][2]
+        - uint16_t u16_track_color
 
-
-
-
-
-
-
-
-
-
-
+        + cla_board(uint8_t _u8_matrix_a, uint8_t _u8_matrix_b, uint8_t _u8_matrix_c, uint8_t _u8_matrix_clk, uint8_t _u8_matrix_lat, uint8_t _u8_matrix_oe)
+        + Begin() void
+        + Set_Colors() void
+        + Move_Token(uint8_t _u8_player_number, uint8_t _u8_remove_track_position, uint8_t _u8_add_track_position) void
+        + Roll_Dice() int
+        + Display_Dice() void
+        + Roll_And_Display_Dice() int
+        + Winner_Animation(uint8_t _u8_player_number) void
+    }
+``````
