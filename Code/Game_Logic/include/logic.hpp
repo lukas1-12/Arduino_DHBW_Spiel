@@ -1,4 +1,18 @@
 #include <cstdint>
+#include <vector>
+
+
+typedef enum {
+  Start=0,
+  Start_Track,
+  Start_Finished,
+  Start_Track_Finished,
+  Error,
+  Track,
+  Finished,
+  Track_Finished,
+} status;
+
 
 /**
  * @class cla_session
@@ -12,6 +26,9 @@ public:
    * @param _u8_computer_quantity Number of computer-controlled players.
    */
   cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity);
+
+
+  static std::vector<cla_player*> vec_players; ///< Vector of all players.
 
   /**
    * @brief Checks if the position on the map is occupied.
