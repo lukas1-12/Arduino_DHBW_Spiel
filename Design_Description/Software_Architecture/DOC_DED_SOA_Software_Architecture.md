@@ -51,8 +51,8 @@
 ## Class Diagram Game Logic Library
 
 ### Class Diagram
----
-```c++
+
+```cpp
 note:   - : private
         # : protected
         + : public
@@ -107,71 +107,66 @@ note:   - : private
 ```
 
 ### token_track_position and token_progress
----
-```c++
+
+```cpp
 uint8_t u8_token_track_position
 ```
 The absolute position of the token. The track squares are numbered the same for all players, so the starting square for each player differs.
-```c++
+```cpp
 uint8_t u8_token_progress
 ```
 The relative Position of the token. The track squares are numbered individually for each player, so the starting square for each player has the same number.
 
 ### Functional Description of Methods
----
+
 #### cla_session
----
-```c++
+
+```cpp
 cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity)
 ```
 Constructor.
 
----
-```c++
+
+```cpp
 Is_Occupied(uint8_t _u8_affected_track_position) : uint8_t
 ```
 checks if there is a token at a given track position
 
----
-```c++
+
+```cpp
 Return_Home(uint8_t _u8_affected_track_position) : bool
 ```
 checks if there is a token at a given track position and puts it back into the starting square. If a token was returned, the return value is ```True```. If the track position was not occupied, the return value is ```False```
 
----
+
 #### cla_player
----
-```c++
+
+```cpp
 cla_player(cla_session* _obj_my_session)
 ```
 Constructor. A pointer to the corresponding session class is needed for calling cla_session methods calling inside cla_player methods.
 
----
-```c++
+```cpp
 uint8_t Calculate_Possible_Position(uint8_t _u8_token_number, uint8_t _u8_dice_value) 
 ```
 Return the position that can be reached with the dice value. (absolute/track position)
 
----
-```c++
+```cpp
 uint8_t Move_Token(uint8_t _u8_token_number, uint8_t _u8_dice_value)
 ```
 Moves the Token and returns the reached position. (absolute/track position)
 
----
-```c++
+```cpp
 uint8_t Get_Token_Position(uint8_t _u8_token_number)
 ```
 Returns the absolute Position of the Token (track position)
 
----
-```c++
+```cpp
 uint8_t Get_Token_Progress(uint8_t _u8_token_number)
 ```
 Returns the relative Position of the Token (progress)
 
----
-```c++ 
+```cpp 
 status Get_Player_Status() 
 ```
 Returns the Players status. Status is defined via typedef enum and can have the following values:
@@ -186,29 +181,26 @@ Track               | NO                        | YES                   | NO
 Finished            | NO                        | NO                    | YES
 Track_Finished      | NO                        | YES                   | YES
 
----
-```c++
+```cpp
 uint8_t Get_Player_Progress()
 ```
 Adds the u8_token_progress of all tokens together and returns that value.
 
----
-```c++
+```cpp
 virtual bool Is_Computer()
 ```
 Returns ```True``` or ```False```. Method implemented individually in child classes. If possible, an alternative would be to actually return the type. the method name would then be something like ```Get_Player_Type()```
 
----
 #### cla_computer_player
----
-```c++
+
+```cpp
 uint8_t Auto_Move(uint8_t _u8_dice_value)
 ```
 Calculates a move automatically depending on en_mode.
 
 ### Example code snippets
----
-```c++
+
+```cpp
 cla_session::cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity){
     uint8_t i = 0;
     while(i < (_u8_player_quantity - _u8_computer_quantity)){
@@ -226,7 +218,7 @@ cla_session::cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quant
 With this setup, computers are always the last at play. Maybe a different approach is better for the Game experience.
 
 AutoMove() might need two return parameters. This could be done like this:
-```c++
+```cpp
     #include <utility>
     return std::make_pair(intValue, doubleValue);
 ```
@@ -253,4 +245,4 @@ AutoMove() might need two return parameters. This could be done like this:
         + Roll_And_Display_Dice() int
         + Winner_Animation(uint8_t _u8_player_number) void
     }
-``````
+```
