@@ -1,46 +1,54 @@
 #include "logic.hpp"
 #include <cstdint>
-
-typedef enum {
-  Start = 0,
-  Start_Track,
-  Start_Finished,
-  Start_Track_Finished,
-  Error,
-  Track,
-  Finished,
-  Track_Finished,
-} status;
+#include <iostream>
+#include <utility>
+#include <vector>
 
 cla_session::cla_session(uint8_t _u8_player_quantity,
                          uint8_t _u8_computer_quantity) {
   u8_player_quantity = _u8_player_quantity;
   u8_computer_quantity = _u8_computer_quantity;
+  array_players[u8_player_quantity];
+
+    for (int i = 0; i < _u8_player_quantity; i++) {
+      array_players[i] = new cla_player(i, 5+i*10, this);
+    }
 };
 
-uint8_t cla_session::Is_Occupied(uint8_t _u8_affected_track_position) {
-  for (int i = 0; i < u8_player_quantity; i++) {
-    for (int a = 0; a < 4; a++) {
-      for (const auto &player : vec_players) {
-        if (player->Get_Token_Position(a) == _u8_affected_track_position) {
-          return true;
+//Player(const std::string& name) : playerName(name), score(0) {}
+cla_player::cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position, cla_session* _obj_my_session) {
+  obj_my_session = _obj_my_session;
+  u8_player_id = _u8_player_id;
+  u8_start_position = _u8_start_position;
+  for (int p = 0; p < 4; p++) {
+    u8_token_position[p] = p+1;
+  } 
+};
+
+
+std::array<uint8_t, 2>
+cla_session::Is_Occupied(uint8_t _u8_affected_track_position) {
+  for (uint8_t i = 0; i < u8_player_quantity; i++) {
+    for (uint8_t a = 0; a < 4; a++) {
+        if(array_players[i]->Get_Token_Position(a) == _u8_affected_track_position){
+
+        
+          return {i, a};
         }
-      }
     }
   }
-  return false;
+  return {10, 0}; // 10 stands for no player at the given track position
 }
 
 bool cla_session::Return_Home(uint8_t _u8_affected_track_position) {
-  if (Is_Occupied(_u8_affected_track_position)) {
+  if (Is_Occupied(_u8_affected_track_position).at(0) != 10) {
+    array_players[Is_Occupied(_u8_affected_track_position).at(0)]
+        ->Set_Token_Position(Is_Occupied(_u8_affected_track_position).at(1),
+                             Is_Occupied(_u8_affected_track_position).at(1));
     return true;
   } else {
     return false;
   }
-};
-
-cla_player::cla_player(cla_session *_obj_my_session) {
-  obj_my_session = _obj_my_session;
 };
 
 uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
@@ -49,11 +57,25 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
 };
 
 uint8_t cla_player::Move_Token(uint8_t _u8_token_number,
-                               uint8_t _u8_dice_value){
+                               uint8_t _u8_dice_value) {
+  uint8_t _u8_possible_position =
+      Calculate_Possible_Position(_u8_token_number, _u8_dice_value);
+  if (obj_my_session->Is_Occupied(_u8_possible_position).at(0) == 10) {
+    u8_token_position[_u8_token_number] = _u8_possible_position;
+    return 0;
+  } else {
 
+    ;
+  }
 };
 
 uint8_t cla_player::Get_Token_Position(uint8_t _u8_token_number) {
+  return u8_token_position[_u8_token_number];
+};
+
+uint8_t cla_player::Set_Token_Position(uint8_t _u8_token_number,
+                                       uint8_t _u8_new_position) {
+  u8_token_position[_u8_token_number] = _u8_new_position;
   return u8_token_position[_u8_token_number];
 };
 
@@ -62,37 +84,37 @@ uint8_t cla_player::Get_Token_Progress(uint8_t _u8_token_number) {
 };
 
 status cla_player::Get_Status(uint8_t _u8_token_number) {
-  uint8_t _8_status = 0; // Position < 1 -> start, 0<=Position<=40 -> Track,
-                         // Position > 40 -> Finished
+  uint8_t u8_status = 0; // Position < 5 -> start, 5<=Position<=44 -> Track,
+                         // Position > 44 -> Finished
   for (int i = 0; i < 4; i++) {
-    if (u8_token_position[i] < 0) {
-      _8_status += 0;
-    } else if (u8_token_position[i] <= 40) {
-      _8_status += 1;
-    } else if (u8_token_position[i] > 40) {
-      _8_status += 10;
+    if (u8_token_position[i] <= 4) {
+      u8_status += 0;
+    } else if (u8_token_position[i] <= 44) {
+      u8_status += 1;
+    } else if (u8_token_position[i] > 44) {
+      u8_status += 10;
     }
   };
-  if (_8_status == 0) {
+  if (u8_status == 0) {
     return Start; // all tokens are in start
-  } else if (_8_status > 0 &&
-             _8_status <
+  } else if (u8_status > 0 &&
+             u8_status <
                  10) { // at least one token is on the track, rest is in start
     return Start_Track;
-  } else if (_8_status == 10 or _8_status == 20 or
-             _8_status == 30) { // max 3 token are finished, rest in start
+  } else if (u8_status == 10 or u8_status == 20 or
+             u8_status == 30) { // max 3 token are finished, rest in start
     return Start_Finished;
-  } else if (_8_status > 10 && _8_status <= 12 or
-             _8_status > 20 &&
-                 _8_status <= 21) { // at least one is in start, one is
+  } else if (u8_status > 10 && u8_status <= 12 or
+             u8_status > 20 &&
+                 u8_status <= 21) { // at least one is in start, one is
                                     // finished, rest on track
     return Start_Track_Finished;
-  } else if (_8_status == 4) { // all tokens are on the track
+  } else if (u8_status == 4) { // all tokens are on the track
     return Track;
-  } else if (_8_status == 40) { // all tokens are finished
+  } else if (u8_status == 40) { // all tokens are finished
     return Finished;
-  } else if (_8_status == 13 or _8_status == 22 or
-             _8_status ==
+  } else if (u8_status == 13 or u8_status == 22 or
+             u8_status ==
                  31) { // at least one token is on track, rest is finished
     return Track_Finished;
   } else {
@@ -112,9 +134,21 @@ uint8_t cla_player::Get_Player_Progress() {
 bool Is_Computer() { return false; };
 
 uint8_t cla_computer_player::Auto_Move(uint8_t _u8_token_number){
-
+    return 0;
 };
 
 uint8_t cla_manual_player::Manual_Move(uint8_t _u8_token_number){
+    return 0;
+};
 
+uint8_t cla_session::Get_Player_Quantity(){
+  return u8_player_quantity;
+};
+
+uint8_t cla_player::Get_Start_Position(){
+  return u8_start_position;
+};
+
+uint8_t cla_player::Get_Player_ID(){
+  return u8_player_id;
 };

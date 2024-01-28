@@ -1,9 +1,14 @@
 #include <cstdint>
 #include <vector>
+#include <iostream>
+#include <array>
 
+
+// Forward declaration of cla_player
+class cla_player;
 
 typedef enum {
-  Start=0,
+  Start = 0,
   Start_Track,
   Start_Finished,
   Start_Track_Finished,
@@ -12,7 +17,6 @@ typedef enum {
   Finished,
   Track_Finished,
 } status;
-
 
 /**
  * @class cla_session
@@ -28,14 +32,14 @@ public:
   cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity);
 
 
-  static std::vector<cla_player*> vec_players; ///< Vector of all players.
+   std::array<cla_player*, 4> array_players; ///< Array of pointers to the players.
 
   /**
    * @brief Checks if the position on the map is occupied.
    * @param _u8_affected_track_position The track position to check.
    * @return 1 if occupied, 0 otherwise.
    */
-  uint8_t Is_Occupied(uint8_t _u8_affected_track_position);
+  std::array<uint8_t, 2> Is_Occupied(uint8_t _u8_affected_track_position);
 
   /**
    * @brief Returns a token to its home position.
@@ -43,6 +47,8 @@ public:
    * @return true if the token is successfully returned home, false otherwise.
    */
   bool Return_Home(uint8_t _u8_affected_track_position);
+
+  uint8_t Get_Player_Quantity();   ///< Returns the number of players.
 
 private:
   uint8_t u8_player_quantity;   /**< Number of human players. */
@@ -53,13 +59,15 @@ private:
  * @class cla_player
  * @brief Description of the cla_player class.
  */
-class cla_player : public cla_session {     // Vererbung richtig?
+class cla_player{     // Vererbung richtig?
 public:
   /**
    * @brief Constructor for the cla_player class.
    * @param _obj_my_session Pointer to the associated session.
    */
-  cla_player(cla_session *_obj_my_session);
+  cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position, cla_session* _obj_my_session);
+  //Player(const std::string& name) : playerName(name), score(0) {}
+
 
   /**
    * @brief Calculates the possible position of a token.
@@ -86,6 +94,14 @@ public:
   uint8_t Get_Token_Position(uint8_t _u8_token_number);
 
   /**
+   * @brief Changes the position of a token.
+   * @param _u8_token_number The token number.
+   * @param _u8_new_position The new position of the token.
+   * @return The new position of the token.
+   */
+  uint8_t Set_Token_Position(uint8_t _u8_token_number, uint8_t _u8_new_position);
+
+  /**
    * @brief Returns the progress of a token on the track.
    * @param _u8_token_number The token number.
    * @return The progress of the token on the track.
@@ -110,10 +126,15 @@ public:
    */
   bool Is_Computer();
 
+  uint8_t Get_Start_Position(); ///< Returns the starting position of the player.
+
+  uint8_t Get_Player_ID(); ///< Returns the ID of the player.
+
 protected:
   uint8_t u8_start_position;    ///< The starting position of the player.
   uint8_t u8_token_position[4]; ///< The positions of the player's four tokens.
-  cla_session *obj_my_session;  ///< Pointer to the associated session.
+  uint8_t u8_player_id;         ///< The id of the player.
+  cla_session* obj_my_session;  ///< Pointer to the associated session.
 };
 
 /**
