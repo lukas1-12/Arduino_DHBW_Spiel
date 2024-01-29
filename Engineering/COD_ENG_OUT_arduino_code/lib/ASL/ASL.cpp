@@ -12,6 +12,13 @@ ASL::cla_display::cla_display(uint8_t _u8_matrix_a, uint8_t _u8_matrix_b,
   u8_matrix_oe = _u8_matrix_oe;
 }
 
+void ASL::cla_display::Set_Colors(uint8_t _u8_player_nr,
+                                  uint16_t _u16_bright_color,
+                                  uint16_t _u16_dark_color) {
+  u16_player_color[_u8_player_nr][0] = _u16_bright_color;
+  u16_player_color[_u8_player_nr][1] = _u16_dark_color;
+}
+
 void ASL::cla_display::Begin() {
   RGBmatrixPanel obj_matrix_no_pointer(u8_matrix_a, u8_matrix_b, u8_matrix_c,
                                        u8_matrix_clk, u8_matrix_lat,
@@ -31,12 +38,7 @@ void ASL::cla_display::Begin() {
   }
 }
 
-void ASL::cla_display::Set_Colors(uint8_t _u8_player_nr,
-                                  uint16_t _u16_bright_color,
-                                  uint16_t _u16_dark_color) {
-  u16_player_color[_u8_player_nr][0] = _u16_bright_color;
-  u16_player_color[_u8_player_nr][1] = _u16_dark_color;
-}
+void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity) {}
 
 void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value) {
   obj_matrix->drawPixel(17, 3, 0x00);

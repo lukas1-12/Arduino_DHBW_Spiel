@@ -52,11 +52,12 @@ class cla_display {
   uint16_t u16_track_color = 0xffff;
 
 public:
-  void Begin();
   cla_display(uint8_t _u8_matrix_a, uint8_t u8_matrix_b, uint8_t u8_matrix_c,
               uint8_t u8_matrix_clk, uint8_t u8_lat, uint8_t u8_matrix_oe);
   void Set_Colors(uint8_t _u8_player_nr, uint16_t _u16_bright_color,
                   uint16_t _u16_dark_color);
+  void Begin();
+  void Display_Players(uint8_t _u8_player_quantity);
   void Display_Dice(uint8_t _u8_dice_value);
 };
 
