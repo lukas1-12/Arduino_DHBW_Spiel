@@ -21,12 +21,22 @@
 #define WHITE_BRIGHT 0xffff
 
 typedef enum {
-  initialise = 0,
-  move,
-  game_finished,
+  setup_real_players = 1,
+  modify_real_player_number,
+  setup_computer_players,
+  modify_computer_player_number,
+  wait_for_dice_roll,
+  roll_the_dice,
+  wait_for_player_input,
+  display_token,
+  move_token,
+  game_finished
 } en_state;
 
-volatile en_state en_current_state = initialise;
+volatile en_state en_current_state = setup_real_players;
+uint8_t u8_player_quantity = 0;
+uint8_t u8_computer_quantity = 0;
+uint8_t u8_current_token_number = 0;
 
 void setup() {
   ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
@@ -41,16 +51,38 @@ uint8_t u8_test_incrementer = 0;
 
 void loop() {
   switch (en_current_state) {
-  case initialise:
+  case setup_real_players:
 
     break;
-  case move:
+  case modify_real_player_number:
+
+    break;
+  case setup_computer_players:
+
+    break;
+  case modify_computer_player_number:
+    break;
+  case wait_for_dice_roll:
+
+    break;
+  case roll_the_dice:
+
+    break;
+  case wait_for_player_input:
+
+    break;
+  case display_token:
+
+    break;
+  case move_token:
 
     break;
   case game_finished:
 
     break;
   default:
+    // An error occured, go back to setup.
+    en_current_state = setup_real_players;
     break;
   }
 }

@@ -32,20 +32,41 @@
     }
 ```
 
-## Finite State Machine
+## Finite State Machine (with external memory)
 
 ```mermaid
     stateDiagram-v2
         [*] --> s1
-        s1 : Intitialise
-        s1 --> s2 : Start of Game session.
-        s2 : move
+    s1 : Setup real Players
+        s1 --> s2 : Green Button
+        s2 --> s1: Calculation Complete
+    s2 : Modify real Player Number
+        s1 --> s3: Red Button
+    s3 : Setup Computer Players
+        s3 --> s4 : Green Button
+    s4 : Modify Computer Player Number
+        s4 --> s3: Calculation Complete
+        s3 --> s5 : Red Button
+    s5 : Wait for Dice Roll
+        s5 -->s6 : Green Button
+    s6 : Roll the Dice 
+        state if2 <<choice>>
+        s6 --> if2 : Dice was rolled.
+        if2 --> s5 : not a 6 and all players in starting square and not completed 3 turns to roll the dice.
+        if2 --> s8: none of the other.
+        # Players ------------------
+    s7 : Wait for Player Input
+        s7 --> s8 : Green Button (next token)
+    s8 : Display token
+        s8 --> s7 : Calculation Complete
+        s7 --> s9 : Red Button
+    s9 : move token
         state if1 <<choice>>
-        s2 --> if1 : Player finished move.
-        if1 --> s2 : not all tokens in finishing square, next player.
-        if1 --> s3 : all tokens in finishing square.
-        s3 : Game finished
-        s3 --> s1 : Button pressed.
+        s9 --> if1 : Player finished move.
+        if1 --> s5 : not all tokens in finishing square, next player.
+        if1 --> s10 : all tokens in finishing square.
+    s10: Game finished
+        s10 --> s1 : Button pressed.
 ```
 
 ## Class Diagram Game Logic Library

@@ -76,7 +76,6 @@ void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value) {
     obj_matrix->drawPixel(18, 3, u16_track_color);
     obj_matrix->drawPixel(18, 4, u16_track_color);
     break;
-  default:
   }
 }
 
