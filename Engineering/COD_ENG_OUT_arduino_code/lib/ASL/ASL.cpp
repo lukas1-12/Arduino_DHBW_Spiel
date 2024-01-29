@@ -4,14 +4,21 @@
 ASL::cla_display::cla_display(uint8_t _u8_matrix_a, uint8_t _u8_matrix_b,
                               uint8_t _u8_matrix_c, uint8_t _u8_matrix_clk,
                               uint8_t _u8_matrix_lat, uint8_t _u8_matrix_oe) {
-  RGBmatrixPanel obj_matrix(_u8_matrix_a, _u8_matrix_b, _u8_matrix_c,
-                            _u8_matrix_clk, _u8_matrix_lat, _u8_matrix_oe,
-                            false);
-  obj_matrix.begin();
-  this->obj_matrix = &obj_matrix;
+  u8_matrix_a = _u8_matrix_a;
+  u8_matrix_b = _u8_matrix_b;
+  u8_matrix_c = _u8_matrix_c;
+  u8_matrix_clk = _u8_matrix_clk;
+  u8_matrix_lat = _u8_matrix_lat;
+  u8_matrix_oe = _u8_matrix_oe;
 }
 
 void ASL::cla_display::Begin() {
+  RGBmatrixPanel obj_matrix_no_pointer(u8_matrix_a, u8_matrix_b, u8_matrix_c,
+                                       u8_matrix_clk, u8_matrix_lat,
+                                       u8_matrix_oe, false);
+  obj_matrix_no_pointer.begin();
+  this->obj_matrix = &obj_matrix_no_pointer;
+  // Set up starting board:
   for (uint8_t i = 0; i < 40; i++) {
     obj_matrix->drawPixel(u8_track_positions[i][1], u8_track_positions[i][2],
                           u16_track_color);

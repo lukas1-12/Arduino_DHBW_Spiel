@@ -20,26 +20,13 @@
 #define BLUE_DARK 0x0002
 #define WHITE_BRIGHT 0xffff
 
-typedef enum {
-  setup_real_players = 1,
-  modify_real_player_number,
-  setup_computer_players,
-  modify_computer_player_number,
-  wait_for_dice_roll,
-  roll_the_dice,
-  wait_for_player_input,
-  display_token,
-  move_token,
-  game_finished
-} en_state;
-
-volatile en_state en_current_state = setup_real_players;
+volatile ASL::en_state en_current_state = ASL::setup_real_players;
 uint8_t u8_player_quantity = 0;
 uint8_t u8_computer_quantity = 0;
 uint8_t u8_current_token_number = 0;
+ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
 
 void setup() {
-  ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
   obj_display.Set_Colors(0, RED_BRIGHT, RED_DARK);
   obj_display.Set_Colors(1, BLUE_BRIGHT, BLUE_DARK);
   obj_display.Set_Colors(2, YELLOW_BRIGHT, YELLOW_DARK);
@@ -51,38 +38,45 @@ uint8_t u8_test_incrementer = 0;
 
 void loop() {
   switch (en_current_state) {
-  case setup_real_players:
+  case ASL::setup_real_players:
 
     break;
-  case modify_real_player_number:
+  case ASL::modify_real_player_number:
+
+    en_current_state = ASL::setup_real_players;
+    break;
+  case ASL::setup_computer_players:
 
     break;
-  case setup_computer_players:
+  case ASL::modify_computer_player_number:
+
+    en_current_state = ASL::setup_computer_players;
+    break;
+  case ASL::wait_for_dice_roll:
 
     break;
-  case modify_computer_player_number:
+  case ASL::roll_the_dice:
+
+    en_current_state = ASL::display_token;
     break;
-  case wait_for_dice_roll:
+  case ASL::wait_for_player_input:
 
     break;
-  case roll_the_dice:
+  case ASL::display_token:
 
+    en_current_state = ASL::wait_for_player_input;
     break;
-  case wait_for_player_input:
+  case ASL::move_token:
 
+    en_current_state = ASL::wait_for_dice_roll;
     break;
-  case display_token:
-
-    break;
-  case move_token:
-
-    break;
-  case game_finished:
+  case ASL::game_finished:
 
     break;
   default:
     // An error occured, go back to setup.
-    en_current_state = setup_real_players;
+    en_current_state = ASL::setup_real_players;
     break;
   }
+  delay(1000);
 }

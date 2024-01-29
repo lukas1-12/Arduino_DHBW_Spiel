@@ -1,9 +1,28 @@
 #include <RGBmatrixPanel.h> // Hardware-specific library#
 #include <inttypes.h>
 
-void draw(RGBmatrixPanel *matrix);
 namespace ASL {
+
+typedef enum {
+  setup_real_players = 1,
+  modify_real_player_number,
+  setup_computer_players,
+  modify_computer_player_number,
+  wait_for_dice_roll,
+  roll_the_dice,
+  wait_for_player_input,
+  display_token,
+  move_token,
+  game_finished
+} en_state;
+
 class cla_display {
+  uint8_t u8_matrix_a;
+  uint8_t u8_matrix_b;
+  uint8_t u8_matrix_c;
+  uint8_t u8_matrix_clk;
+  uint8_t u8_matrix_lat;
+  uint8_t u8_matrix_oe;
   RGBmatrixPanel *obj_matrix;
   // track_position, x, y
   uint8_t u8_track_positions[40][3] = {
