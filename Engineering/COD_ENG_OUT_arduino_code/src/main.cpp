@@ -20,13 +20,37 @@
 #define BLUE_DARK 0x0002
 #define WHITE_BRIGHT 0xffff
 
-void setup() {
-  ASL::cla_board obj_board(A, B, C, CLK, LAT, OE);
-  obj_board.Set_Colors(0, RED_BRIGHT, RED_DARK);
-  obj_board.Set_Colors(1, BLUE_BRIGHT, BLUE_DARK);
-  obj_board.Set_Colors(2, YELLOW_BRIGHT, YELLOW_DARK);
-  obj_board.Set_Colors(3, GREEN_BRIGHT, GREEN_DARK);
-  obj_board.Begin();
-}
+typedef enum {
+  initialise = 0,
+  move,
+  game_finished,
+} en_state;
 
-void loop() {}
+volatile en_state en_current_state = initialise;
+
+void setup() {
+  ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
+  obj_display.Set_Colors(0, RED_BRIGHT, RED_DARK);
+  obj_display.Set_Colors(1, BLUE_BRIGHT, BLUE_DARK);
+  obj_display.Set_Colors(2, YELLOW_BRIGHT, YELLOW_DARK);
+  obj_display.Set_Colors(3, GREEN_BRIGHT, GREEN_DARK);
+  obj_display.Begin();
+  ASL::Setup_Buttons();
+}
+uint8_t u8_test_incrementer = 0;
+
+void loop() {
+  switch (en_current_state) {
+  case initialise:
+
+    break;
+  case move:
+
+    break;
+  case game_finished:
+
+    break;
+  default:
+    break;
+  }
+}

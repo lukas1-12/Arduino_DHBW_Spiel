@@ -3,7 +3,7 @@
 
 void draw(RGBmatrixPanel *matrix);
 namespace ASL {
-class cla_board {
+class cla_display {
   RGBmatrixPanel *obj_matrix;
   // track_position, x, y
   uint8_t u8_track_positions[40][3] = {
@@ -34,9 +34,13 @@ class cla_board {
 
 public:
   void Begin();
-  cla_board(uint8_t _u8_matrix_a, uint8_t u8_matrix_b, uint8_t u8_matrix_c,
-            uint8_t u8_matrix_clk, uint8_t u8_lat, uint8_t u8_matrix_oe);
+  cla_display(uint8_t _u8_matrix_a, uint8_t u8_matrix_b, uint8_t u8_matrix_c,
+              uint8_t u8_matrix_clk, uint8_t u8_lat, uint8_t u8_matrix_oe);
   void Set_Colors(uint8_t _u8_player_nr, uint16_t _u16_bright_color,
                   uint16_t _u16_dark_color);
+  void Display_Dice(uint8_t _u8_dice_value);
 };
+
+void Setup_Buttons();
+
 } // namespace ASL
