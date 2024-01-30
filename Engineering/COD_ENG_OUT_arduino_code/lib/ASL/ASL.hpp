@@ -3,6 +3,11 @@
 
 namespace ASL {
 
+/**
+ * \brief the states of the finite state machine.
+ *
+ * Defines the states of the finite state machine. Starting state is 1.
+ */
 typedef enum {
   setup_real_players = 1,
   modify_real_player_number,
@@ -16,15 +21,29 @@ typedef enum {
   game_finished
 } en_state;
 
+/**
+ * \brief display handler
+ *
+ * This class handles all the functions and parameters needed to display the
+ * game.
+ */
 class cla_display {
-  uint8_t u8_matrix_a;
-  uint8_t u8_matrix_b;
-  uint8_t u8_matrix_c;
-  uint8_t u8_matrix_clk;
-  uint8_t u8_matrix_lat;
-  uint8_t u8_matrix_oe;
+  uint8_t u8_matrix_a;   /**< matrix pin a   */
+  uint8_t u8_matrix_b;   /**< matrix pin b   */
+  uint8_t u8_matrix_c;   /**< matrix pin c   */
+  uint8_t u8_matrix_clk; /**< matrix pin clk */
+  uint8_t u8_matrix_lat; /**< matrix pin lat */
+  uint8_t u8_matrix_oe;  /**< matrix pin oe  */
+
+  /**
+   * \brief Pointer to the matrix object.
+   */
   RGBmatrixPanel *obj_matrix;
-  // track_position, x, y
+
+  /**
+   * \brief Stores the track positions.
+   * Order: track_position, x, y
+   */
   uint8_t u8_track_positions[40][3] = {
       {5, 2, 6},   {6, 3, 6},   {7, 4, 6},   {8, 5, 6},   {9, 6, 6},
       {10, 6, 5},  {11, 6, 4},  {12, 6, 3},  {13, 6, 2},  {14, 7, 2},
@@ -35,34 +54,102 @@ class cla_display {
       {35, 6, 12}, {36, 6, 11}, {37, 6, 10}, {38, 6, 9},  {39, 6, 8},
       {40, 5, 8},  {41, 4, 8},  {42, 3, 8},  {43, 2, 8},  {44, 2, 7},
   };
-  // player_nr, token_nr, x/y
+
+  /**
+   * \brief Stores the players individual home Positions.
+   * Order: player_nr, token_nr, x/y
+   */
   uint8_t u8_home_positions[4][4][2] = {
       {{2, 2}, {2, 3}, {3, 2}, {3, 3}},
       {{11, 2}, {11, 3}, {12, 2}, {12, 3}},
       {{11, 11}, {11, 12}, {12, 11}, {12, 12}},
       {{2, 11}, {2, 12}, {3, 11}, {3, 12}},
   };
-  // player_nr, bright/dark
+
+  /**
+   * \brief Stores the Players Colors.
+   * Order: player_nr, bright/dark
+   */
   uint16_t u16_player_color[4][2] = {
       {0xf800, 0x1000},
       {0x07e0, 0x00a0},
       {0xffe0, 0x10a0},
       {0x001f, 0x0002},
   };
+
+  /**
+   * \brief Stores the Track Color.
+   */
   uint16_t u16_track_color = 0xffff;
 
 public:
+  /**
+   * \brief Constructor of the class.
+   */
   cla_display(uint8_t _u8_matrix_a, uint8_t u8_matrix_b, uint8_t u8_matrix_c,
               uint8_t u8_matrix_clk, uint8_t u8_lat, uint8_t u8_matrix_oe);
+
+  /**
+   * \brief Set the Colors of the player
+   *
+   * \param _u8_player_nr Number of the Player (0:3)
+   * \param _u16_bright_color Bright Color for the Player
+   * \param _u16_dark_color Dark Color for the Player
+   */
   void Set_Colors(uint8_t _u8_player_nr, uint16_t _u16_bright_color,
                   uint16_t _u16_dark_color);
+
+  /**
+   * \brief Initial Setup
+   *
+   * This function must be called ONCE at the beginning of the Code
+   */
   void Begin();
+
+  /**
+   * \brief Display the Players.
+   *
+   * This method is supposed to be called when setting the Game up. It displays
+   * the number of players that are currently chosen.
+   *
+   * \param _u8_player_quantity The number of Players to be displayed.
+   */
   void Display_Players(uint8_t _u8_player_quantity);
+
+  /**
+   * \brief Display the dice
+   *
+   * Display the Dice on the matrix.
+   * \param _u8_dice_value The value to be displayed.
+   */
   void Display_Dice(uint8_t _u8_dice_value);
 };
 
+/**
+ * \brief setup function for the Buttons
+ *
+ * Sets Buttons on Pin 2 and 3 to input and enables interupt for them. This
+ * function must be called ONCE at the beginning of the program in Order for the
+ * Buttons to work.
+ */
 void Setup_Buttons();
+
+/**
+ * \brief setup function for the Dice
+ *
+ * Sets Timer 0 to count to 5 using CTC mode, so the value read from the TCNT
+ * register can be used as a dice value after adding 1. This function must be
+ * called ONCE at the beginning of the program in Order for the Dice to work.
+ */
 void Setup_Dice();
+
+/**
+ * \brief roll the Dice.
+ *
+ * This function reads the TCNT register value, adds one and returns it. In
+ * Order to receive a Value between 1 and 6, the Setup_Dice() function must be
+ * called beforehand (ONCE).
+ */
 uint8_t Roll_Dice();
 
 } // namespace ASL
