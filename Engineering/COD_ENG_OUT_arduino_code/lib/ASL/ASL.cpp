@@ -30,15 +30,22 @@ void ASL::cla_display::Begin() {
     obj_matrix->drawPixel(u8_track_positions[i][1], u8_track_positions[i][2],
                           u16_track_color);
   }
+}
+
+void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity) {
   for (uint8_t i = 0; i < 4; i++) {
     for (uint8_t j = 0; j < 4; j++) {
-      obj_matrix->drawPixel(u8_home_positions[i][j][0],
-                            u8_home_positions[i][j][1], u16_player_color[i][0]);
+      if (_u8_player_quantity > i) {
+        obj_matrix->drawPixel(u8_home_positions[i][j][0],
+                              u8_home_positions[i][j][1],
+                              u16_player_color[i][0]);
+      } else {
+        obj_matrix->drawPixel(u8_home_positions[i][j][0],
+                              u8_home_positions[i][j][1], 0x00);
+      }
     }
   }
 }
-
-void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity) {}
 
 void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value) {
   obj_matrix->drawPixel(17, 3, 0x00);
@@ -104,4 +111,24 @@ void ASL::Setup_Buttons() {
   EIMSK |= 0b00110000;
   // enable Global interupt
   SREG |= 0b10000000;
+}
+
+void ASL::Setup_Dice() {
+  // The Dice will use Counter 0 (8 Bit Counter).
+  // Set WGM1 to 1 and WGM0 to 0 (last 2 bits): CTC mode
+  TCCR0A = 1 << WGM01;
+  // TCCR0A = 0b00000010;
+  // Set WGM2 to 0 (xxxx 0xxx)
+  // Set clock source to no prescaler (xxxx x001)
+  TCCR0B = 1 << CS00;
+  // TCCR0B = 0b00000001;
+  // set reset value to 5 (6 values: 0:5 -> need to add 1 later to get dice
+  // value 1:6)
+  OCR0A = 0x05;
+}
+
+uint8_t ASL::Roll_Dice() {
+  //
+  uint8_t i = TCNT0 + 1;
+  return i;
 }

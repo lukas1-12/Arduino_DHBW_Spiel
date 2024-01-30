@@ -62,5 +62,7 @@ public:
 };
 
 void Setup_Buttons();
+void Setup_Dice();
+uint8_t Roll_Dice();
 
 } // namespace ASL
