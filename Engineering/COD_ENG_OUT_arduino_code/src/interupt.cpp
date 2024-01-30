@@ -7,6 +7,9 @@ extern volatile ASL::en_state en_current_state;
  * \brief interupt routine for the Choose (green) Button.
  */
 ISR(INT4_vect) {
+  // Disable INT4 and INT5:
+  EIMSK &= 0b11101111;
+
   switch (en_current_state) {
   case ASL::setup_real_players:
     en_current_state = ASL::modify_real_player_number;
@@ -42,6 +45,17 @@ ISR(INT4_vect) {
     en_current_state = ASL::setup_real_players;
     break;
   }
+  Serial.println("Button pressed.");
+
+  // Reset the timer. Interupts must be disabled during this task, because it is
+  // a 16 BIT Timer.
+  cli();
+  TCNT3 = 0x0000;
+  sei();
+  // clear Interupt Flag Register for Output compare A
+  TIFR3 = 1 << OCF3A;
+  // Enable Timer interupt
+  TIMSK3 |= 1 << OCIE3A;
 }
 
 /**
@@ -83,4 +97,14 @@ ISR(INT5_vect) {
     en_current_state = ASL::setup_real_players;
     break;
   }
+}
+
+ISR(TIMER3_COMPA_vect) {
+  Serial.println("Success!");
+  // Disable Timer Interupt:
+  TIMSK3 &= ~(1 << OCIE3A);
+  // Enable INT4 and INT5:
+  EIMSK |= 0b00110000;
+  // Reset Interupt Flags:
+  EIFR |= 0b00110000;
 }

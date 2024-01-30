@@ -111,6 +111,19 @@ void ASL::Setup_Buttons() {
   EIMSK |= 0b00110000;
   // enable Global interupt
   SREG |= 0b10000000;
+  // we will use a timer to disable interupts fo a short period of time after
+  // the first button press.
+  // set prescaler to 1024 -> frequency is now 15.625kHz
+  // -> T of 1 count cycle : 0,000064s
+  // -> T of 0x1000 count cycles: 4096 * 0,000064s = 0,262144s
+  TCCR3A = 0;
+  TCCR3B = 0;
+  // Set Prescaler to 1024
+  TCCR3B |= (1 << CS32) | (1 << CS30);
+  // Set Output Compare to 0,262144s:
+  OCR3A = 0x1000;
+  // Enable Interupt:
+  TIMSK3 |= 1 << OCIE3A;
 }
 
 void ASL::Setup_Dice() {
