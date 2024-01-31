@@ -72,7 +72,7 @@ ISR(INT5_vect) {
     // NOP
     break;
   case ASL::setup_computer_players:
-    en_current_state = ASL::wait_for_dice_roll;
+    en_current_state = ASL::init_game_logic;
     break;
   case ASL::modify_computer_player_number:
     break;

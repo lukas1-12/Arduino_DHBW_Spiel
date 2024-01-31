@@ -46,7 +46,9 @@
         s3 --> s4 : Green Button
     s4 : Modify Computer Player Number
         s4 --> s3: Calculation Complete
-        s3 --> s5 : Red Button
+        s3 --> s4a : Red Button
+    s4a: Init Game Logic
+        s4a --> s5: Init Complete
     s5 : Wait for Dice Roll
         s5 -->s6 : Green Button
     s6 : Roll the Dice 

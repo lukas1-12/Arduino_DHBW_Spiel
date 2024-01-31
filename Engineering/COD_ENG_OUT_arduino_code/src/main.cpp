@@ -24,6 +24,8 @@ volatile ASL::en_state en_current_state = ASL::setup_real_players;
 uint8_t u8_player_quantity = 1;
 uint8_t u8_computer_quantity = 0;
 uint8_t u8_current_token_number = 0;
+uint8_t u8_dice_value = 0;
+uint8_t u8_dice_roll_counter = 0;
 ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
 
 void setup() {
@@ -35,7 +37,6 @@ void setup() {
   ASL::Setup_Buttons();
   ASL::Setup_Dice();
 }
-uint8_t u8_test_incrementer = 0;
 
 void loop() {
   switch (en_current_state) {
@@ -63,12 +64,24 @@ void loop() {
     }
     en_current_state = ASL::setup_computer_players;
     break;
+  case ASL::init_game_logic:
+    en_current_state = ASL::wait_for_dice_roll;
+    break;
   case ASL::wait_for_dice_roll:
     // NOP
     break;
   case ASL::roll_the_dice:
-    obj_display.Display_Dice(ASL::Roll_Dice());
-    en_current_state = ASL::display_token;
+    u8_dice_value = ASL::Roll_Dice();
+    obj_display.Display_Dice(u8_dice_value);
+    u8_dice_roll_counter++;
+    // You can roll the dice up to 3 times, when all your tokens are still in
+    // the Starting Square and you did not get a 6.
+    if (u8_dice_roll_counter <= 3 && u8_dice_value != 6) {
+      en_current_state = ASL::wait_for_dice_roll;
+    } else {
+      en_current_state = ASL::display_token;
+      u8_dice_roll_counter = 0;
+    }
     break;
   case ASL::wait_for_player_input:
 
