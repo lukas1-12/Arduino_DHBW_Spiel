@@ -5,6 +5,32 @@
 
 int main() {
   cla_session game(2, 0);
+  
+  
+  game.array_players[0]->Set_Token_Position(0, 47);
+  std::cout << "Token 0 progress: " << (int)game.array_players[0]->Get_Token_Progress(0) << std::endl;
+  game.array_players[0]->Set_Token_Position(1, 45); 
+  std::cout << "Token 1 progress: " << (int)game.array_players[0]->Get_Token_Progress(1) << std::endl;
+  game.array_players[0]->Set_Token_Position(2, 44);
+  std::cout << "Token 2 progress: " << (int)game.array_players[0]->Get_Token_Progress(2) << std::endl;
+  game.array_players[0]->Set_Token_Position(3, 42);
+  std::cout << "Token 3 progress: " << (int)game.array_players[0]->Get_Token_Progress(3) << std::endl;
+  std::cout << game.array_players[0]->Get_Status() << std::endl;
+  /*
+  for(int w = 0; w < 4; w++) {
+    std::cout << "Token " << w << " could be on position " << (int)game.array_players[0]->Calculate_Possible_Position(w, 3) << std::endl;
+  }
+  game.array_players[0]->Move_Token(0,3);
+  std::cout << "Token 0 at Position: " << (int)game.array_players[0]->Get_Token_Position(0) << std::endl;
+  game.array_players[0]->Move_Token(1,3);
+  std::cout << "Token 1 at Position: " << (int)game.array_players[0]->Get_Token_Position(1) << std::endl;
+  game.array_players[0]->Move_Token(2,3);
+  std::cout << "Token 2 at Position: " << (int)game.array_players[0]->Get_Token_Position(2) << std::endl;
+  game.array_players[0]->Move_Token(3,3);
+  std::cout << "Token 3 at Position: " << (int)game.array_players[0]->Get_Token_Position(3) << std::endl;
+  */
+
+  /*
   game.array_players[1]->Set_Token_Position(0, 44); 
   game.array_players[1]->Set_Token_Position(1, 43);
   //std::cout << "Start Position Player 1: " << (int)game.array_players[1]->Get_Start_Position() << std::endl;
@@ -14,12 +40,17 @@ int main() {
   std::cout << "Token 0 at Position: " << (int)game.array_players[1]->Get_Token_Position(0) << std::endl;
   game.array_players[1]->Move_Token(1,5);
   std::cout << "Token 1 at Position: " << (int)game.array_players[1]->Get_Token_Position(1) << std::endl;
-
-
+  */
 
   /*
-  std::cout << (int)game.array_players[0]->Get_Start_Position() << std::endl;
-  std::cout << (int)game.array_players[1]->Get_Start_Position() << std::endl;
+  game.array_players[1]->Set_Token_Position(0, 14);
+  std::cout << "Token 0 progress: " << (int)game.array_players[1]->Get_Token_Progress(0) << std::endl;
+  game.array_players[1]->Set_Token_Position(1, 13); 
+  std::cout << "Token 1 progress: " << (int)game.array_players[1]->Get_Token_Progress(1) << std::endl;
+  game.array_players[1]->Set_Token_Position(2, 12);
+  std::cout << "Token 2 progress: " << (int)game.array_players[1]->Get_Token_Progress(2) << std::endl;
+  game.array_players[1]->Set_Token_Position(3, 11);
+  std::cout << "Token 3 progress: " << (int)game.array_players[1]->Get_Token_Progress(3) << std::endl;
   std::cout << "###############################################" << std::endl;
   std::cout << (int)game.Get_Player_Quantity() << " Players" << std::endl;
   int8_t i8_game = 1;

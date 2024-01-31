@@ -12,11 +12,11 @@ cla_session::cla_session(uint8_t _u8_player_quantity,
 
   for (int i = 0; i < _u8_player_quantity; i++) {
     array_players[i] = new cla_player(
-        i, 5 + i * 10, this); // ID = i, Startposition = 5 + i * 10
+        i, 5 + i * 10, _u8_computer_quantity,this); // ID = i, Startposition = 5 + i * 10
   }
 };
 
-cla_player::cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
+cla_player::cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position, uint8_t _u8_computer_quantity,
                        cla_session *_obj_my_session) {
   obj_my_session = _obj_my_session;
   u8_player_id = _u8_player_id;
@@ -25,6 +25,16 @@ cla_player::cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
     u8_token_position[p] =
         p + 1; // So each token has a unique position in the home field
   }
+  bool is_computer = false;
+  for (int q = 0; q < _u8_computer_quantity; q++) {
+    is_computer = true;
+    new cla_computer_player(this, 0);
+  }
+};
+
+cla_computer_player::cla_computer_player(cla_player *_obj_my_player, uint8_t _u8_en_mode){
+    obj_my_player = _obj_my_player;
+    u8_en_mode = _u8_en_mode;
 };
 
 std::array<uint8_t, 2>
@@ -67,6 +77,10 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
              this->Get_Token_Progress(_u8_token_number) + _u8_dice_value <
                  44) { // token is on the track and would move into the finish
     return Get_Token_Progress(_u8_token_number) + _u8_dice_value + 5;
+  } else if (this->Get_Token_Progress(_u8_token_number) + _u8_dice_value > 39 &&
+             this->Get_Token_Progress(_u8_token_number) + _u8_dice_value >
+                 43) { // token is on the track and would move out of the finish
+    return u8_token_position[_u8_token_number];
   } else if (u8_token_position[_u8_token_number] > 44 &&
              u8_token_position[_u8_token_number] + _u8_dice_value < 49) {
     // token is in the finish and would not move out of the finish
@@ -149,7 +163,7 @@ uint8_t cla_player::Get_Token_Progress(uint8_t _u8_token_number) {
     if (u8_token_position[_u8_token_number] >= 44) {
       i8_token_progress =
           u8_token_position[_u8_token_number] -
-          u8_start_position; // to compensate the offset on the field
+          5; // to compensate the offset on the field
     }
     return i8_token_progress;
   } else {
@@ -157,7 +171,7 @@ uint8_t cla_player::Get_Token_Progress(uint8_t _u8_token_number) {
   }
 };
 
-status cla_player::Get_Status(uint8_t _u8_token_number) {
+status cla_player::Get_Status() {
   uint8_t u8_status = 0; // Position < 5 -> start, 5<=Position<=44 -> Track,
                          // Position > 44 -> Finished
   for (int i = 0; i < 4; i++) {
@@ -207,7 +221,15 @@ uint8_t cla_player::Get_Player_Progress() {
 
 bool Is_Computer() { return false; };
 
-uint8_t cla_computer_player::Auto_Move(uint8_t _u8_token_number) { return 0; };
+uint8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value) { 
+  for(int ii = 0; ii < 4; ii++) {
+    if(obj_my_player->Calculate_Possible_Position(ii, _u8_dice_value)> 4) {
+      obj_my_player->Move_Token(ii, _u8_dice_value);
+      return obj_my_player->Get_Token_Position(ii);
+    }
+  }
+  return 0; // No toke could be moved
+};
 
 uint8_t cla_manual_player::Manual_Move(uint8_t _u8_token_number) { return 0; };
 

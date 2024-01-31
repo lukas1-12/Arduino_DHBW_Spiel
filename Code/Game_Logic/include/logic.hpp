@@ -65,7 +65,7 @@ public:
    * @brief Constructor for the cla_player class.
    * @param _obj_my_session Pointer to the associated session.
    */
-  cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position, cla_session* _obj_my_session);
+  cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position, uint8_t _u8_computer_quantity ,cla_session* _obj_my_session);
   //Player(const std::string& name) : playerName(name), score(0) {}
 
 
@@ -109,10 +109,9 @@ public:
   uint8_t Get_Token_Progress(uint8_t _u8_token_number);
 
   /**
-   * @brief Outputs the status of a token.
-   * @param _u8_token_number The token number.
+   * @brief Outputs the status of player.
    */
-  status Get_Status(uint8_t _u8_token_number);
+  status Get_Status();
 
   /**
    * @brief Returns the overall progress of the player.
@@ -143,6 +142,14 @@ protected:
  */
 class cla_computer_player {
 public:
+
+  /**
+   * @brief Constructor for the cla_computer_player class.
+   * @param _obj_my_player Pointer to the associated session.
+   * @param _u8_mode The mode of the computer opponent.
+   */
+  cla_computer_player(cla_player* _obj_my_player, uint8_t _u8_mode);
+  
   /**
    * @brief Automatic movement for a computer opponent.
    * @param _u8_dice_value The value of the rolled dice.
@@ -150,8 +157,9 @@ public:
    */
   uint8_t Auto_Move(uint8_t _u8_dice_value);
 
-private:
-  // mode
+protected:
+  uint8_t u8_en_mode; ///< The mode of the computer opponent.
+  cla_player* obj_my_player; ///< Pointer to the associated player.
 };
 
 /**
