@@ -1,5 +1,6 @@
 #include <cstdint>
 
+namespace LOGIC{
 // Forward declaration of cla_player
 class cla_player;
 
@@ -50,10 +51,12 @@ public:
 
   uint8_t Get_Player_Quantity(); ///< Returns the number of players.
 
-  uint8_t Get_IS_Occupied_Player_ID(); ///< Returns the ID of the player a
+  uint8_t Get_Computer_Quantity(); ///< Returns the number of computer players.
+
+  uint8_t Get_Is_Occupied_Player_ID(); ///< Returns the ID of the player a
                                        ///< occupied track position.
 
-  uint8_t Get_IS_Occupied_Token_Number(); ///< Returns the token number of the
+  uint8_t Get_Is_Occupied_Token_Number(); ///< Returns the token number of the
                                           ///< occupied track position.
   uint8_t u8_is_occupied_player_id; /**< The ID of the player a occupied track
                                        position. */
@@ -122,7 +125,7 @@ public:
   /**
    * @brief Outputs the status of player.
    */
-  status Get_Status();
+  status Get_Player_Status();
 
   /**
    * @brief Returns the overall progress of the player.
@@ -171,9 +174,10 @@ public:
    */
   uint8_t Auto_Move(uint8_t _u8_dice_value);
 
+  cla_player *obj_my_player; ///< Pointer to the associated player.
+
 protected:
   uint8_t u8_en_mode;        ///< The mode of the computer opponent.
-  cla_player *obj_my_player; ///< Pointer to the associated player.
 };
 
 /**
@@ -189,3 +193,5 @@ public:
    */
   uint8_t Manual_Move(uint8_t _u8_dice_value);
 };
+
+} // namespace LOGIC

@@ -1,6 +1,8 @@
 #include "logic.hpp"
 #include <cstdint>
 
+
+namespace LOGIC {
 cla_session::cla_session(uint8_t _u8_player_quantity,
                          uint8_t _u8_computer_quantity) {
   u8_player_quantity = _u8_player_quantity;
@@ -73,9 +75,9 @@ bool cla_session::Return_Home(uint8_t _u8_affected_track_position) {
 
 uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
                                                 uint8_t _u8_dice_value) {
-  if (u8_token_position[_u8_token_number] <= 4 &&
-      _u8_dice_value ==
-          6) { // token is in the home field and would move onto the track
+  if ((u8_token_position[_u8_token_number] <= 4) &&
+      (_u8_dice_value ==
+          6)) { // token is in the home field and would move onto the track
     return u8_start_position;
   } else if (u8_token_position[_u8_token_number] <= 4 &&
              _u8_dice_value != 6) { // token is in the home field and would not
@@ -224,7 +226,7 @@ uint8_t cla_player::Get_Token_Progress(uint8_t _u8_token_number) {
   }
 };
 
-status cla_player::Get_Status() {
+status cla_player::Get_Player_Status() {
   uint8_t u8_status = 0; // Position < 5 -> start, 5<=Position<=44 -> Track,
                          // Position > 44 -> Finished
   for (int i = 0; i < 4; i++) {
@@ -283,13 +285,25 @@ uint8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value) {
       return obj_my_player->Get_Token_Position(n);
     }
   }
-  return 0; // No toke could be moved
+  return 0; // No token could be moved
 };
 
 uint8_t cla_manual_player::Manual_Move(uint8_t _u8_token_number) { return 0; };
 
 uint8_t cla_session::Get_Player_Quantity() { return u8_player_quantity; };
 
+uint8_t cla_session::Get_Computer_Quantity() { return u8_computer_quantity; };
+
 uint8_t cla_player::Get_Start_Position() { return u8_start_position; };
 
 uint8_t cla_player::Get_Player_ID() { return u8_player_id; };
+
+uint8_t cla_session::Get_Is_Occupied_Player_ID() {
+  return u8_is_occupied_player_id;
+};
+
+uint8_t cla_session::Get_Is_Occupied_Token_Number() {
+  return u8_is_occupied_token_number;
+};
+
+} // namespace LOGIC
