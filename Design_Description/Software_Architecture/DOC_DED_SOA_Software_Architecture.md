@@ -87,11 +87,15 @@ note:   - : private
     class cla_session {
         - uint8_t u8_player_quantity
         - uint8_t u8_computer_quantity
-        + cla_player obj_player[u8_player_quantity]
+        + cla_player *array_players[4]
+        + uint8_t u8_is_occupied_id
+        + uint8_t u8_is_occupied_token_number
 
         + cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity)
-        + Is_Occupied(uint8_t _u8_affected_track_position) uint8_t
+        + Is_Occupied(uint8_t &u8_is_occupied_player_id, uint8_t &u8_is_occupied_token_number, uint8_t _u8_affected_track_position) bool
         + Return_Home(uint8_t _u8_affected_track_position) bool
+        + Get_Variables...()  uint8_t
+
     }
 
     cla_session "1" *-- "1..4" cla_player
@@ -99,11 +103,13 @@ note:   - : private
         # uint8_t u8_token_position[4]
         # uint8_t u8_start_position
         # cla_session* obj_my_session
+        + cla_computer_player* array_computer_players[3]
 
-        + cla_player(cla_session* _obj_my_session)
+        + cla_player(uint8_t _u8_start_position, uint8_t _u8_computer_quantity, cla_session* _obj_my_session)
         + Calculate_Possible_Position(uint8_t _u8_token_number, uint8_t _u8_dice_value) uint8_t
         + Move_Token(uint8_t _u8_token_number, uint8_t _u8_dice_value) uint8_t
         + Get_Token_Position(uint8_t _u8_token_number) uint8_t
+        + Set_Token_Position(uint8_t _u8_token_number, uint8_t _u8_new_position) uint8_t
         + Get_Token_Progress(uint8_t _u8_token_number) uint8_t
         + Get_Player_Status() status
         + Get_Player_Progress() uint8_t
@@ -117,7 +123,10 @@ note:   - : private
     }
     cla_player <|-- cla_computer_player
     class cla_computer_player{
-        - mode en_mode
+        - uint8_t u8_en_mode
+        + cla_player *obj_player
+
+        + cla_computer_player(cla_player *_obj_player, uint8_t _u8_mode)
         + Auto_Move(uint8_t _u8_dice_value) uint8_t
     }
 
@@ -165,19 +174,19 @@ checks if there is a token at a given track position and puts it back into the s
 #### cla_player
 
 ```cpp
-cla_player(cla_session* _obj_my_session)
+cla_player(uint8_t _u8_start_position, uint8_t _u8_computer_quantity,cla_session* _obj_my_session)
 ```
 Constructor. A pointer to the corresponding session class is needed for calling cla_session methods calling inside cla_player methods.
 
 ```cpp
 uint8_t Calculate_Possible_Position(uint8_t _u8_token_number, uint8_t _u8_dice_value) 
 ```
-Return the position that can be reached with the dice value. (absolute/track position)
+Return the position that can be reached with the dice value. (absolut position (absolute Positions are 5-44))
 
 ```cpp
 uint8_t Move_Token(uint8_t _u8_token_number, uint8_t _u8_dice_value)
 ```
-Moves the Token and returns the reached position. (absolute/track position)
+Moves the Token and returns the reached position. (absolute position)
 
 ```cpp
 uint8_t Get_Token_Position(uint8_t _u8_token_number)
@@ -187,7 +196,7 @@ Returns the absolute Position of the Token (track position)
 ```cpp
 uint8_t Get_Token_Progress(uint8_t _u8_token_number)
 ```
-Returns the relative Position of the Token (progress)
+Returns the relative Position (1-39) of the Token (progress)
 
 ```cpp 
 status Get_Player_Status() 
@@ -207,7 +216,7 @@ Track_Finished      | NO                        | YES                   | YES
 ```cpp
 uint8_t Get_Player_Progress()
 ```
-Adds the u8_token_progress of all tokens together and returns that value.
+Adds the u8_token_progress of all tokens together and returns that value (Finished == 166).
 
 ```cpp
 virtual bool Is_Computer()
