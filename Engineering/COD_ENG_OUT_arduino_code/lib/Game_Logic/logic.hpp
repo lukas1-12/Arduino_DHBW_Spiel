@@ -1,6 +1,7 @@
 #include <cstdint>
 
-namespace LOGIC{
+namespace LOGIC {
+
 // Forward declaration of cla_player
 class cla_player;
 
@@ -35,8 +36,12 @@ public:
 
   /**
    * @brief Checks if the position on the map is occupied.
+   * @param &u8_is_occupied_player_id Reference to variable to store the player
+   * ID of the occupied track position.
+   * @param &u8_is_occupied_token_number Reference to variable to store the token
+   * number of the occupied track position.
    * @param _u8_affected_track_position The track position to check.
-   * @return 1 if occupied, 0 otherwise.
+   * @return true if occupied, false otherwise.
    */
   bool Is_Occupied(uint8_t &u8_is_occupied_player_id,
                    uint8_t &u8_is_occupied_token_number,
@@ -53,18 +58,18 @@ public:
 
   uint8_t Get_Computer_Quantity(); ///< Returns the number of computer players.
 
-  uint8_t Get_Is_Occupied_Player_ID(); ///< Returns the ID of the player a
+  uint8_t Get_Is_Occupied_Player_ID(); ///< Returns the ID of the player at the
                                        ///< occupied track position.
 
-  uint8_t Get_Is_Occupied_Token_Number(); ///< Returns the token number of the
+  uint8_t Get_Is_Occupied_Token_Number(); ///< Returns the token number on the
                                           ///< occupied track position.
-  uint8_t u8_is_occupied_player_id; /**< The ID of the player a occupied track
+  uint8_t u8_is_occupied_player_id; /**< The ID of the player at the occupied track
                                        position. */
-  uint8_t u8_is_occupied_token_number; /**< The token number of the occupied
+  uint8_t u8_is_occupied_token_number; /**< The token number at the occupied
                                           track position. */
 
 private:
-  uint8_t u8_player_quantity;   /**< Number of human players. */
+  uint8_t u8_player_quantity;   /**< Number of all players. */
   uint8_t u8_computer_quantity; /**< Number of computer-controlled players. */
 };
 
@@ -72,15 +77,18 @@ private:
  * @class cla_player
  * @brief Description of the cla_player class.
  */
-class cla_player { // Vererbung richtig?
+class cla_player { 
 public:
   /**
    * @brief Constructor for the cla_player class.
+   * @param _u8_player_id The ID of the player.
+   * @param _u8_start_position The individual starting position of the player.
+   * @param _u8_computer_quantity The number of computer controlled players.
    * @param _obj_my_session Pointer to the associated session.
    */
   cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
              uint8_t _u8_computer_quantity, cla_session *_obj_my_session);
-  // Player(const std::string& name) : playerName(name), score(0) {}
+
 
   /**
    * @brief Calculates the possible position of a token.
@@ -177,7 +185,7 @@ public:
   cla_player *obj_my_player; ///< Pointer to the associated player.
 
 protected:
-  uint8_t u8_en_mode;        ///< The mode of the computer opponent.
+  uint8_t u8_en_mode; ///< The mode of the computer opponent.
 };
 
 /**
