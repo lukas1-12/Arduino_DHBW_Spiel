@@ -134,3 +134,45 @@ TEST_CASE("Test Move into Finish", "[cla_player]") {
   REQUIRE(game.array_players[3]->Get_Token_Position(2) == 48);
   REQUIRE(game.array_players[3]->Get_Token_Position(3) == 46);
 }
+
+//Requirement 59: "Befindet sich eine fremde Figur auf dem eigenen Startfeld, so wird diese geschmissen falls man eine eigene Figur aus dem Haus bringt"
+
+TEST_CASE("Test Kick_Token_From_Start_Position", "[cla_player]")
+{
+  LOGIC::cla_session game(4, 0);
+  game.array_players[0]->Set_Token_Position(1, 15);
+  game.array_players[1]->Set_Token_Position(1, 25);
+  game.array_players[2]->Set_Token_Position(1, 35);
+  game.array_players[3]->Set_Token_Position(1, 5);
+  game.array_players[0]->Move_Token(0, 6);
+  game.array_players[1]->Move_Token(0, 6);
+  game.array_players[2]->Move_Token(0, 6);
+  game.array_players[3]->Move_Token(0, 6);
+  REQUIRE(game.array_players[0]->Get_Token_Position(0) == 5);
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 15);
+  REQUIRE(game.array_players[2]->Get_Token_Position(0) == 25);
+  REQUIRE(game.array_players[3]->Get_Token_Position(0) == 35);
+
+  REQUIRE(game.array_players[0]->Get_Token_Position(1) == 2);
+  REQUIRE(game.array_players[1]->Get_Token_Position(1) == 2);
+  REQUIRE(game.array_players[2]->Get_Token_Position(1) == 2);
+  REQUIRE(game.array_players[3]->Get_Token_Position(1) == 2);
+}
+
+//Requirement 55: "Spielfiguren werden übersprungen, außer sie befinden sich auf dem letzten Feld des Spielzugs"
+TEST_CASE("Test Skip_And_Kick_Tokens", "[cla_player]")
+{
+  LOGIC::cla_session game(4, 0);
+  game.array_players[0]->Set_Token_Position(1, 15);
+  game.array_players[0]->Set_Token_Position(2, 16);
+  game.array_players[1]->Set_Token_Position(1, 19);
+  game.array_players[2]->Set_Token_Position(1, 17);
+  game.array_players[3]->Set_Token_Position(1, 18);
+  game.array_players[0]->Move_Token(1, 4);
+
+  REQUIRE(game.array_players[0]->Get_Token_Position(1) == 19);
+  REQUIRE(game.array_players[0]->Get_Token_Position(2) == 16);
+  REQUIRE(game.array_players[1]->Get_Token_Position(1) == 2);
+  REQUIRE(game.array_players[2]->Get_Token_Position(1) == 17);
+  REQUIRE(game.array_players[3]->Get_Token_Position(1) == 18);
+}
