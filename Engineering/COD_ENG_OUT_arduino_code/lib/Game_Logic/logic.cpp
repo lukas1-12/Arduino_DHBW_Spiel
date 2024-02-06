@@ -35,9 +35,9 @@ cla_player::cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
   }
 };
 
-cla_computer_player::cla_computer_player(cla_player *_obj_my_player,
+cla_computer_player::cla_computer_player(cla_player *_obj_player,
                                          uint8_t _u8_en_mode) {
-  obj_my_player = _obj_my_player;
+  obj_player = _obj_player;
   u8_en_mode = _u8_en_mode;
 };
 
@@ -278,11 +278,11 @@ bool Is_Computer() { return false; };
 
 uint8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value) {
   for (int n = 0; n < 4; n++) {
-    if (obj_my_player->Calculate_Possible_Position(n, _u8_dice_value) > 4 &&
-        obj_my_player->Calculate_Possible_Position(n, _u8_dice_value) !=
-            obj_my_player->Get_Token_Position(n)) {
-      obj_my_player->Move_Token(n, _u8_dice_value);
-      return obj_my_player->Get_Token_Position(n);
+    if (obj_player->Calculate_Possible_Position(n, _u8_dice_value) > 4 &&
+        obj_player->Calculate_Possible_Position(n, _u8_dice_value) !=
+            obj_player->Get_Token_Position(n)) {
+      obj_player->Move_Token(n, _u8_dice_value);
+      return obj_player->Get_Token_Position(n);
     }
   }
   return 0; // No token could be moved

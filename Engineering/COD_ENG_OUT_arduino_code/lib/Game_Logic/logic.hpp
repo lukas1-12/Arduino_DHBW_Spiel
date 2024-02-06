@@ -170,10 +170,10 @@ class cla_computer_player {
 public:
   /**
    * @brief Constructor for the cla_computer_player class.
-   * @param _obj_my_player Pointer to the associated session.
+   * @param _obj_player Pointer to the associated session.
    * @param _u8_mode The mode of the computer opponent.
    */
-  cla_computer_player(cla_player *_obj_my_player, uint8_t _u8_mode);
+  cla_computer_player(cla_player *_obj_player, uint8_t _u8_mode);
 
   /**
    * @brief Automatic movement for a computer opponent.
@@ -182,7 +182,7 @@ public:
    */
   uint8_t Auto_Move(uint8_t _u8_dice_value);
 
-  cla_player *obj_my_player; ///< Pointer to the associated player.
+  cla_player *obj_player; ///< Pointer to the associated player.
 
 protected:
   uint8_t u8_en_mode; ///< The mode of the computer opponent.
