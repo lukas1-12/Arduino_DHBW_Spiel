@@ -19,10 +19,9 @@
     }
     class ASL{
         Application service Layer*
-        Roll_Dice()
-        Button_01_Interrupt_Handler()
-        Button_02_Interrupt_Handler()
-        ...()
+        Library with all classes
+        and methods for the 
+        Hardware handling.
     }
     Arduino_Sketch *-- ASL
     ASL *-- HAL
@@ -259,22 +258,53 @@ AutoMove() might need two return parameters. This could be done like this:
 
 ```mermaid
   classDiagram
-  class cla_board {
+  class cla_display {
+        - uint8_t u8_matrix_a
+        - uint8_t u8_matrix_b
+        - uint8_t u8_matrix_c
+        - uint8_t u8_matrix_clk
+        - uint8_t u8_matrix_lat
+        - uint8_t u8_matrix_oe
         - RGBmatrixPanel *obj_matrix
         - uint8_t u8_track_positions[40][3]
         - uint8_t u8_home_positions[4][4][2]
         - uint8_t u8_finished_positions[4][4][2]
-        - uint8_t u8_dice_position[2]
         - int16_t u16_player_color[4][2]
         - uint16_t u16_track_color
+        - en_blink_mode en_current_blink_mode
+        - u8_blink_player
+        - u8_blink_track_position
 
-        + cla_board(uint8_t _u8_matrix_a, uint8_t _u8_matrix_b, uint8_t _u8_matrix_c, uint8_t _u8_matrix_clk, uint8_t _u8_matrix_lat, uint8_t _u8_matrix_oe)
+        + cla_display(uint8_t _u8_matrix_a, uint8_t _u8_matrix_b, uint8_t _u8_matrix_c, uint8_t _u8_matrix_clk, uint8_t _u8_matrix_lat, uint8_t _u8_matrix_oe)
+        + Set_Colors(uint8_t _u8_player_nr, uint16_t _u16_bright_color, uint16_t _u16_dark_color) void
         + Begin() void
-        + Set_Colors() void
-        + Move_Token(uint8_t _u8_player_number, uint8_t _u8_remove_track_position, uint8_t _u8_add_track_position) void
-        + Roll_Dice() int
+        + Display_Players() void
+        + Display_Token(uint8_t _u8_player_number, uint8_t _u8_new_position)
+        + Move_Token(uint8_t _u8_player_number, uint8_t _u8_remove_position, uint8_t _u8_add_position) void
         + Display_Dice() void
-        + Roll_And_Display_Dice() int
         + Winner_Animation(uint8_t _u8_player_number) void
+        - Blink(en_blink_mode _en_current_blink_mode, int8_t _u8_switching_cycles, uint8_t _u8_player_number, uint8_t _u8_track_position)
+    }
+    class cla_buttons{
+        + cla_buttons()
+    }
+    class cla_dice{
+        + cla_dice()
+        + Roll_Dice() int
+    }
+    class en_blink_mode{
+        <<enumeration>>
+        Slow
+        Fast
+        Off
     }
 ```
+
+#### Timers
+
+- Timer 0: ( 8Bit) Runs from 0 to 5 to create a "random" Dice value
+- Timer 1: (16Bit) Used for the LED matrix
+- Timer 2: ( 8Bit) Not in Use
+- Timer 3: (16Bit) Used for Button Debounce
+- Timer 4: (16Bit) Used for Led Blinking
+- TImer 5: (16Bit) Not in Use
