@@ -1,5 +1,6 @@
 #include <ASL.hpp>
 #include <Arduino.h>
+#include <logic.hpp>
 
 // Define all the Ports here:
 #define CLK 11 // MUST be on PORTB! (Use pin 11 on Mega)
@@ -23,9 +24,11 @@
 volatile ASL::en_state en_current_state = ASL::setup_real_players;
 uint8_t u8_player_quantity = 1;
 uint8_t u8_computer_quantity = 0;
-uint8_t u8_current_token_number = 0;
+volatile uint8_t u8_current_player_number = 0;
+volatile uint8_t u8_current_token_number = 0;
 uint8_t u8_dice_value = 0;
 uint8_t u8_dice_roll_counter = 0;
+LOGIC::cla_session *obj_session;
 ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
 
 void setup() {
@@ -39,6 +42,8 @@ void setup() {
 }
 
 void loop() {
+  uint8_t u8_old_position;
+  uint8_t u8_new_position;
   switch (en_current_state) {
   case ASL::setup_real_players:
     obj_display.Display_Players(u8_player_quantity);
@@ -65,6 +70,8 @@ void loop() {
     en_current_state = ASL::setup_computer_players;
     break;
   case ASL::init_game_logic:
+    obj_session =
+        new LOGIC::cla_session(u8_player_quantity, u8_computer_quantity);
     en_current_state = ASL::wait_for_dice_roll;
     break;
   case ASL::wait_for_dice_roll:
@@ -76,22 +83,52 @@ void loop() {
     u8_dice_roll_counter++;
     // You can roll the dice up to 3 times, when all your tokens are still in
     // the Starting Square and you did not get a 6.
-    if (u8_dice_roll_counter <= 3 && u8_dice_value != 6) {
+    if (obj_session->array_players[u8_current_player_number]
+                ->Get_Player_Status() == LOGIC::Start &&
+        u8_dice_roll_counter < 3 && u8_dice_value != 6) {
+      // one more chance for the same player
+      en_current_state = ASL::wait_for_dice_roll;
+    } else if (obj_session->array_players[u8_current_player_number]
+                       ->Get_Player_Status() == LOGIC::Start &&
+               u8_dice_roll_counter >= 3 && u8_dice_value != 6) {
+      // If you did not get a 6 after 3 tries, the next player gets a chance.
+      if (u8_current_player_number < u8_player_quantity) {
+        u8_current_player_number++;
+      } else {
+        u8_current_player_number = 0;
+      }
       en_current_state = ASL::wait_for_dice_roll;
     } else {
+      // If you got a 6, your token is moved out of the Starting Square
       en_current_state = ASL::display_token;
       u8_dice_roll_counter = 0;
     }
     break;
   case ASL::wait_for_player_input:
-
+    // NOP
     break;
   case ASL::display_token:
-
+    u8_old_position = obj_session->array_players[u8_current_player_number]
+                          ->Get_Token_Position(u8_current_token_number);
+    u8_new_position = obj_session->array_players[u8_current_player_number]
+                          ->Calculate_Possible_Position(u8_current_token_number,
+                                                        u8_dice_value);
+    obj_display.Display_Token(u8_current_player_number, u8_new_position);
     en_current_state = ASL::wait_for_player_input;
     break;
   case ASL::move_token:
-
+    u8_old_position = obj_session->array_players[u8_current_player_number]
+                          ->Get_Token_Position(u8_current_token_number);
+    u8_new_position = obj_session->array_players[u8_current_player_number]
+                          ->Calculate_Possible_Position(u8_current_token_number,
+                                                        u8_dice_value);
+    obj_display.Move_Token(u8_current_player_number, u8_current_token_number,
+                           u8_old_position, u8_new_position);
+    if (u8_current_player_number < u8_player_quantity) {
+      u8_current_player_number++;
+    } else {
+      u8_current_player_number = 0;
+    }
     en_current_state = ASL::wait_for_dice_roll;
     break;
   case ASL::game_finished:

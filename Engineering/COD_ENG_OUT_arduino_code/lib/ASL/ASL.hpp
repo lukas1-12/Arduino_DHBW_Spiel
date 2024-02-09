@@ -13,6 +13,7 @@ typedef enum {
   modify_real_player_number,
   setup_computer_players,
   modify_computer_player_number,
+  init_game_logic,
   wait_for_dice_roll,
   roll_the_dice,
   wait_for_player_input,
@@ -115,6 +116,30 @@ public:
    * \param _u8_player_quantity The number of Players to be displayed.
    */
   void Display_Players(uint8_t _u8_player_quantity);
+
+  /**
+   * \brief Display a Token
+   *
+   * This method can display a token on the matrix.
+   *
+   * \param _u8_player_number chosen player
+   * \param _u8_token_number chosen token
+   * \param _u8_new_position new position of the token
+   */
+  void Display_Token(uint8_t _u8_player_number, uint8_t _u8_new_position);
+
+  /**
+   * \brief Move a Token
+   *
+   * This method can move a token.
+   *
+   * \param _u8_player_number chosen player
+   * \param _u8_token_number chosen token
+   * \param _u8_old_position old position of the token
+   * \param _u8_new_position new position of the token
+   */
+  void Move_Token(uint8_t _u8_player_nr, uint8_t u8_token_nr,
+                  uint8_t _u8_remove_position, uint8_t _u8_add_position);
 
   /**
    * \brief Display the dice

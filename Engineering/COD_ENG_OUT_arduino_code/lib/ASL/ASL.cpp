@@ -47,6 +47,50 @@ void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity) {
   }
 }
 
+void ASL::cla_display::Display_Token(uint8_t _u8_player_nr,
+                                     uint8_t _u8_new_position) {
+  if (_u8_new_position < 5) {
+  } else if (_u8_new_position >= 5 && _u8_new_position <= 40) {
+    _u8_new_position -= 5;
+    obj_matrix->drawPixel(u8_track_positions[_u8_new_position][1],
+                          u8_track_positions[_u8_new_position][2],
+                          u16_player_color[_u8_player_nr][1]);
+  } else {
+  }
+}
+
+void ASL::cla_display::Move_Token(uint8_t _u8_player_nr, uint8_t _u8_token_nr,
+                                  uint8_t _u8_old_position,
+                                  uint8_t _u8_new_position) {
+  // remove old position from display
+  if (_u8_old_position < 5) {
+    // remove from starting square
+    obj_matrix->drawPixel(u8_home_positions[_u8_player_nr][_u8_token_nr][0],
+                          u8_home_positions[_u8_player_nr][_u8_token_nr][1],
+                          0x00);
+  } else if (_u8_old_position >= 5 && _u8_old_position <= 40) {
+    _u8_old_position -= 5;
+    obj_matrix->drawPixel(u8_track_positions[_u8_old_position][1],
+                          u8_track_positions[_u8_old_position][2], 0x00);
+  } else {
+    // remove from finish square
+  }
+  // add new position to display
+  if (_u8_new_position < 5) {
+    // add to starting square
+    obj_matrix->drawPixel(u8_home_positions[_u8_player_nr][_u8_token_nr][0],
+                          u8_home_positions[_u8_player_nr][_u8_token_nr][1],
+                          u16_player_color[_u8_player_nr][0]);
+  } else if (_u8_new_position >= 5 && _u8_new_position <= 40) {
+    _u8_new_position -= 5;
+    obj_matrix->drawPixel(u8_track_positions[_u8_new_position][1],
+                          u8_track_positions[_u8_new_position][2],
+                          u16_player_color[_u8_player_nr][0]);
+  } else {
+    // add to finish square
+  }
+}
+
 void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value) {
   obj_matrix->drawPixel(17, 3, 0x00);
   obj_matrix->drawPixel(16, 2, 0x00);

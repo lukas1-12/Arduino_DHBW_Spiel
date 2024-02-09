@@ -2,6 +2,9 @@
 #include <Arduino.h>
 
 extern volatile ASL::en_state en_current_state;
+extern uint8_t u8_player_quantity;
+extern volatile uint8_t u8_current_player_number;
+extern volatile uint8_t u8_current_token_number;
 
 /**
  * \brief interupt routine for the Choose (green) Button.
@@ -29,6 +32,12 @@ ISR(INT4_vect) {
     // NOP
     break;
   case ASL::wait_for_player_input:
+    if (u8_current_token_number < 4) {
+      u8_current_token_number++;
+    } else {
+      u8_current_token_number = 1;
+    }
+
     en_current_state = ASL::display_token;
     break;
   case ASL::display_token:
@@ -83,6 +92,7 @@ ISR(INT5_vect) {
     // NOP
     break;
   case ASL::wait_for_player_input:
+
     en_current_state = ASL::move_token;
     break;
   case ASL::display_token:
