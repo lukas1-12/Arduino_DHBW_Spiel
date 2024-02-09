@@ -38,8 +38,8 @@ public:
    * @brief Checks if the position on the map is occupied.
    * @param &u8_is_occupied_player_id Reference to variable to store the player
    * ID of the occupied track position.
-   * @param &u8_is_occupied_token_number Reference to variable to store the token
-   * number of the occupied track position.
+   * @param &u8_is_occupied_token_number Reference to variable to store the
+   * token number of the occupied track position.
    * @param _u8_affected_track_position The track position to check.
    * @return true if occupied, false otherwise.
    */
@@ -63,8 +63,8 @@ public:
 
   uint8_t Get_Is_Occupied_Token_Number(); ///< Returns the token number on the
                                           ///< occupied track position.
-  uint8_t u8_is_occupied_player_id; /**< The ID of the player at the occupied track
-                                       position. */
+  uint8_t u8_is_occupied_player_id;    /**< The ID of the player at the occupied
+                                          track    position. */
   uint8_t u8_is_occupied_token_number; /**< The token number at the occupied
                                           track position. */
 
@@ -77,7 +77,7 @@ private:
  * @class cla_player
  * @brief Description of the cla_player class.
  */
-class cla_player { 
+class cla_player {
 public:
   /**
    * @brief Constructor for the cla_player class.
@@ -88,7 +88,6 @@ public:
    */
   cla_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
              uint8_t _u8_computer_quantity, cla_session *_obj_my_session);
-
 
   /**
    * @brief Calculates the possible position of a token.
@@ -145,15 +144,12 @@ public:
    * @brief Checks if the player is a computer opponent.
    * @return true if the player is a computer opponent, false otherwise.
    */
-  bool Is_Computer();
+  virtual bool Is_Computer() const = 0;
 
   uint8_t
   Get_Start_Position(); ///< Returns the starting position of the player.
 
   uint8_t Get_Player_ID(); ///< Returns the ID of the player.
-
-  cla_computer_player *array_computer_players[3]; ///< Array of pointers to the
-                                                  ///< computer opponents.
 
 protected:
   uint8_t u8_start_position;    ///< The starting position of the player.
@@ -166,14 +162,16 @@ protected:
  * @class cla_computer_player
  * @brief Description of the cla_computer_player class.
  */
-class cla_computer_player {
+class cla_computer_player : public cla_player {
 public:
   /**
    * @brief Constructor for the cla_computer_player class.
    * @param _obj_player Pointer to the associated session.
    * @param _u8_mode The mode of the computer opponent.
    */
-  cla_computer_player(cla_player *_obj_player, uint8_t _u8_mode);
+  cla_computer_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
+                      uint8_t _u8_computer_quantity,
+                      cla_session *_obj_my_session, uint8_t _u8_mode);
 
   /**
    * @brief Automatic movement for a computer opponent.
@@ -182,7 +180,9 @@ public:
    */
   uint8_t Auto_Move(uint8_t _u8_dice_value);
 
-  cla_player *obj_player; ///< Pointer to the associated player.
+  virtual bool Is_Computer() const override {
+  return true;
+  }
 
 protected:
   uint8_t u8_en_mode; ///< The mode of the computer opponent.
@@ -192,14 +192,23 @@ protected:
  * @class cla_manual_player
  * @brief Description of the cla_manual_player class.
  */
-class cla_manual_player {
+class cla_manual_player : public cla_player {
 public:
+  /**
+   * @brief Constructor for the cla_manual_player class.
+   */
+  cla_manual_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
+                    uint8_t _u8_computer_quantity, cla_session *_obj_my_session);
   /**
    * @brief Manual movement for a human player.
    * @param _u8_dice_value The value of the rolled dice.
    * @return The new position of the token after manual movement.
    */
   uint8_t Manual_Move(uint8_t _u8_dice_value);
+
+  virtual bool Is_Computer() const override {
+  return false;
+  }
 };
 
 } // namespace LOGIC

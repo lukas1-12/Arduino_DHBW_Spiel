@@ -6,13 +6,18 @@
 
 
 int main() {
-  LOGIC::cla_session game(3, 3);
+  LOGIC::cla_session game(3, 1);
   std::cout << "\033[31m" << (int)game.Get_Player_Quantity() << " Players \033[0m" << std::endl;
   std::cout << "\033[31m" << (int)game.Get_Computer_Quantity() << " Computer Players \033[0m" << std::endl;
   std::cout << "###############################################" << std::endl;
   std::cout << "Start Position of Player 0 is: " << (int)game.array_players[0]->Get_Start_Position() << std::endl;
   std::cout << "Start Position of Player 1 is: " << (int)game.array_players[1]->Get_Start_Position() << std::endl;
   std::cout << "Start Position of Player 2 is: " << (int)game.array_players[2]->Get_Start_Position() << std::endl;
+  std::cout << "player 0 is a computer player: " << game.array_players[0]->Is_Computer() << std::endl;
+  std::cout << "player 1 is a computer player: " << game.array_players[1]->Is_Computer() << std::endl;
+  std::cout << "player 2 is a computer player: " << game.array_players[2]->Is_Computer() << std::endl;
+  std::cout << "player 3 is a computer player: " << game.array_players[3]->Is_Computer() << std::endl;
+  std::cout << "###############################################" << std::endl;
   //std::cout << "Start Position of Player 3 is: " << (int)game.array_players[3]->Get_Start_Position() << std::endl;
   /*
   std::cout << "###############################################" << std::endl;
@@ -135,6 +140,7 @@ int main() {
   std::cout << "\033[31m" << (int)game.Get_Player_Quantity() << " Players \033[0m" << std::endl;
   int8_t i8_game = 1;
   int8_t i8_player = 0;
+  int counter = 0;
   while(i8_game) {
     std::cout << "\033[31m" << "Player " << (int)i8_player << " is on turn \033[0m" << std::endl;
     for(int w = 0; w < 4; w++) {
@@ -154,6 +160,8 @@ int main() {
     for(int w = 0; w < 4; w++) {
       std::cout << "Token " << w << " is on position " << (int)game.array_players[i8_player]->Get_Token_Position(w) << std::endl;
     }
+
+    counter = counter + 1;
     
     if(game.array_players[i8_player]->Get_Player_Progress() == 166){
       std::cout << "Player " << (int)i8_player << " won the game" << std::endl;
@@ -167,7 +175,7 @@ int main() {
     std::cout << "-----------------------------------------------" << std::endl;
   }
     std::cout << "###############################################" << std::endl;
-    std::cout << "Game finished" << std::endl;
+    std::cout << "Game finished with " << counter << " player moves" << std::endl;
     
 
 
