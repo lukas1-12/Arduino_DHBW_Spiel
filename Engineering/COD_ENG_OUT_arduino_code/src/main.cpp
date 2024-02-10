@@ -142,12 +142,14 @@ void loop() {
     // NOP
     break;
   case ASL::display_token:
+    obj_display.Blink_Stop();
     u8_old_position = obj_session->array_players[u8_current_player_number]
                           ->Get_Token_Position(u8_current_token_number);
     u8_new_position = obj_session->array_players[u8_current_player_number]
                           ->Calculate_Possible_Position(u8_current_token_number,
                                                         u8_dice_value);
-    obj_display.Display_Token_Start(u8_current_player_number, u8_new_position);
+    obj_display.Blink_Start(ASL::slow, -1, u8_current_player_number,
+                            u8_old_position, u8_new_position);
 #if DEBUG
     PORTK = en_current_state | (u8_current_player_number << 4) |
             (u8_current_token_number << 6);
@@ -155,6 +157,7 @@ void loop() {
     en_current_state = ASL::wait_for_player_input;
     break;
   case ASL::move_token:
+    obj_display.Blink_Stop();
     u8_old_position = obj_session->array_players[u8_current_player_number]
                           ->Get_Token_Position(u8_current_token_number);
     u8_new_position = obj_session->array_players[u8_current_player_number]

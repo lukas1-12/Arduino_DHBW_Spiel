@@ -5,7 +5,7 @@ extern volatile ASL::en_state en_current_state;
 extern uint8_t u8_player_quantity;
 extern volatile uint8_t u8_current_player_number;
 extern volatile uint8_t u8_current_token_number;
-
+extern ASL::cla_display obj_display;
 /**
  * \brief interupt routine for the Choose (green) Button.
  */
@@ -129,3 +129,5 @@ ISR(TIMER3_COMPA_vect) {
   // Reset Interupt Flags:
   EIFR |= 0b00110000;
 }
+
+ISR(TIMER4_COMPA_vect) { obj_display.Blink_Update(); }

@@ -26,7 +26,7 @@ typedef enum {
   game_finished                  // 10 1010
 } en_state;
 
-typedef enum { fast = 0, slow } en_blink_mode;
+typedef enum { off = 0, fast, slow } en_blink_mode;
 
 /**
  * \brief display handler
@@ -91,8 +91,10 @@ class cla_display {
 
   uint8_t u8_blink_old_position = 0;
   uint8_t u8_blink_new_position = 0;
+  uint8_t u8_blink_player_number = 0;
   uint8_t u8_blink_counter = 0;
   uint8_t u8_blink_state = 0;
+  en_blink_mode en_current_blink_mode = off;
 
 public:
   /**
@@ -138,17 +140,6 @@ public:
   void Display_Current_Player(uint8_t _u8_current_player_number);
 
   /**
-   * \brief Display a Token
-   *
-   * This method can display a token on the matrix.
-   *
-   * \param _u8_player_number chosen player
-   * \param _u8_token_number chosen token
-   * \param _u8_new_position new position of the token
-   */
-  void Display_Token_Start(uint8_t _u8_player_number, uint8_t _u8_new_position);
-
-  /**
    * \brief Blink a Token
    *
    * This method can blink a token.
@@ -158,8 +149,9 @@ public:
    * \param _u8_old_position old position of the token
    * \param _u8_new_position new position of the token
    */
-  void Blink_Start(en_blink_mode _u8_blink_mode, uint8_t _u8_blink_cycles,
-                   uint8_t _u8_old_position, uint8_t _u8_new_position);
+  void Blink_Start(en_blink_mode _u8_blink_mode, int8_t _u8_blink_cycles,
+                   uint8_t _u8_blink_player_number, uint8_t _u8_old_position,
+                   uint8_t _u8_new_position);
 
   void Blink_Update();
 

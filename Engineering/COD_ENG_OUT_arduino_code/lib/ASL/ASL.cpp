@@ -52,19 +52,18 @@ void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player) {
   obj_matrix->drawLine(14, 2, 14, 12, u16_player_color[_u8_current_player][0]);
 }
 
-void ASL::cla_display::Display_Token_Start(uint8_t _u8_player_nr,
-                                           uint8_t _u8_new_position) {
-  Modify_Position(_u8_new_position, _u8_player_nr, false);
-}
-
-void ASL::cla_display::Blink_Start(en_blink_mode _u8_blink_mode,
-                                   uint8_t _u8_blink_cycles,
+void ASL::cla_display::Blink_Start(en_blink_mode _en_blink_mode,
+                                   int8_t _u8_blink_cycles,
+                                   uint8_t _u8_blink_player_number,
                                    uint8_t _u8_old_position,
                                    uint8_t _u8_new_position) {
   // write transfer parameters to class variables:
   u8_blink_old_position = _u8_old_position;
   u8_blink_new_position = _u8_new_position;
+  u8_blink_player_number = _u8_blink_player_number;
   u8_blink_counter = _u8_blink_cycles;
+  u8_blink_state = 0;
+  en_current_blink_mode = _en_blink_mode;
 
   // Setup Timer 4 to CTC Mode with a prescaler of 256:
   TCCR4A = 0;
@@ -74,10 +73,10 @@ void ASL::cla_display::Blink_Start(en_blink_mode _u8_blink_mode,
   // CS 42:40 = 100 -> Prescaler 256
   TCCR4B |= (1 << CS42);
   // Set Output Compare:
-  if (_u8_blink_mode == 0) {
+  if (en_current_blink_mode == fast) {
     // Fast Blink
     OCR4A = FAST_BLINK;
-  } else {
+  } else if (en_current_blink_mode == slow) {
     // Slow Blink
     OCR4A = SLOW_BLINK;
   }
@@ -85,7 +84,33 @@ void ASL::cla_display::Blink_Start(en_blink_mode _u8_blink_mode,
   TIMSK4 |= 1 << OCIE4A;
 }
 
-void Blink_Update() {}
+void ASL::cla_display::Blink_Update() {
+  // Blinking is done in the interupt routine.
+  if (u8_blink_state == 0) {
+    Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
+    Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
+    u8_blink_state = 1;
+  } else {
+    Modify_Position(u8_blink_old_position, u8_blink_player_number, false);
+    Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
+    u8_blink_state = 0;
+  }
+}
+
+void ASL::cla_display::Blink_Stop() {
+  // make sure its actually blinking
+  if (en_current_blink_mode != off) {
+    // Disable Interupt for Output Compare A:
+    TIMSK4 &= 0b11111110;
+    // Reset Timer 4:
+    TCCR4A = 0;
+    TCCR4B = 0;
+    OCR4A = 0;
+    // Reset display:
+    Modify_Position(u8_blink_old_position, u8_blink_player_number, false);
+    Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
+  }
+}
 
 void ASL::cla_display::Modify_Position(uint8_t _u8_position,
                                        uint8_t _u8_player_number,
@@ -104,6 +129,7 @@ void ASL::cla_display::Modify_Position(uint8_t _u8_position,
   // Draw the new pixel:
   if (_u8_position < 5) {
     // Starting Square
+    _u8_position--;
     obj_matrix->drawPixel(u8_home_positions[_u8_player_number][_u8_position][0],
                           u8_home_positions[_u8_player_number][_u8_position][1],
                           u16_new_color);
