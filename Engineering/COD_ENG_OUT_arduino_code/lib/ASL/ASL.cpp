@@ -29,6 +29,7 @@ void ASL::cla_display::Begin() {
   for (uint8_t i = 0; i < 40; i++) {
     obj_matrix->drawPixel(u8_track_positions[i][1], u8_track_positions[i][2],
                           u16_track_color);
+    obj_matrix->updateDisplay();
   }
 }
 
@@ -45,6 +46,10 @@ void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity) {
       }
     }
   }
+}
+
+void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player) {
+  obj_matrix->drawLine(14, 2, 14, 12, u16_player_color[_u8_current_player][0]);
 }
 
 void ASL::cla_display::Display_Token(uint8_t _u8_player_nr,
@@ -91,50 +96,83 @@ void ASL::cla_display::Move_Token(uint8_t _u8_player_nr, uint8_t _u8_token_nr,
   }
 }
 
-void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value) {
-  obj_matrix->drawPixel(17, 3, 0x00);
-  obj_matrix->drawPixel(16, 2, 0x00);
-  obj_matrix->drawPixel(16, 3, 0x00);
-  obj_matrix->drawPixel(16, 4, 0x00);
-  obj_matrix->drawPixel(18, 2, 0x00);
-  obj_matrix->drawPixel(18, 3, 0x00);
+void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value,
+                                    uint8_t _u8_dice_roll_counter,
+                                    uint8_t _u8_current_player_number) {
+  obj_matrix->drawRect(16, 2, 5, 5,
+                       u16_player_color[_u8_current_player_number][0]);
+  switch (_u8_dice_roll_counter) {
+  case 0:
+    obj_matrix->drawPixel(17, 2, 0x00);
+    obj_matrix->drawPixel(18, 2, 0x00);
+    obj_matrix->drawPixel(19, 2, 0x00);
+    break;
+  case 1:
+    obj_matrix->drawPixel(17, 2,
+                          u16_player_color[_u8_current_player_number][0]);
+    obj_matrix->drawPixel(18, 2, 0x00);
+    obj_matrix->drawPixel(19, 2, 0x00);
+    break;
+  case 2:
+    obj_matrix->drawPixel(17, 2,
+                          u16_player_color[_u8_current_player_number][0]);
+    obj_matrix->drawPixel(18, 2,
+                          u16_player_color[_u8_current_player_number][0]);
+    obj_matrix->drawPixel(19, 2, 0x00);
+    break;
+  case 3:
+    obj_matrix->drawPixel(17, 2,
+                          u16_player_color[_u8_current_player_number][0]);
+    obj_matrix->drawPixel(18, 2,
+                          u16_player_color[_u8_current_player_number][0]);
+    obj_matrix->drawPixel(19, 2,
+                          u16_player_color[_u8_current_player_number][0]);
+    break;
+  }
+
   obj_matrix->drawPixel(18, 4, 0x00);
+  obj_matrix->drawPixel(17, 3, 0x00);
+  obj_matrix->drawPixel(17, 4, 0x00);
+  obj_matrix->drawPixel(17, 5, 0x00);
+  obj_matrix->drawPixel(19, 3, 0x00);
+  obj_matrix->drawPixel(19, 4, 0x00);
+  obj_matrix->drawPixel(19, 5, 0x00);
   switch (_u8_dice_value) {
   case 0:
     // Just leave it turned off.
     break;
   case 1:
-    obj_matrix->drawPixel(17, 3, u16_track_color);
+    obj_matrix->drawPixel(18, 4, u16_track_color);
     break;
   case 2:
-    obj_matrix->drawPixel(16, 2, u16_track_color);
-    obj_matrix->drawPixel(18, 4, u16_track_color);
+    obj_matrix->drawPixel(17, 3, u16_track_color);
+    obj_matrix->drawPixel(19, 5, u16_track_color);
     break;
   case 3:
-    obj_matrix->drawPixel(17, 3, u16_track_color);
-    obj_matrix->drawPixel(16, 2, u16_track_color);
     obj_matrix->drawPixel(18, 4, u16_track_color);
+    obj_matrix->drawPixel(17, 3, u16_track_color);
+    obj_matrix->drawPixel(19, 5, u16_track_color);
     break;
   case 4:
-    obj_matrix->drawPixel(16, 2, u16_track_color);
-    obj_matrix->drawPixel(18, 4, u16_track_color);
-    obj_matrix->drawPixel(16, 4, u16_track_color);
-    obj_matrix->drawPixel(18, 2, u16_track_color);
+    obj_matrix->drawPixel(17, 3, u16_track_color);
+    obj_matrix->drawPixel(19, 5, u16_track_color);
+    obj_matrix->drawPixel(17, 5, u16_track_color);
+    obj_matrix->drawPixel(19, 3, u16_track_color);
     break;
   case 5:
-    obj_matrix->drawPixel(16, 2, u16_track_color);
-    obj_matrix->drawPixel(18, 4, u16_track_color);
-    obj_matrix->drawPixel(16, 4, u16_track_color);
-    obj_matrix->drawPixel(18, 2, u16_track_color);
     obj_matrix->drawPixel(17, 3, u16_track_color);
+    obj_matrix->drawPixel(19, 5, u16_track_color);
+    obj_matrix->drawPixel(17, 5, u16_track_color);
+    obj_matrix->drawPixel(19, 3, u16_track_color);
+    obj_matrix->drawPixel(18, 4, u16_track_color);
     break;
   case 6:
-    obj_matrix->drawPixel(16, 2, u16_track_color);
-    obj_matrix->drawPixel(16, 3, u16_track_color);
-    obj_matrix->drawPixel(16, 4, u16_track_color);
-    obj_matrix->drawPixel(18, 2, u16_track_color);
-    obj_matrix->drawPixel(18, 3, u16_track_color);
-    obj_matrix->drawPixel(18, 4, u16_track_color);
+    obj_matrix->drawPixel(17, 3, u16_track_color);
+    obj_matrix->drawPixel(17, 4, u16_track_color);
+    obj_matrix->drawPixel(17, 5, u16_track_color);
+    obj_matrix->drawPixel(19, 3, u16_track_color);
+    obj_matrix->drawPixel(19, 4, u16_track_color);
+    obj_matrix->drawPixel(19, 5, u16_track_color);
     break;
   }
 }

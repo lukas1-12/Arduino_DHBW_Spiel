@@ -9,17 +9,17 @@ namespace ASL {
  * Defines the states of the finite state machine. Starting state is 1.
  */
 typedef enum {
-  setup_real_players = 1,
-  modify_real_player_number,
-  setup_computer_players,
-  modify_computer_player_number,
-  init_game_logic,
-  wait_for_dice_roll,
-  roll_the_dice,
-  wait_for_player_input,
-  display_token,
-  move_token,
-  game_finished
+  setup_real_players = 0,
+  modify_real_player_number,     // 1  0001 x
+  setup_computer_players,        // 2  0010
+  modify_computer_player_number, // 3  0011 x
+  init_game_logic,               // 4  0100 x
+  wait_for_dice_roll,            // 5  0101
+  roll_the_dice,                 // 6  0110 x
+  wait_for_player_input,         // 7  0111
+  display_token,                 // 8  1000 x
+  move_token,                    // 9  1001 x
+  game_finished                  // 10 1010
 } en_state;
 
 /**
@@ -118,6 +118,15 @@ public:
   void Display_Players(uint8_t _u8_player_quantity);
 
   /**
+   * \brief Display the Current Player
+   *
+   * This method can display the current player on the matrix.
+   *
+   * \param _u8_current_player_number The number of the current player.
+   */
+  void Display_Current_Player(uint8_t _u8_current_player_number);
+
+  /**
    * \brief Display a Token
    *
    * This method can display a token on the matrix.
@@ -147,7 +156,8 @@ public:
    * Display the Dice on the matrix.
    * \param _u8_dice_value The value to be displayed.
    */
-  void Display_Dice(uint8_t _u8_dice_value);
+  void Display_Dice(uint8_t _u8_dice_value, uint8_t _u8_dice_roll_counter,
+                    uint8_t _u8_current_player_number);
 };
 
 /**

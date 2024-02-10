@@ -21,6 +21,8 @@
 #define BLUE_DARK 0x0002
 #define WHITE_BRIGHT 0xffff
 
+#define DEBUG true
+
 volatile ASL::en_state en_current_state = ASL::setup_real_players;
 uint8_t u8_player_quantity = 1;
 uint8_t u8_computer_quantity = 0;
@@ -39,6 +41,10 @@ void setup() {
   obj_display.Begin();
   ASL::Setup_Buttons();
   ASL::Setup_Dice();
+#if DEBUG
+  // Set Port K to Output
+  DDRK = 0xff;
+#endif
 }
 
 void loop() {
@@ -54,6 +60,12 @@ void loop() {
     } else {
       u8_player_quantity = 1;
     }
+#if DEBUG
+    // First 4 Bits are for the current state, two for the player quantity and
+    // two for computer quantity
+    PORTK = en_current_state | ((u8_player_quantity - 1) << 4) |
+            (u8_computer_quantity << 6);
+#endif
     en_current_state = ASL::setup_real_players;
     break;
   case ASL::setup_computer_players:
@@ -67,11 +79,24 @@ void loop() {
       u8_player_quantity = u8_player_quantity - u8_computer_quantity;
       u8_computer_quantity = 0;
     }
+#if DEBUG
+    // First 4 Bits are for the current state, two for the player quantity and
+    // two for computer quantity
+    PORTK = en_current_state | ((u8_player_quantity - 1) << 4) |
+            (u8_computer_quantity << 6);
+#endif
     en_current_state = ASL::setup_computer_players;
     break;
   case ASL::init_game_logic:
     obj_session =
         new LOGIC::cla_session(u8_player_quantity, u8_computer_quantity);
+#if DEBUG
+    // First 4 Bits are for the current state, two for the player quantity and
+    // two for computer quantity
+    PORTK = en_current_state | ((u8_player_quantity - 1) << 4) |
+            (u8_computer_quantity << 6);
+#endif
+    obj_display.Display_Current_Player(u8_current_player_number);
     en_current_state = ASL::wait_for_dice_roll;
     break;
   case ASL::wait_for_dice_roll:
@@ -79,8 +104,9 @@ void loop() {
     break;
   case ASL::roll_the_dice:
     u8_dice_value = ASL::Roll_Dice();
-    obj_display.Display_Dice(u8_dice_value);
     u8_dice_roll_counter++;
+    obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
+                             u8_current_player_number);
     // You can roll the dice up to 3 times, when all your tokens are still in
     // the Starting Square and you did not get a 6.
     if (obj_session->array_players[u8_current_player_number]
@@ -92,17 +118,25 @@ void loop() {
                        ->Get_Player_Status() == LOGIC::Start &&
                u8_dice_roll_counter >= 3 && u8_dice_value != 6) {
       // If you did not get a 6 after 3 tries, the next player gets a chance.
-      if (u8_current_player_number < u8_player_quantity) {
+      if (u8_current_player_number < (u8_player_quantity - 1)) {
         u8_current_player_number++;
       } else {
         u8_current_player_number = 0;
       }
+      obj_display.Display_Current_Player(u8_current_player_number);
+      // Reset the dice roll counter
+      u8_dice_roll_counter = 0;
+      // wait for next player to roll dice
       en_current_state = ASL::wait_for_dice_roll;
     } else {
       // If you got a 6, your token is moved out of the Starting Square
       en_current_state = ASL::display_token;
       u8_dice_roll_counter = 0;
     }
+#if DEBUG
+    PORTK = en_current_state | (u8_current_player_number << 4) |
+            (u8_current_token_number << 6);
+#endif
     break;
   case ASL::wait_for_player_input:
     // NOP
@@ -114,6 +148,10 @@ void loop() {
                           ->Calculate_Possible_Position(u8_current_token_number,
                                                         u8_dice_value);
     obj_display.Display_Token(u8_current_player_number, u8_new_position);
+#if DEBUG
+    PORTK = en_current_state | (u8_current_player_number << 4) |
+            (u8_current_token_number << 6);
+#endif
     en_current_state = ASL::wait_for_player_input;
     break;
   case ASL::move_token:
@@ -124,11 +162,16 @@ void loop() {
                                                         u8_dice_value);
     obj_display.Move_Token(u8_current_player_number, u8_current_token_number,
                            u8_old_position, u8_new_position);
-    if (u8_current_player_number < u8_player_quantity) {
+    if (u8_current_player_number < (u8_player_quantity - 1)) {
       u8_current_player_number++;
     } else {
       u8_current_player_number = 0;
     }
+    obj_display.Display_Current_Player(u8_current_player_number);
+#if DEBUG
+    PORTK = en_current_state | (u8_current_player_number << 4) |
+            (u8_current_token_number << 6);
+#endif
     en_current_state = ASL::wait_for_dice_roll;
     break;
   case ASL::game_finished:
