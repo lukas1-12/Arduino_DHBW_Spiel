@@ -53,7 +53,8 @@
     s6 : Roll the Dice 
         state if2 <<choice>>
         s6 --> if2 : Dice was rolled.
-        if2 --> s5 : not a 6 and all players in starting square and not completed 3 turns to roll the dice.
+        if2 --> s5 : not a 6 and all players in starting square\n and not completed 3 turns to roll the dice.
+        if2 --> s9a: not a 6, all players in starting square\n and completed 3 turns to roll the dice.
         if2 --> s8: none of the other.
         # Players ------------------
     s7 : Wait for Player Input
@@ -64,8 +65,10 @@
     s9 : move token
         state if1 <<choice>>
         s9 --> if1 : Player finished move.
-        if1 --> s5 : not all tokens in finishing square, next player.
+        if1 --> s9a : not all tokens in finishing square,\n next player.
         if1 --> s10 : all tokens in finishing square.
+    s9a: Next Player
+        s9a --> s5: calculation complete
     s10: Game finished
         s10 --> s1 : Button pressed.
 ```
