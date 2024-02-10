@@ -1,6 +1,10 @@
 #include <RGBmatrixPanel.h> // Hardware-specific library#
 #include <inttypes.h>
 
+// See Calculation Excel for more information on the timing.
+#define FAST_BLINK 15625
+#define SLOW_BLINK 31250
+
 namespace ASL {
 
 /**
@@ -21,6 +25,8 @@ typedef enum {
   move_token,                    // 9  1001 x
   game_finished                  // 10 1010
 } en_state;
+
+typedef enum { fast = 0, slow } en_blink_mode;
 
 /**
  * \brief display handler
@@ -83,6 +89,11 @@ class cla_display {
    */
   uint16_t u16_track_color = 0xffff;
 
+  uint8_t u8_blink_old_position = 0;
+  uint8_t u8_blink_new_position = 0;
+  uint8_t u8_blink_counter = 0;
+  uint8_t u8_blink_state = 0;
+
 public:
   /**
    * \brief Constructor of the class.
@@ -135,7 +146,27 @@ public:
    * \param _u8_token_number chosen token
    * \param _u8_new_position new position of the token
    */
-  void Display_Token(uint8_t _u8_player_number, uint8_t _u8_new_position);
+  void Display_Token_Start(uint8_t _u8_player_number, uint8_t _u8_new_position);
+
+  /**
+   * \brief Blink a Token
+   *
+   * This method can blink a token.
+   *
+   * \param _u8_blink_mode The mode of the blinking
+   * \param _u8_blink_cycles The number of cycles to blink
+   * \param _u8_old_position old position of the token
+   * \param _u8_new_position new position of the token
+   */
+  void Blink_Start(en_blink_mode _u8_blink_mode, uint8_t _u8_blink_cycles,
+                   uint8_t _u8_old_position, uint8_t _u8_new_position);
+
+  void Blink_Update();
+
+  void Blink_Stop();
+
+  void Modify_Position(uint8_t _u8_position, uint8_t _u8_player_number,
+                       bool bool_remove);
 
   /**
    * \brief Move a Token

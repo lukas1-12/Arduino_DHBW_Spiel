@@ -52,48 +52,76 @@ void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player) {
   obj_matrix->drawLine(14, 2, 14, 12, u16_player_color[_u8_current_player][0]);
 }
 
-void ASL::cla_display::Display_Token(uint8_t _u8_player_nr,
-                                     uint8_t _u8_new_position) {
-  if (_u8_new_position < 5) {
-  } else if (_u8_new_position >= 5 && _u8_new_position <= 40) {
-    _u8_new_position -= 5;
-    obj_matrix->drawPixel(u8_track_positions[_u8_new_position][1],
-                          u8_track_positions[_u8_new_position][2],
-                          u16_player_color[_u8_player_nr][1]);
+void ASL::cla_display::Display_Token_Start(uint8_t _u8_player_nr,
+                                           uint8_t _u8_new_position) {
+  Modify_Position(_u8_new_position, _u8_player_nr, false);
+}
+
+void ASL::cla_display::Blink_Start(en_blink_mode _u8_blink_mode,
+                                   uint8_t _u8_blink_cycles,
+                                   uint8_t _u8_old_position,
+                                   uint8_t _u8_new_position) {
+  // write transfer parameters to class variables:
+  u8_blink_old_position = _u8_old_position;
+  u8_blink_new_position = _u8_new_position;
+  u8_blink_counter = _u8_blink_cycles;
+
+  // Setup Timer 4 to CTC Mode with a prescaler of 256:
+  TCCR4A = 0;
+  // WGM 42:40 = 010 -> CTC Mode
+  TCCR0A |= (1 << WGM42);
+  TCCR4B = 0;
+  // CS 42:40 = 100 -> Prescaler 256
+  TCCR4B |= (1 << CS42);
+  // Set Output Compare:
+  if (_u8_blink_mode == 0) {
+    // Fast Blink
+    OCR4A = FAST_BLINK;
   } else {
+    // Slow Blink
+    OCR4A = SLOW_BLINK;
+  }
+  // Enable Interupt for Output Compare A:
+  TIMSK4 |= 1 << OCIE4A;
+}
+
+void Blink_Update() {}
+
+void ASL::cla_display::Modify_Position(uint8_t _u8_position,
+                                       uint8_t _u8_player_number,
+                                       bool bool_remove) {
+  uint16_t u16_new_color = 0x00;
+  // Determine the new color of the pixel:
+  if (bool_remove) {
+    if (_u8_position < 5 | _u8_position > 45) {
+      u16_new_color = u16_player_color[_u8_player_number][1];
+    } else {
+      u16_new_color = u16_track_color;
+    }
+  } else {
+    u16_new_color = u16_player_color[_u8_player_number][0];
+  }
+  // Draw the new pixel:
+  if (_u8_position < 5) {
+    // Starting Square
+    obj_matrix->drawPixel(u8_home_positions[_u8_player_number][_u8_position][0],
+                          u8_home_positions[_u8_player_number][_u8_position][1],
+                          u16_new_color);
+  } else if (_u8_position >= 5 && _u8_position <= 45) {
+    // Track
+    _u8_position -= 5;
+    obj_matrix->drawPixel(u8_track_positions[_u8_position][1],
+                          u8_track_positions[_u8_position][2], u16_new_color);
+  } else {
+    // Finish Square
   }
 }
 
 void ASL::cla_display::Move_Token(uint8_t _u8_player_nr, uint8_t _u8_token_nr,
                                   uint8_t _u8_old_position,
                                   uint8_t _u8_new_position) {
-  // remove old position from display
-  if (_u8_old_position < 5) {
-    // remove from starting square
-    obj_matrix->drawPixel(u8_home_positions[_u8_player_nr][_u8_token_nr][0],
-                          u8_home_positions[_u8_player_nr][_u8_token_nr][1],
-                          0x00);
-  } else if (_u8_old_position >= 5 && _u8_old_position <= 40) {
-    _u8_old_position -= 5;
-    obj_matrix->drawPixel(u8_track_positions[_u8_old_position][1],
-                          u8_track_positions[_u8_old_position][2], 0x00);
-  } else {
-    // remove from finish square
-  }
-  // add new position to display
-  if (_u8_new_position < 5) {
-    // add to starting square
-    obj_matrix->drawPixel(u8_home_positions[_u8_player_nr][_u8_token_nr][0],
-                          u8_home_positions[_u8_player_nr][_u8_token_nr][1],
-                          u16_player_color[_u8_player_nr][0]);
-  } else if (_u8_new_position >= 5 && _u8_new_position <= 40) {
-    _u8_new_position -= 5;
-    obj_matrix->drawPixel(u8_track_positions[_u8_new_position][1],
-                          u8_track_positions[_u8_new_position][2],
-                          u16_player_color[_u8_player_nr][0]);
-  } else {
-    // add to finish square
-  }
+  Modify_Position(_u8_old_position, _u8_player_nr, true);
+  Modify_Position(_u8_new_position, _u8_player_nr, false);
 }
 
 void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value,
@@ -185,8 +213,8 @@ void ASL::Setup_Buttons() {
   // Set PORTE pin 4 and 5 to non-pull-up.
   PORTE &= 0b11001111;
   PORTE |= 0b00110000;
-  //  We want the interupt to occur on falling edge, so ISCn1 = 1 and ISCn0 = 0
-  //  last 4 bits for INT5 and INT4.
+  //  We want the interupt to occur on falling edge, so ISCn1 = 1 and ISCn0 =
+  //  0 last 4 bits for INT5 and INT4.
   EICRB &= 0b11110000;
   EICRB |= 0b00001010;
   // Enable INT4 and INT5:

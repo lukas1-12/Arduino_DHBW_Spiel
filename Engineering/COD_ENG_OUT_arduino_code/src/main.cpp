@@ -147,7 +147,7 @@ void loop() {
     u8_new_position = obj_session->array_players[u8_current_player_number]
                           ->Calculate_Possible_Position(u8_current_token_number,
                                                         u8_dice_value);
-    obj_display.Display_Token(u8_current_player_number, u8_new_position);
+    obj_display.Display_Token_Start(u8_current_player_number, u8_new_position);
 #if DEBUG
     PORTK = en_current_state | (u8_current_player_number << 4) |
             (u8_current_token_number << 6);
@@ -160,6 +160,8 @@ void loop() {
     u8_new_position = obj_session->array_players[u8_current_player_number]
                           ->Calculate_Possible_Position(u8_current_token_number,
                                                         u8_dice_value);
+    obj_session->array_players[u8_current_player_number]->Move_Token(
+        u8_current_token_number, u8_dice_value);
     obj_display.Move_Token(u8_current_player_number, u8_current_token_number,
                            u8_old_position, u8_new_position);
     if (u8_current_player_number < (u8_player_quantity - 1)) {
