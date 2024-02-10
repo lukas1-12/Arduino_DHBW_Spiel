@@ -118,19 +118,13 @@ void loop() {
                        ->Get_Player_Status() == LOGIC::Start &&
                u8_dice_roll_counter >= 3 && u8_dice_value != 6) {
       // If you did not get a 6 after 3 tries, the next player gets a chance.
-      if (u8_current_player_number < (u8_player_quantity - 1)) {
-        u8_current_player_number++;
-      } else {
-        u8_current_player_number = 0;
-      }
-      obj_display.Display_Current_Player(u8_current_player_number);
       // Reset the dice roll counter
       u8_dice_roll_counter = 0;
       // wait for next player to roll dice
-      en_current_state = ASL::wait_for_dice_roll;
+      en_current_state = ASL::next_player;
     } else {
       // If you got a 6, your token is moved out of the Starting Square
-      en_current_state = ASL::display_token;
+      en_current_state = ASL::validate_token;
       u8_dice_roll_counter = 0;
     }
 #if DEBUG
@@ -142,6 +136,7 @@ void loop() {
     // NOP
     break;
   case ASL::display_token:
+
     obj_display.Blink_Stop();
     u8_old_position = obj_session->array_players[u8_current_player_number]
                           ->Get_Token_Position(u8_current_token_number);
@@ -156,6 +151,35 @@ void loop() {
 #endif
     en_current_state = ASL::wait_for_player_input;
     break;
+  case ASL::validate_token: {
+#if DEBUG
+    PORTK = en_current_state | (u8_current_player_number << 4) |
+            (u8_current_token_number << 6);
+#endif
+    en_current_state = ASL::wait_for_player_input;
+    // variable used to determine if any token can be moved
+    uint8_t u8_token_counter = 0;
+    while (obj_session->array_players[u8_current_player_number]
+               ->Calculate_Possible_Position(u8_current_token_number,
+                                             u8_dice_value) ==
+           obj_session->array_players[u8_current_player_number]
+               ->Get_Token_Position(u8_current_token_number)) {
+      // If there is no possible move, next token is chosen
+      if (u8_current_token_number < 4) {
+        u8_current_token_number++;
+      } else {
+        u8_current_token_number = 0;
+      }
+      u8_token_counter++;
+      if (u8_token_counter > 4) {
+        // If no token can be moved, next player is chosen
+        en_current_state = ASL::next_player;
+        break;
+      }
+    }
+  }
+    en_current_state = ASL::display_token;
+    break;
   case ASL::move_token:
     obj_display.Blink_Stop();
     u8_old_position = obj_session->array_players[u8_current_player_number]
@@ -167,6 +191,9 @@ void loop() {
         u8_current_token_number, u8_dice_value);
     obj_display.Move_Token(u8_current_player_number, u8_current_token_number,
                            u8_old_position, u8_new_position);
+    en_current_state = ASL::next_player;
+    break;
+  case ASL::next_player:
     if (u8_current_player_number < (u8_player_quantity - 1)) {
       u8_current_player_number++;
     } else {

@@ -87,12 +87,12 @@ void ASL::cla_display::Blink_Start(en_blink_mode _en_blink_mode,
 void ASL::cla_display::Blink_Update() {
   // Blinking is done in the interupt routine.
   if (u8_blink_state == 0) {
-    Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
-    Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
-    u8_blink_state = 1;
-  } else {
     Modify_Position(u8_blink_old_position, u8_blink_player_number, false);
     Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
+    u8_blink_state = 1;
+  } else {
+    Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
+    Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
     u8_blink_state = 0;
   }
 }
@@ -107,17 +107,18 @@ void ASL::cla_display::Blink_Stop() {
     TCCR4B = 0;
     OCR4A = 0;
     // Reset display:
-    Modify_Position(u8_blink_old_position, u8_blink_player_number, false);
-    Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
+    Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
+    Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
   }
+  en_current_blink_mode = off;
 }
 
 void ASL::cla_display::Modify_Position(uint8_t _u8_position,
                                        uint8_t _u8_player_number,
-                                       bool bool_remove) {
+                                       bool bool_turn_on) {
   uint16_t u16_new_color = 0x00;
   // Determine the new color of the pixel:
-  if (bool_remove) {
+  if (!bool_turn_on) {
     if (_u8_position < 5 | _u8_position > 45) {
       u16_new_color = u16_player_color[_u8_player_number][1];
     } else {
@@ -146,8 +147,8 @@ void ASL::cla_display::Modify_Position(uint8_t _u8_position,
 void ASL::cla_display::Move_Token(uint8_t _u8_player_nr, uint8_t _u8_token_nr,
                                   uint8_t _u8_old_position,
                                   uint8_t _u8_new_position) {
-  Modify_Position(_u8_old_position, _u8_player_nr, true);
-  Modify_Position(_u8_new_position, _u8_player_nr, false);
+  Modify_Position(_u8_old_position, _u8_player_nr, false);
+  Modify_Position(_u8_new_position, _u8_player_nr, true);
 }
 
 void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value,

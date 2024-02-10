@@ -1,11 +1,14 @@
 #include <ASL.hpp>
 #include <Arduino.h>
+#include <logic.hpp>
 
 extern volatile ASL::en_state en_current_state;
 extern uint8_t u8_player_quantity;
 extern volatile uint8_t u8_current_player_number;
 extern volatile uint8_t u8_current_token_number;
+extern uint8_t u8_dice_value;
 extern ASL::cla_display obj_display;
+extern LOGIC::cla_session *obj_session;
 /**
  * \brief interupt routine for the Choose (green) Button.
  */
@@ -37,10 +40,12 @@ ISR(INT4_vect) {
     } else {
       u8_current_token_number = 1;
     }
-
-    en_current_state = ASL::display_token;
+    en_current_state = ASL::validate_token;
     break;
   case ASL::display_token:
+    // NOP
+    break;
+  case ASL::validate_token:
     // NOP
     break;
   case ASL::move_token:

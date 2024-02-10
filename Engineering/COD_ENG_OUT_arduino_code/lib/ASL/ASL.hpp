@@ -22,8 +22,10 @@ typedef enum {
   roll_the_dice,                 // 6  0110 x
   wait_for_player_input,         // 7  0111
   display_token,                 // 8  1000 x
-  move_token,                    // 9  1001 x
-  game_finished                  // 10 1010
+  validate_token,                // 9  1001
+  move_token,                    // 10 1010 x
+  next_player,                   // 11 1011
+  game_finished                  // 12 1100
 } en_state;
 
 typedef enum { off = 0, fast, slow } en_blink_mode;
