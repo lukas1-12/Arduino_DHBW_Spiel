@@ -55,13 +55,16 @@
         s6 --> if2 : Dice was rolled.
         if2 --> s5 : not a 6 and all players in starting square\n and not completed 3 turns to roll the dice.
         if2 --> s9a: not a 6, all players in starting square\n and completed 3 turns to roll the dice.
-        if2 --> s8: none of the other.
+        if2 --> s8a: none of the other.
         # Players ------------------
     s7 : Wait for Player Input
-        s7 --> s8 : Green Button (next token)
+        s7 --> s8a : Green Button (next token)
     s8 : Display token
         s8 --> s7 : Calculation Complete
         s7 --> s9 : Red Button
+    s8a: Validate token
+        s8a --> s8 : Valid Token found.
+        s8a --> s9a: No Valid Token found.
     s9 : move token
         state if1 <<choice>>
         s9 --> if1 : Player finished move.

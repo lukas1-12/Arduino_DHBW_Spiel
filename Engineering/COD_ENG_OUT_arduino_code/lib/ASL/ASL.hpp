@@ -76,6 +76,17 @@ class cla_display {
   };
 
   /**
+   * \brief Stores the players individual finish Positions.
+   * Order: player_nr, token_nr, x/y
+   */
+  uint8_t u8_finish_positions[4][4][2] = {
+      {{3, 7}, {4, 7}, {5, 7}, {6, 7}},
+      {{7, 3}, {7, 4}, {7, 5}, {7, 6}},
+      {{11, 7}, {10, 7}, {9, 7}, {8, 7}},
+      {{7, 11}, {7, 10}, {7, 9}, {7, 8}},
+  };
+
+  /**
    * \brief Stores the Players Colors.
    * Order: player_nr, bright/dark
    */

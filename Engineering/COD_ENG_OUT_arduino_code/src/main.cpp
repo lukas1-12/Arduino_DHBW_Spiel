@@ -32,6 +32,9 @@ uint8_t u8_dice_value = 0;
 uint8_t u8_dice_roll_counter = 0;
 LOGIC::cla_session *obj_session;
 ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
+uint8_t u8_occupying_player;
+uint8_t u8_occupying_token;
+bool bool_occupied_flag = false;
 
 void setup() {
   obj_display.Set_Colors(0, RED_BRIGHT, RED_DARK);
@@ -48,12 +51,12 @@ void setup() {
 }
 
 void loop() {
-  uint8_t u8_old_position;
-  uint8_t u8_new_position;
   switch (en_current_state) {
+  // -----------------------------------------------------------------------------
   case ASL::setup_real_players:
     obj_display.Display_Players(u8_player_quantity);
     break;
+  // -----------------------------------------------------------------------------
   case ASL::modify_real_player_number:
     if (u8_player_quantity < 4) {
       u8_player_quantity++;
@@ -68,9 +71,11 @@ void loop() {
 #endif
     en_current_state = ASL::setup_real_players;
     break;
+  // -----------------------------------------------------------------------------
   case ASL::setup_computer_players:
     obj_display.Display_Players(u8_player_quantity);
     break;
+  // -----------------------------------------------------------------------------
   case ASL::modify_computer_player_number:
     if (u8_player_quantity < 4) {
       u8_player_quantity++;
@@ -87,6 +92,7 @@ void loop() {
 #endif
     en_current_state = ASL::setup_computer_players;
     break;
+  // -----------------------------------------------------------------------------
   case ASL::init_game_logic:
     obj_session =
         new LOGIC::cla_session(u8_player_quantity, u8_computer_quantity);
@@ -99,9 +105,11 @@ void loop() {
     obj_display.Display_Current_Player(u8_current_player_number);
     en_current_state = ASL::wait_for_dice_roll;
     break;
+  // -----------------------------------------------------------------------------
   case ASL::wait_for_dice_roll:
     // NOP
     break;
+  // -----------------------------------------------------------------------------
   case ASL::roll_the_dice:
     u8_dice_value = ASL::Roll_Dice();
     u8_dice_roll_counter++;
@@ -132,25 +140,37 @@ void loop() {
             (u8_current_token_number << 6);
 #endif
     break;
+  // -----------------------------------------------------------------------------
   case ASL::wait_for_player_input:
     // NOP
     break;
-  case ASL::display_token:
-
+  // -----------------------------------------------------------------------------
+  case ASL::display_token: {
+    // First, stop previous blinking, if it was blinking.
     obj_display.Blink_Stop();
+    // temporary variables to store the old and new position of the token
+    uint8_t u8_old_position;
+    uint8_t u8_new_position;
+    // Get the old and new position of the token.
     u8_old_position = obj_session->array_players[u8_current_player_number]
                           ->Get_Token_Position(u8_current_token_number);
     u8_new_position = obj_session->array_players[u8_current_player_number]
                           ->Calculate_Possible_Position(u8_current_token_number,
                                                         u8_dice_value);
+    // Start blinking the token
     obj_display.Blink_Start(ASL::slow, -1, u8_current_player_number,
                             u8_old_position, u8_new_position);
+    // check if the new position is occupied
+
+    bool_occupied_flag = obj_session->Is_Occupied(
+        u8_occupying_player, u8_occupying_token, u8_new_position);
 #if DEBUG
     PORTK = en_current_state | (u8_current_player_number << 4) |
             (u8_current_token_number << 6);
 #endif
     en_current_state = ASL::wait_for_player_input;
-    break;
+  } break;
+  // -----------------------------------------------------------------------------
   case ASL::validate_token: {
 #if DEBUG
     PORTK = en_current_state | (u8_current_player_number << 4) |
@@ -180,7 +200,11 @@ void loop() {
   }
     en_current_state = ASL::display_token;
     break;
-  case ASL::move_token:
+  // -----------------------------------------------------------------------------
+  case ASL::move_token: {
+    // temporary variables to store the old and new position of the token
+    uint8_t u8_old_position;
+    uint8_t u8_new_position;
     obj_display.Blink_Stop();
     u8_old_position = obj_session->array_players[u8_current_player_number]
                           ->Get_Token_Position(u8_current_token_number);
@@ -189,10 +213,18 @@ void loop() {
                                                         u8_dice_value);
     obj_session->array_players[u8_current_player_number]->Move_Token(
         u8_current_token_number, u8_dice_value);
+    if (bool_occupied_flag) {
+      obj_display.Move_Token(
+          u8_occupying_player, u8_occupying_token, u8_new_position,
+          obj_session->array_players[u8_occupying_player]->Get_Token_Position(
+              u8_occupying_token));
+      bool_occupied_flag = false;
+    }
     obj_display.Move_Token(u8_current_player_number, u8_current_token_number,
                            u8_old_position, u8_new_position);
     en_current_state = ASL::next_player;
-    break;
+  } break;
+  // -----------------------------------------------------------------------------
   case ASL::next_player:
     if (u8_current_player_number < (u8_player_quantity - 1)) {
       u8_current_player_number++;
@@ -206,6 +238,7 @@ void loop() {
 #endif
     en_current_state = ASL::wait_for_dice_roll;
     break;
+  // -----------------------------------------------------------------------------
   case ASL::game_finished:
 
     break;
