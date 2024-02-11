@@ -1,10 +1,6 @@
+#include <../../include/defines.hpp>
 #include <RGBmatrixPanel.h> // Hardware-specific library#
 #include <inttypes.h>
-
-// See Calculation Excel for more information on the timing.
-#define FAST_BLINK 15625
-#define SLOW_BLINK 31250
-
 namespace ASL {
 
 /**

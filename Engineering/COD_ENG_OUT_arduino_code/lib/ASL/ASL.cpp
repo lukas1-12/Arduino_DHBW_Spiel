@@ -34,6 +34,7 @@ void ASL::cla_display::Begin() {
 }
 
 void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity) {
+  // Home Positions:
   for (uint8_t i = 0; i < 4; i++) {
     for (uint8_t j = 0; j < 4; j++) {
       if (_u8_player_quantity > i) {
@@ -43,6 +44,19 @@ void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity) {
       } else {
         obj_matrix->drawPixel(u8_home_positions[i][j][0],
                               u8_home_positions[i][j][1], 0x00);
+      }
+    }
+  }
+  // Finish Positions:
+  for (uint8_t i = 0; i < 4; i++) {
+    for (uint8_t j = 0; j < 4; j++) {
+      if (_u8_player_quantity > i) {
+        obj_matrix->drawPixel(u8_finish_positions[i][j][0],
+                              u8_finish_positions[i][j][1],
+                              u16_player_color[i][1]);
+      } else {
+        obj_matrix->drawPixel(u8_finish_positions[i][j][0],
+                              u8_finish_positions[i][j][1], 0x00);
       }
     }
   }
@@ -119,7 +133,7 @@ void ASL::cla_display::Modify_Position(uint8_t _u8_position,
   uint16_t u16_new_color = 0x00;
   // Determine the new color of the pixel:
   if (!bool_turn_on) {
-    if (_u8_position < 5 | _u8_position > 45) {
+    if ((_u8_position < 5) | (_u8_position >= 45)) {
       u16_new_color = u16_player_color[_u8_player_number][1];
     } else {
       u16_new_color = u16_track_color;
@@ -134,13 +148,17 @@ void ASL::cla_display::Modify_Position(uint8_t _u8_position,
     obj_matrix->drawPixel(u8_home_positions[_u8_player_number][_u8_position][0],
                           u8_home_positions[_u8_player_number][_u8_position][1],
                           u16_new_color);
-  } else if (_u8_position >= 5 && _u8_position <= 45) {
+  } else if ((_u8_position >= 5) && (_u8_position < 45)) {
     // Track
     _u8_position -= 5;
     obj_matrix->drawPixel(u8_track_positions[_u8_position][1],
                           u8_track_positions[_u8_position][2], u16_new_color);
   } else {
     // Finish Square
+    _u8_position -= 45;
+    obj_matrix->drawPixel(
+        u8_finish_positions[_u8_player_number][_u8_position][0],
+        u8_finish_positions[_u8_player_number][_u8_position][1], u16_new_color);
   }
 }
 

@@ -1,27 +1,7 @@
 #include <ASL.hpp>
 #include <Arduino.h>
+#include <defines.hpp>
 #include <logic.hpp>
-
-// Define all the Ports here:
-#define CLK 11 // MUST be on PORTB! (Use pin 11 on Mega)
-#define LAT A3
-#define OE 12
-#define A A0
-#define B A1
-#define C A2
-
-// define all the colors
-#define RED_BRIGHT 0xf800
-#define RED_DARK 0x1000
-#define GREEN_BRIGHT 0x7e0
-#define GREEN_DARK 0xa0
-#define YELLOW_BRIGHT 0xffe0
-#define YELLOW_DARK 0x10a0
-#define BLUE_BRIGHT 0x001f
-#define BLUE_DARK 0x0002
-#define WHITE_BRIGHT 0xffff
-
-#define DEBUG true
 
 volatile ASL::en_state en_current_state = ASL::setup_real_players;
 uint8_t u8_player_quantity = 1;
@@ -165,8 +145,7 @@ void loop() {
     bool_occupied_flag = obj_session->Is_Occupied(
         u8_occupying_player, u8_occupying_token, u8_new_position);
 #if DEBUG
-    PORTK = en_current_state | (u8_current_player_number << 4) |
-            (u8_current_token_number << 6);
+    PORTK = u8_new_position;
 #endif
     en_current_state = ASL::wait_for_player_input;
   } break;
@@ -179,6 +158,9 @@ void loop() {
     en_current_state = ASL::wait_for_player_input;
     // variable used to determine if any token can be moved
     uint8_t u8_token_counter = 0;
+    // Set next state to display token, might be changed later in the while
+    // loop.
+    en_current_state = ASL::display_token;
     while (obj_session->array_players[u8_current_player_number]
                ->Calculate_Possible_Position(u8_current_token_number,
                                              u8_dice_value) ==
@@ -197,9 +179,7 @@ void loop() {
         break;
       }
     }
-  }
-    en_current_state = ASL::display_token;
-    break;
+  } break;
   // -----------------------------------------------------------------------------
   case ASL::move_token: {
     // temporary variables to store the old and new position of the token
