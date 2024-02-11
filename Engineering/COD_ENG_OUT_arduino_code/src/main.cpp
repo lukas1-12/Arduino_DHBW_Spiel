@@ -9,7 +9,7 @@ uint8_t u8_computer_quantity = 0;
 volatile uint8_t u8_current_player_number = 0;
 volatile uint8_t u8_current_token_number = 0;
 uint8_t u8_dice_value = 0;
-uint8_t u8_dice_roll_counter = 0;
+uint8_t u8_dice_roll_counter = 3;
 LOGIC::cla_session *obj_session;
 ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
 uint8_t u8_occupying_player;
@@ -92,28 +92,29 @@ void loop() {
   // -----------------------------------------------------------------------------
   case ASL::roll_the_dice:
     u8_dice_value = ASL::Roll_Dice();
-    u8_dice_roll_counter++;
+    u8_dice_roll_counter--;
     obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
                              u8_current_player_number);
     // You can roll the dice up to 3 times, when all your tokens are still in
     // the Starting Square and you did not get a 6.
-    if (obj_session->array_players[u8_current_player_number]
-                ->Get_Player_Status() == LOGIC::Start &&
-        u8_dice_roll_counter < 3 && u8_dice_value != 6) {
+    if ((obj_session->array_players[u8_current_player_number]
+             ->Get_Player_Status() == LOGIC::Start) &&
+        (u8_dice_roll_counter >= 1) && (u8_dice_value != 6)) {
       // one more chance for the same player
       en_current_state = ASL::wait_for_dice_roll;
-    } else if (obj_session->array_players[u8_current_player_number]
-                       ->Get_Player_Status() == LOGIC::Start &&
-               u8_dice_roll_counter >= 3 && u8_dice_value != 6) {
-      // If you did not get a 6 after 3 tries, the next player gets a chance.
-      // Reset the dice roll counter
-      u8_dice_roll_counter = 0;
+    } else if ((obj_session->array_players[u8_current_player_number]
+                    ->Get_Player_Status() == LOGIC::Start) &&
+               u8_dice_roll_counter <= 0 && u8_dice_value != 6) {
+      // If you did not get a 6 and dice roll counter is 0,
       // wait for next player to roll dice
       en_current_state = ASL::next_player;
-    } else {
+    } else if (u8_dice_value == 6) {
       // If you got a 6, your token is moved out of the Starting Square
       en_current_state = ASL::validate_token;
-      u8_dice_roll_counter = 0;
+      u8_dice_roll_counter = 1;
+    } else {
+      // If you got a number between 1 and 5, you can move a token
+      en_current_state = ASL::validate_token;
     }
 #if DEBUG
     PORTK = en_current_state | (u8_current_player_number << 4) |
@@ -204,7 +205,11 @@ void loop() {
     }
     obj_display.Move_Token(u8_current_player_number, u8_current_token_number,
                            u8_old_position, u8_new_position);
-    en_current_state = ASL::next_player;
+    if (u8_dice_roll_counter >= 1) {
+      en_current_state = ASL::wait_for_dice_roll;
+    } else {
+      en_current_state = ASL::next_player;
+    }
   } break;
   // -----------------------------------------------------------------------------
   case ASL::next_player:
@@ -218,6 +223,15 @@ void loop() {
     PORTK = en_current_state | (u8_current_player_number << 4) |
             (u8_current_token_number << 6);
 #endif
+    // Set the dice roll counter for the next player:
+    if (obj_session->array_players[u8_current_player_number]
+            ->Get_Player_Status() == LOGIC::Start) {
+      // roll the dice 3 times
+      u8_dice_roll_counter = 3;
+    } else {
+      // roll the dice 1 time (unless you get a 6)
+      u8_dice_roll_counter = 1;
+    }
     en_current_state = ASL::wait_for_dice_roll;
     break;
   // -----------------------------------------------------------------------------

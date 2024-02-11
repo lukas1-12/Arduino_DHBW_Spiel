@@ -68,6 +68,7 @@
     s9 : move token
         state if1 <<choice>>
         s9 --> if1 : Player finished move.
+        if1 --> s5 : Player gets one more turn\n (Dice value was 6.)
         if1 --> s9a : not all tokens in finishing square,\n next player.
         if1 --> s10 : all tokens in finishing square.
     s9a: Next Player
