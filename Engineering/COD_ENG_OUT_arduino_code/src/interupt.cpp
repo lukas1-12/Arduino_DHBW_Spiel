@@ -35,10 +35,10 @@ ISR(INT4_vect) {
     // NOP
     break;
   case ASL::wait_for_player_input:
-    if (u8_current_token_number < 4) {
+    if (u8_current_token_number < 3) {
       u8_current_token_number++;
     } else {
-      u8_current_token_number = 1;
+      u8_current_token_number = 0;
     }
     en_current_state = ASL::validate_token;
     break;

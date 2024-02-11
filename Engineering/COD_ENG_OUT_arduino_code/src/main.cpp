@@ -118,6 +118,7 @@ void loop() {
 #if DEBUG
     PORTK = en_current_state | (u8_current_player_number << 4) |
             (u8_current_token_number << 6);
+    ;
 #endif
     break;
   // -----------------------------------------------------------------------------
@@ -145,7 +146,8 @@ void loop() {
     bool_occupied_flag = obj_session->Is_Occupied(
         u8_occupying_player, u8_occupying_token, u8_new_position);
 #if DEBUG
-    PORTK = u8_new_position;
+    PORTK = en_current_state | (u8_current_player_number << 4) |
+            (u8_current_token_number << 6);
 #endif
     en_current_state = ASL::wait_for_player_input;
   } break;
@@ -167,7 +169,7 @@ void loop() {
            obj_session->array_players[u8_current_player_number]
                ->Get_Token_Position(u8_current_token_number)) {
       // If there is no possible move, next token is chosen
-      if (u8_current_token_number < 4) {
+      if (u8_current_token_number < 3) {
         u8_current_token_number++;
       } else {
         u8_current_token_number = 0;

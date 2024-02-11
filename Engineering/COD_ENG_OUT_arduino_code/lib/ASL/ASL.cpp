@@ -282,6 +282,7 @@ void ASL::Setup_Buttons() {
 }
 
 void ASL::Setup_Dice() {
+#if RANDOM_DICE
   // The Dice will use Counter 0 (8 Bit Counter).
   // Set WGM1 to 1 and WGM0 to 0 (last 2 bits): CTC mode
   TCCR0A = 1 << WGM01;
@@ -293,10 +294,21 @@ void ASL::Setup_Dice() {
   // set reset value to 5 (6 values: 0:5 -> need to add 1 later to get dice
   // value 1:6)
   OCR0A = 0x05;
+#else
+  // Setup dice to read from Port L
+  // Set Port L to Input
+  DDRL = 0x00;
+  // Set Port L to Pull-Up
+  PORTL = 0xff;
+#endif
 }
 
 uint8_t ASL::Roll_Dice() {
   //
+#if RANDOM_DICE
   uint8_t i = TCNT0 + 1;
+#else
+  uint8_t i = ~PINL;
+#endif
   return i;
 }
