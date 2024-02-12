@@ -19,6 +19,11 @@ typedef enum {
   Track_Finished,
 } status;
 
+typedef enum {
+  Student = 0,
+  Professor,
+} mode;
+
 /**
  * @class cla_session
  * @brief Description of the cla_session class.
@@ -30,7 +35,7 @@ public:
    * @param _u8_player_quantity Number of all players.
    * @param _u8_computer_quantity Number of computer-controlled players.
    */
-  cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity);
+  cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity, mode _en_mode);
 
   cla_player *array_players[4]; ///< Array of pointers to the players.
 
@@ -178,7 +183,7 @@ public:
    */
   cla_computer_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
                       uint8_t _u8_computer_quantity,
-                      cla_session *_obj_my_session, uint8_t _u8_mode);
+                      cla_session *_obj_my_session, mode _en_mode);
 
   /**
    * @brief Automatic movement for a computer opponent.
@@ -190,7 +195,7 @@ public:
   virtual bool Is_Computer() const override { return true; }
 
 protected:
-  uint8_t u8_en_mode; ///< The mode of the computer opponent.
+  mode en_mode; ///< The mode of the computer opponent.
 };
 
 /**

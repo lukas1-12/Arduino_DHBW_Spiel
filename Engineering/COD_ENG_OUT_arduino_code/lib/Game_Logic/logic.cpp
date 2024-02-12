@@ -3,7 +3,7 @@
 
 namespace LOGIC {
 cla_session::cla_session(uint8_t _u8_player_quantity,
-                         uint8_t _u8_computer_quantity) {
+                         uint8_t _u8_computer_quantity, mode _en_mode) {
   u8_player_quantity = _u8_player_quantity;
   u8_computer_quantity = _u8_computer_quantity;
   array_players[u8_player_quantity];
@@ -18,7 +18,7 @@ cla_session::cla_session(uint8_t _u8_player_quantity,
     else {
       array_players[i] =
           new cla_computer_player(i, 5 + i * 10, _u8_computer_quantity, this,
-                                  1); // ID = i, Startposition = 5 + i * 10
+                                  _en_mode); // ID = i, Startposition = 5 + i * 10
     }
   }
 };
@@ -39,11 +39,11 @@ cla_computer_player::cla_computer_player(uint8_t _u8_player_id,
                                          uint8_t _u8_start_position,
                                          uint8_t _u8_computer_quantity,
                                          cla_session *_obj_my_session,
-                                         uint8_t _u8_en_mode)
+                                         mode _en_mode)
     : cla_player(_u8_player_id, _u8_start_position, _u8_computer_quantity,
                  _obj_my_session) {
   bool is_computer = true;
-  u8_en_mode = _u8_en_mode;
+  mode en_mode = _en_mode;
 }
 
 cla_manual_player::cla_manual_player(uint8_t _u8_player_id,

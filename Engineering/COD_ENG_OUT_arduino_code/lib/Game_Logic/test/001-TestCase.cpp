@@ -4,13 +4,13 @@
 
 
 TEST_CASE("Test game constructer", "[cla_session]") {
-  LOGIC::cla_session game(4, 1);
+  LOGIC::cla_session game(4, 1, LOGIC::Student);
   REQUIRE(game.Get_Player_Quantity() == 4);
   REQUIRE(game.Get_Computer_Quantity() == 1);
 }
 
 TEST_CASE("Test Set_Token", "[cla_player]") {
-  LOGIC::cla_session game(4, 2);
+  LOGIC::cla_session game(4, 2, LOGIC::Student);
   game.array_players[0]->Set_Token_Position(0, 45);
   game.array_players[1]->Set_Token_Position(1, 25);
   game.array_players[2]->Set_Token_Position(2, 29);
@@ -22,7 +22,7 @@ TEST_CASE("Test Set_Token", "[cla_player]") {
 }
 
 TEST_CASE("Test Move_Token", "[cla_player]") {
-  LOGIC::cla_session game(4, 0);
+  LOGIC::cla_session game(4, 0, LOGIC::Student);
   game.array_players[0]->Set_Token_Position(0, 45);
   game.array_players[0]->Set_Token_Position(1, 25);
   game.array_players[0]->Set_Token_Position(2, 29);
@@ -38,7 +38,7 @@ TEST_CASE("Test Move_Token", "[cla_player]") {
 }
 
 TEST_CASE("Test Is_Startfield_occupied...", "[cla_player]") {
-  LOGIC::cla_session game(4, 0);
+  LOGIC::cla_session game(4, 0, LOGIC::Student);
   game.array_players[0]->Set_Token_Position(0, 5);
   game.array_players[1]->Set_Token_Position(1, 15);
   game.array_players[2]->Set_Token_Position(2, 25);
@@ -56,7 +56,7 @@ TEST_CASE("Test Is_Startfield_occupied...", "[cla_player]") {
 //Requirement 44: "Landet ein Benutzer mit seiner Spielfigur auf einem bereits von einem anderen Benutzer besetzten Feld, so schmeißt er diesen automatisch"
 
 TEST_CASE("Test Move_Token_Kick", "[cla_player]") {
-  LOGIC::cla_session game(4, 0);
+  LOGIC::cla_session game(4, 0, LOGIC::Student);
   game.array_players[0]->Set_Token_Position(2, 29);
   game.array_players[1]->Set_Token_Position(1, 25);
   game.array_players[0]->Move_Token(2, 1);
@@ -68,7 +68,7 @@ TEST_CASE("Test Move_Token_Kick", "[cla_player]") {
 
 //Requirement 46: "Zu Beginn befinden sich alle Figuren in den Häusern"
 TEST_CASE("Test Home_Position", "[cla_player]") {
-  LOGIC::cla_session game(4, 0);
+  LOGIC::cla_session game(4, 0, LOGIC::Student);
   REQUIRE(game.array_players[0]->Get_Token_Position(0) == 1);
   REQUIRE(game.array_players[0]->Get_Token_Position(1) == 2);
   REQUIRE(game.array_players[0]->Get_Token_Position(2) == 3);
@@ -92,7 +92,7 @@ TEST_CASE("Test Home_Position", "[cla_player]") {
 
 //Requirement  52: "Erreicht eine Spielfigur das Endfeld, so begibt sie sich mit den übrigen, gewürfelten Felder ins Ziel"
 TEST_CASE("Test Move into Finish", "[cla_player]") {
-  LOGIC::cla_session game(4, 0);
+  LOGIC::cla_session game(4, 0, LOGIC::Student);
   
   //Player 0
   game.array_players[0]->Set_Token_Position(0, 40);
@@ -155,7 +155,7 @@ TEST_CASE("Test Move into Finish", "[cla_player]") {
 
 TEST_CASE("Test Kick_Token_From_Start_Position", "[cla_player]")
 {
-  LOGIC::cla_session game(4, 0);
+  LOGIC::cla_session game(4, 0, LOGIC::Student);
   game.array_players[0]->Set_Token_Position(1, 15);
   game.array_players[1]->Set_Token_Position(1, 25);
   game.array_players[2]->Set_Token_Position(1, 35);
@@ -178,7 +178,7 @@ TEST_CASE("Test Kick_Token_From_Start_Position", "[cla_player]")
 //Requirement 55: "Spielfiguren werden übersprungen, außer sie befinden sich auf dem letzten Feld des Spielzugs"
 TEST_CASE("Test Skip_And_Kick_Tokens", "[cla_player]")
 {
-  LOGIC::cla_session game(4, 0);
+  LOGIC::cla_session game(4, 0, LOGIC::Student);
   game.array_players[0]->Set_Token_Position(1, 15);
   game.array_players[0]->Set_Token_Position(2, 16);
   game.array_players[1]->Set_Token_Position(1, 19);

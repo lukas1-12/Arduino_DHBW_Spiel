@@ -6,7 +6,7 @@
 
 
 int main() {
-  LOGIC::cla_session game(4, 1);
+  LOGIC::cla_session game(4, 1, LOGIC::Student);
   std::cout << "\033[31m" << (int)game.Get_Player_Quantity() << " Players \033[0m" << std::endl;
   std::cout << "\033[31m" << (int)game.Get_Computer_Quantity() << " Computer Players \033[0m" << std::endl;
   std::cout << "###############################################" << std::endl;
