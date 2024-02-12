@@ -107,6 +107,13 @@ public:
   uint8_t Move_Token(uint8_t _u8_token_number, uint8_t _u8_dice_value);
 
   /**
+   * @brief Checks if the starting square is occupied by own token while other
+   * tokens are home
+   * @return The token number that must be moved
+   */
+  int8_t Is_Start_Field_Occupied_By_Own_Token();
+
+  /**
    * @brief Returns the current position of a token.
    * @param _u8_token_number The token number.
    * @return The current position of the token.
@@ -180,9 +187,7 @@ public:
    */
   uint8_t Auto_Move(uint8_t _u8_dice_value);
 
-  virtual bool Is_Computer() const override {
-  return true;
-  }
+  virtual bool Is_Computer() const override { return true; }
 
 protected:
   uint8_t u8_en_mode; ///< The mode of the computer opponent.
@@ -198,7 +203,8 @@ public:
    * @brief Constructor for the cla_manual_player class.
    */
   cla_manual_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
-                    uint8_t _u8_computer_quantity, cla_session *_obj_my_session);
+                    uint8_t _u8_computer_quantity,
+                    cla_session *_obj_my_session);
   /**
    * @brief Manual movement for a human player.
    * @param _u8_dice_value The value of the rolled dice.
@@ -206,9 +212,7 @@ public:
    */
   uint8_t Manual_Move(uint8_t _u8_dice_value);
 
-  virtual bool Is_Computer() const override {
-  return false;
-  }
+  virtual bool Is_Computer() const override { return false; }
 };
 
 } // namespace LOGIC

@@ -37,6 +37,18 @@ TEST_CASE("Test Move_Token", "[cla_player]") {
   REQUIRE(game.array_players[0]->Get_Token_Position(3) == 32);
 }
 
+TEST_CASE("Test Is_Startfield_occupied...", "[cla_player]") {
+  LOGIC::cla_session game(4, 0);
+  game.array_players[0]->Set_Token_Position(0, 5);
+  game.array_players[1]->Set_Token_Position(1, 15);
+  game.array_players[2]->Set_Token_Position(2, 25);
+  game.array_players[3]->Set_Token_Position(3, 35);
+  REQUIRE(game.array_players[0]->Is_Start_Field_Occupied_By_Own_Token() == 0);
+  REQUIRE(game.array_players[1]->Is_Start_Field_Occupied_By_Own_Token() == 1);
+  REQUIRE(game.array_players[2]->Is_Start_Field_Occupied_By_Own_Token() == 2);
+  REQUIRE(game.array_players[3]->Is_Start_Field_Occupied_By_Own_Token() == 3);
+}
+
 //Requirement 44: "Landet ein Benutzer mit seiner Spielfigur auf einem bereits von einem anderen Benutzer besetzten Feld, so schmeißt er diesen automatisch"
 
 TEST_CASE("Test Move_Token_Kick", "[cla_player]") {
@@ -176,3 +188,4 @@ TEST_CASE("Test Skip_And_Kick_Tokens", "[cla_player]")
   REQUIRE(game.array_players[2]->Get_Token_Position(1) == 17);
   REQUIRE(game.array_players[3]->Get_Token_Position(1) == 18);
 }
+
