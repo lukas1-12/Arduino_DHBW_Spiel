@@ -16,9 +16,9 @@ cla_session::cla_session(uint8_t _u8_player_quantity,
           new cla_manual_player(i, 5 + i * 10, _u8_computer_quantity,
                                 this); // ID = i, Startposition = 5 + i * 10
     else {
-      array_players[i] =
-          new cla_computer_player(i, 5 + i * 10, _u8_computer_quantity, this,
-                                  _en_mode); // ID = i, Startposition = 5 + i * 10
+      array_players[i] = new cla_computer_player(
+          i, 5 + i * 10, _u8_computer_quantity, this,
+          _en_mode); // ID = i, Startposition = 5 + i * 10
     }
   }
 };
@@ -93,6 +93,13 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
       (_u8_dice_value ==
        6)) { // token is in the home field and would move onto the track
     return u8_start_position;
+  } else if (obj_my_session->Is_Occupied(
+                 obj_my_session->u8_is_occupied_player_id,
+                 obj_my_session->u8_is_occupied_token_number,
+                 u8_token_position[_u8_token_number] + _u8_dice_value) ==
+                 true &&
+             obj_my_session->u8_is_occupied_player_id == u8_player_id) {
+    return u8_token_position[_u8_token_number];
   } else if (u8_token_position[_u8_token_number] <= 4 &&
              _u8_dice_value != 6) { // token is in the home field and would
                                     // not move onto the track
@@ -151,26 +158,6 @@ uint8_t cla_player::Move_Token(uint8_t _u8_token_number,
     obj_my_session->Return_Home(u8_possible_position);
     u8_token_position[_u8_token_number] = u8_possible_position;
     return u8_possible_position;
-  } else if (obj_my_session->Is_Occupied(
-                 obj_my_session->u8_is_occupied_player_id,
-                 obj_my_session->u8_is_occupied_token_number,
-                 u8_possible_position) == true &&
-             obj_my_session->u8_is_occupied_player_id == u8_player_id &&
-             u8_possible_position < 45) {
-    // token is on track, position is occupied by other token of same player
-    // and
-    Move_Token(_u8_token_number, _u8_dice_value + 1);
-    return 0; // error if Move_Token(.... _u8_dice_value+1) is not called
-  } else if (obj_my_session->Is_Occupied(
-                 obj_my_session->u8_is_occupied_player_id,
-                 obj_my_session->u8_is_occupied_token_number,
-                 u8_possible_position) == true &&
-             obj_my_session->u8_is_occupied_player_id == u8_player_id &&
-             u8_possible_position > 44) {
-    // token is on track and would move into the finish
-    // -> token stays on the same position because other token of the same
-    // player is in the way
-    return u8_token_position[_u8_token_number];
   } else {
     return 0; // Error
   }
@@ -178,22 +165,21 @@ uint8_t cla_player::Move_Token(uint8_t _u8_token_number,
 
 int8_t cla_player::Is_Start_Field_Occupied_By_Own_Token() {
   uint8_t u8_counter = 0;
-  for(uint8_t token = 0; token < 4; token++) {
-    if(Get_Token_Position(token) <= 4) {
+  for (uint8_t token = 0; token < 4; token++) {
+    if (Get_Token_Position(token) <= 4) {
       u8_counter = u8_counter + 1;
-    }
-    else {
+    } else {
       u8_counter = u8_counter;
     }
   };
   if (obj_my_session->Is_Occupied(obj_my_session->u8_is_occupied_player_id,
                                   obj_my_session->u8_is_occupied_token_number,
                                   u8_start_position) &&
-      u8_player_id == obj_my_session->u8_is_occupied_player_id && u8_counter > 0) {
+      u8_player_id == obj_my_session->u8_is_occupied_player_id &&
+      u8_counter > 0) {
     return obj_my_session->u8_is_occupied_token_number;
-  }
-  else {
-    return -1; //no own token at the start position
+  } else {
+    return -1; // no own token at the start position
   }
 };
 

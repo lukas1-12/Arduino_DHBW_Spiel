@@ -34,7 +34,7 @@ TEST_CASE("Test Move_Token", "[cla_player]") {
   REQUIRE(game.array_players[0]->Get_Token_Position(0) == 45);
   REQUIRE(game.array_players[0]->Get_Token_Position(1) == 28);
   REQUIRE(game.array_players[0]->Get_Token_Position(2) == 31);
-  REQUIRE(game.array_players[0]->Get_Token_Position(3) == 32);
+  REQUIRE(game.array_players[0]->Get_Token_Position(3) == 30);
 }
 
 TEST_CASE("Test Is_Startfield_occupied...", "[cla_player]") {
