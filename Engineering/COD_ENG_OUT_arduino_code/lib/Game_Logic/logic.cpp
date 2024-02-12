@@ -177,10 +177,19 @@ uint8_t cla_player::Move_Token(uint8_t _u8_token_number,
 };
 
 int8_t cla_player::Is_Start_Field_Occupied_By_Own_Token() {
+  uint8_t u8_counter = 0;
+  for(uint8_t token = 0; token < 4; token++) {
+    if(Get_Token_Position(token) <= 4) {
+      u8_counter = u8_counter + 1;
+    }
+    else {
+      u8_counter = u8_counter;
+    }
+  };
   if (obj_my_session->Is_Occupied(obj_my_session->u8_is_occupied_player_id,
                                   obj_my_session->u8_is_occupied_token_number,
                                   u8_start_position) &&
-      u8_player_id == obj_my_session->u8_is_occupied_player_id) {
+      u8_player_id == obj_my_session->u8_is_occupied_player_id && u8_counter > 0) {
     return obj_my_session->u8_is_occupied_token_number;
   }
   else {

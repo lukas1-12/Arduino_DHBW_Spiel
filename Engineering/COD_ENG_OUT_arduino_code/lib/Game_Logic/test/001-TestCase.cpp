@@ -47,6 +47,10 @@ TEST_CASE("Test Is_Startfield_occupied...", "[cla_player]") {
   REQUIRE(game.array_players[1]->Is_Start_Field_Occupied_By_Own_Token() == 1);
   REQUIRE(game.array_players[2]->Is_Start_Field_Occupied_By_Own_Token() == 2);
   REQUIRE(game.array_players[3]->Is_Start_Field_Occupied_By_Own_Token() == 3);
+  game.array_players[0]->Set_Token_Position(3, 8);
+  game.array_players[0]->Set_Token_Position(1, 6);
+  game.array_players[0]->Set_Token_Position(2, 7);
+  REQUIRE(game.array_players[0]->Is_Start_Field_Occupied_By_Own_Token() == -1);
 }
 
 //Requirement 44: "Landet ein Benutzer mit seiner Spielfigur auf einem bereits von einem anderen Benutzer besetzten Feld, so schmeißt er diesen automatisch"
