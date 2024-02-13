@@ -1,6 +1,10 @@
 #include "logic.hpp"
 #include <cstdint>
 
+#ifndef __AVR__
+#include <iostream>
+#endif
+
 namespace LOGIC {
 cla_session::cla_session(uint8_t _u8_player_quantity,
                          uint8_t _u8_computer_quantity, mode _en_mode) {
@@ -43,7 +47,7 @@ cla_computer_player::cla_computer_player(uint8_t _u8_player_id,
     : cla_player(_u8_player_id, _u8_start_position, _u8_computer_quantity,
                  _obj_my_session) {
   bool is_computer = true;
-  mode en_mode = _en_mode;
+  this->en_mode = _en_mode;
 }
 
 cla_manual_player::cla_manual_player(uint8_t _u8_player_id,
@@ -260,16 +264,53 @@ uint8_t cla_player::Get_Player_Progress() {
 };
 
 uint8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value) {
-  for (int n = 0; n < 4; n++) {
-    if (Calculate_Possible_Position(n, _u8_dice_value) > 4 &&
-        Calculate_Possible_Position(n, _u8_dice_value) !=
-            Get_Token_Position(n)) {
-      Move_Token(n, _u8_dice_value);
-      return Get_Token_Position(n);
+  bool token_moved = false;
+  // std::cout << "Computer Level: " << en_mode << std::endl;
+  switch (en_mode) {
+  case Student:
+    std::cout << "Student" << std::endl;
+    for (int n = 0; n < 4; n++) {
+      if (Calculate_Possible_Position(n, _u8_dice_value) > 4 &&
+          Calculate_Possible_Position(n, _u8_dice_value) !=
+              Get_Token_Position(n)) {
+        Move_Token(n, _u8_dice_value);
+        // std::cout << "End of Student move" << std::endl;
+        return Get_Token_Position(n);
+      }
     }
+    return 0; // No token could be moved
+
+  case Professor:
+    for (int n = 0; n < 4; n++) {
+      if (obj_my_session->Is_Occupied(
+              obj_my_session->u8_is_occupied_player_id,
+              obj_my_session->u8_is_occupied_token_number,
+              Calculate_Possible_Position(n, _u8_dice_value)) == true &&
+          obj_my_session->u8_is_occupied_player_id != u8_player_id) {
+        Move_Token(n, _u8_dice_value);
+        token_moved = true;
+        // std::cout << "Professor thrown someone" << std::endl;
+        return Get_Token_Position(n);
+      }
+    }
+
+    if (!token_moved) { // If no token could be moved, normal move
+      for (int m = 0; m < 4; m++) {
+        if (Calculate_Possible_Position(m, _u8_dice_value) > 4 &&
+            Calculate_Possible_Position(m, _u8_dice_value) !=
+                Get_Token_Position(m)) {
+          Move_Token(m, _u8_dice_value);
+          // std::cout << "Professor did a Student move was done" << std::endl;
+          return Get_Token_Position(m);
+        }
+      }
+    }
+    return 0; // No token could be moved
+
+  default:
+    return 10; // Error
   }
-  return 0; // No token could be moved
-};
+}
 
 uint8_t cla_manual_player::Manual_Move(uint8_t _u8_token_number) { return 0; };
 
@@ -288,5 +329,9 @@ uint8_t cla_session::Get_Is_Occupied_Player_ID() {
 uint8_t cla_session::Get_Is_Occupied_Token_Number() {
   return u8_is_occupied_token_number;
 };
+
+uint8_t cla_player::Auto_Move(uint8_t _u8_dice_value) { return 10; };
+
+mode cla_computer_player::Get_En_Mode() { return en_mode; };
 
 } // namespace LOGIC

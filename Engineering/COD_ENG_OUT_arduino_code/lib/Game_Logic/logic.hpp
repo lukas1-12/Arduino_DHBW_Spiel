@@ -21,7 +21,7 @@ typedef enum {
 
 typedef enum {
   Student = 0,
-  Professor,
+  Professor = 1,
 } mode;
 
 /**
@@ -35,7 +35,8 @@ public:
    * @param _u8_player_quantity Number of all players.
    * @param _u8_computer_quantity Number of computer-controlled players.
    */
-  cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity, mode _en_mode);
+  cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity,
+              mode _en_mode);
 
   cla_player *array_players[4]; ///< Array of pointers to the players.
 
@@ -163,6 +164,8 @@ public:
 
   uint8_t Get_Player_ID(); ///< Returns the ID of the player.
 
+  virtual uint8_t Auto_Move(uint8_t _u8_dice_value);
+
 protected:
   uint8_t u8_start_position;    ///< The starting position of the player.
   uint8_t u8_token_position[4]; ///< The positions of the player's four tokens.
@@ -190,9 +193,11 @@ public:
    * @param _u8_dice_value The value of the rolled dice.
    * @return The new position of the token after automatic movement.
    */
-  uint8_t Auto_Move(uint8_t _u8_dice_value);
+  uint8_t Auto_Move(uint8_t _u8_dice_value) override;
 
   virtual bool Is_Computer() const override { return true; }
+
+  mode Get_En_Mode();
 
 protected:
   mode en_mode; ///< The mode of the computer opponent.
