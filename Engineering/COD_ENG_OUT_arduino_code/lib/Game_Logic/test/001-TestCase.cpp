@@ -71,6 +71,42 @@ TEST_CASE("Test en_mode = Professor", "[cla_computer_player]") {
   REQUIRE(game.array_players[1]->Get_Token_Position(1) == 43);
 }
 
+//Test Get_Player_Progress
+TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
+  LOGIC::cla_session game(4, 2, LOGIC::Student);
+  game.array_players[0]->Set_Token_Position(0, 45);
+  game.array_players[0]->Set_Token_Position(1, 44);
+  game.array_players[0]->Set_Token_Position(2, 46);
+  game.array_players[0]->Set_Token_Position(3, 47);
+  REQUIRE(game.array_players[0]->Get_Player_Progress() == 21);
+
+  game.array_players[1]->Set_Token_Position(0, 1);
+  game.array_players[1]->Set_Token_Position(1, 2);
+  game.array_players[1]->Set_Token_Position(2, 3);
+  game.array_players[1]->Set_Token_Position(3, 4);
+  REQUIRE(game.array_players[1]->Get_Player_Progress() == 1);
+
+  game.array_players[2]->Set_Token_Position(0, 45);
+  game.array_players[2]->Set_Token_Position(1, 44);
+  game.array_players[2]->Set_Token_Position(2, 46);
+  game.array_players[2]->Set_Token_Position(3, 47);
+  REQUIRE(game.array_players[2]->Get_Player_Progress() == 21);
+
+  game.array_players[3]->Set_Token_Position(0, 1);
+  game.array_players[3]->Set_Token_Position(1, 2);
+  game.array_players[3]->Set_Token_Position(2, 3);
+  game.array_players[3]->Set_Token_Position(3, 4);
+  REQUIRE(game.array_players[3]->Get_Player_Progress() == 1);
+
+  game.array_players[0]->Set_Token_Position(0, 20);
+  game.array_players[0]->Set_Token_Position(1, 21);
+  game.array_players[0]->Set_Token_Position(2, 22);
+  game.array_players[0]->Set_Token_Position(3, 23);
+  REQUIRE(game.array_players[0]->Get_Player_Progress() == 9);
+}
+
+
+
 // Requirement 44: "Landet ein Benutzer mit seiner Spielfigur auf einem bereits
 // von einem anderen Benutzer besetzten Feld, so schmeißt er diesen automatisch"
 

@@ -54,10 +54,16 @@ int main() {
   game.array_players[0]->Set_Token_Position(2, 44);
   std::cout << "Token 2 progress: "
             << (int)game.array_players[0]->Get_Token_Progress(2) << std::endl;
-  game.array_players[0]->Set_Token_Position(3, 42);
+  game.array_players[0]->Set_Token_Position(3, 46);
   std::cout << "Token 3 progress: "
             << (int)game.array_players[0]->Get_Token_Progress(3) << std::endl;
-  std::cout << game.array_players[0]->Get_Player_Status() << std::endl;
-  std::cout << "Hello World!" << std::endl;
+  std::cout << "Player Progress: " << (int)game.array_players[0]->Get_Player_Progress() << std::endl;
+
+  game.array_players[0]->Set_Token_Position(0, 20);
+  game.array_players[0]->Set_Token_Position(1, 21);
+  game.array_players[0]->Set_Token_Position(2, 22);
+  game.array_players[0]->Set_Token_Position(3, 23);
+  std::cout << "Player Progress: " << (int)game.array_players[0]->Get_Player_Progress() << std::endl;
+
   return 0;
 }

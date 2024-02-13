@@ -257,7 +257,12 @@ uint8_t cla_player::Get_Player_Progress() {
     u8_overall_progress +=
         this->cla_player::Get_Token_Progress(u8_token_number);
   }
-  return u8_overall_progress;
+  //return u8_overall_progress;
+  float f_scaled_progress = ((float)u8_overall_progress / 166.0f) * 20.0f + 1.0f;
+
+  uint8_t u8_scaled_progress_rounded = (uint8_t)(f_scaled_progress + 0.5f);
+  
+  return u8_scaled_progress_rounded;
 };
 
 int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
