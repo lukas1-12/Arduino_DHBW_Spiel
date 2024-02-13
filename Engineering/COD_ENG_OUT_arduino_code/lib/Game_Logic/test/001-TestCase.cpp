@@ -55,14 +55,16 @@ TEST_CASE("Test Is_Startfield_occupied...", "[cla_player]") {
 // Test hard compter player
 TEST_CASE("Test en_mode = Professor", "[cla_computer_player]") {
   LOGIC::cla_session game(2, 1, LOGIC::Professor);
+  bool bool_is_occupied;
+
   game.array_players[1]->Set_Token_Position(0, 25);
   game.array_players[1]->Set_Token_Position(1, 35);
   game.array_players[0]->Set_Token_Position(2, 36);
   game.array_players[0]->Set_Token_Position(3, 37);
-  game.array_players[1]->Auto_Move(1);
-  game.array_players[1]->Auto_Move(1);
-  game.array_players[1]->Auto_Move(6);
-  game.array_players[1]->Auto_Move(6);
+  game.array_players[1]->Auto_Move(1, bool_is_occupied);
+  game.array_players[1]->Auto_Move(1, bool_is_occupied);
+  game.array_players[1]->Auto_Move(6, bool_is_occupied);
+  game.array_players[1]->Auto_Move(6, bool_is_occupied);
   REQUIRE(game.array_players[0]->Get_Token_Position(3) == 4);
   REQUIRE(game.array_players[0]->Get_Token_Position(2) == 3);
   REQUIRE(game.array_players[1]->Get_Token_Position(0) == 31);

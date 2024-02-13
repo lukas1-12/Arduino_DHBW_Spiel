@@ -46,7 +46,6 @@ cla_computer_player::cla_computer_player(uint8_t _u8_player_id,
                                          mode _en_mode)
     : cla_player(_u8_player_id, _u8_start_position, _u8_computer_quantity,
                  _obj_my_session) {
-  bool is_computer = true;
   this->en_mode = _en_mode;
 }
 
@@ -55,9 +54,7 @@ cla_manual_player::cla_manual_player(uint8_t _u8_player_id,
                                      uint8_t _u8_computer_quantity,
                                      cla_session *_obj_my_session)
     : cla_player(_u8_player_id, _u8_start_position, _u8_computer_quantity,
-                 _obj_my_session) {
-  bool is_computer = false;
-}
+                 _obj_my_session) {}
 
 bool cla_session::Is_Occupied(uint8_t &u8_is_occupied_player_id,
                               uint8_t &u8_is_occupied_token_number,
@@ -263,22 +260,30 @@ uint8_t cla_player::Get_Player_Progress() {
   return u8_overall_progress;
 };
 
-uint8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value) {
+int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
+                                      bool &_bool_occupied_flag) {
   bool token_moved = false;
   // std::cout << "Computer Level: " << en_mode << std::endl;
   switch (en_mode) {
   case Student:
-    std::cout << "Student" << std::endl;
+    // std::cout << "Student" << std::endl;
     for (int n = 0; n < 4; n++) {
       if (Calculate_Possible_Position(n, _u8_dice_value) > 4 &&
           Calculate_Possible_Position(n, _u8_dice_value) !=
               Get_Token_Position(n)) {
+        if (obj_my_session->Is_Occupied(
+                obj_my_session->u8_is_occupied_player_id,
+                obj_my_session->u8_is_occupied_token_number,
+                Calculate_Possible_Position(n, _u8_dice_value)) == true) {
+          _bool_occupied_flag = true;
+          // std::cout << "Student thrown someone" << std::endl;
+        }
         Move_Token(n, _u8_dice_value);
         // std::cout << "End of Student move" << std::endl;
-        return Get_Token_Position(n);
+        return n; // Token number that was moved
       }
     }
-    return 0; // No token could be moved
+    return -1; // No token could be moved
 
   case Professor:
     for (int n = 0; n < 4; n++) {
@@ -289,26 +294,34 @@ uint8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value) {
           obj_my_session->u8_is_occupied_player_id != u8_player_id) {
         Move_Token(n, _u8_dice_value);
         token_moved = true;
+        _bool_occupied_flag = true;
         // std::cout << "Professor thrown someone" << std::endl;
-        return Get_Token_Position(n);
+        return n;
       }
     }
 
-    if (!token_moved) { // If no token could be moved, normal move
+    if (!token_moved) { // If no token could be moved -> student move
       for (int m = 0; m < 4; m++) {
         if (Calculate_Possible_Position(m, _u8_dice_value) > 4 &&
             Calculate_Possible_Position(m, _u8_dice_value) !=
                 Get_Token_Position(m)) {
+          if (obj_my_session->Is_Occupied(
+                  obj_my_session->u8_is_occupied_player_id,
+                  obj_my_session->u8_is_occupied_token_number,
+                  Calculate_Possible_Position(m, _u8_dice_value)) == true) {
+            _bool_occupied_flag = true;
+            // std::cout << "Student thrown someone" << std::endl;
+          }
           Move_Token(m, _u8_dice_value);
           // std::cout << "Professor did a Student move was done" << std::endl;
-          return Get_Token_Position(m);
+          return m;
         }
       }
     }
-    return 0; // No token could be moved
+    return -1; // No token could be moved
 
   default:
-    return 10; // Error
+    return -1; // Error
   }
 }
 
@@ -330,7 +343,10 @@ uint8_t cla_session::Get_Is_Occupied_Token_Number() {
   return u8_is_occupied_token_number;
 };
 
-uint8_t cla_player::Auto_Move(uint8_t _u8_dice_value) { return 10; };
+int8_t cla_player::Auto_Move(uint8_t _u8_dice_value,
+                             bool &_bool_occupied_flag) {
+  return 10;
+};
 
 mode cla_computer_player::Get_En_Mode() { return en_mode; };
 

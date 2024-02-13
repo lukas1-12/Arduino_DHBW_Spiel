@@ -164,7 +164,7 @@ public:
 
   uint8_t Get_Player_ID(); ///< Returns the ID of the player.
 
-  virtual uint8_t Auto_Move(uint8_t _u8_dice_value);
+  virtual int8_t Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag);
 
 protected:
   uint8_t u8_start_position;    ///< The starting position of the player.
@@ -193,7 +193,7 @@ public:
    * @param _u8_dice_value The value of the rolled dice.
    * @return The new position of the token after automatic movement.
    */
-  uint8_t Auto_Move(uint8_t _u8_dice_value) override;
+  int8_t Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag) override;
 
   virtual bool Is_Computer() const override { return true; }
 

@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <iostream>
 
+bool bool_is_occupied;
+
 int main() {
   LOGIC::cla_session game(3, 3, LOGIC::Professor);
   std::cout << "\033[31m" << (int)game.Get_Player_Quantity()
@@ -34,8 +36,8 @@ int main() {
   std::cout << "Token 1 of player 0 could be at: "
             << (int)game.array_players[0]->Calculate_Possible_Position(1, 4)
             << std::endl;
-  game.array_players[0]->Auto_Move(4);
-  game.array_players[0]->Auto_Move(4);
+  game.array_players[0]->Auto_Move(4, bool_is_occupied);
+  game.array_players[0]->Auto_Move(4, bool_is_occupied);
   std::cout << "Token 0 of player 0 is at: "
             << (int)game.array_players[0]->Get_Token_Position(0) << std::endl;
   std::cout << "Token 1 of player 0 is at: "
