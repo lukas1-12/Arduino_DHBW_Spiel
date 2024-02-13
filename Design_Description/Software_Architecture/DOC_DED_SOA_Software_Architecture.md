@@ -45,7 +45,12 @@
         s3 --> s4 : Green Button
     s4 : Modify Computer Player Number
         s4 --> s3: Calculation Complete
-        s3 --> s4a : Red Button
+        s3 --> s3a : Red Button
+    s3a: Setup Computer Player Mode
+        s3a --> s3b: Green Button
+        s3a --> s4a: Red Button
+    s3b: Modify Computer Player Mode
+        s3b --> s3a: Calculation Complete
     s4a: Init Game Logic
         s4a --> s5: Init Complete
     s5 : Wait for Dice Roll
