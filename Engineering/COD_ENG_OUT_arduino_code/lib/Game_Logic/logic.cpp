@@ -93,21 +93,43 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
   if ((u8_token_position[_u8_token_number] <= 4) &&
       (_u8_dice_value ==
        6)) { // token is in the home field and would move onto the track
-    return u8_start_position;
+    if (obj_my_session->Is_Occupied(obj_my_session->u8_is_occupied_player_id,
+                                    obj_my_session->u8_is_occupied_token_number,
+                                    u8_start_position) == true &&
+        obj_my_session->u8_is_occupied_player_id == u8_player_id) {
+      return u8_token_position[_u8_token_number]; // token would throw itself
+                                                  // -> invalide move
+    } else {
+      return u8_start_position;
+    }
   } else if (obj_my_session->Is_Occupied(
                  obj_my_session->u8_is_occupied_player_id,
                  obj_my_session->u8_is_occupied_token_number,
                  u8_token_position[_u8_token_number] + _u8_dice_value) ==
                  true &&
              obj_my_session->u8_is_occupied_player_id == u8_player_id) {
-    return u8_token_position[_u8_token_number];
+    return u8_token_position[_u8_token_number]; // token would throw itself ->
+                                                // invalide move
   } else if (u8_token_position[_u8_token_number] <= 4 &&
              _u8_dice_value != 6) { // token is in the home field and would
                                     // not move onto the track
     return u8_token_position[_u8_token_number];
   } else if (this->Get_Token_Progress(_u8_token_number) + _u8_dice_value > 39 &&
+             this->Get_Token_Progress(_u8_token_number) + _u8_dice_value < 44 &&
+             obj_my_session->Is_Occupied(
+                 obj_my_session->u8_is_occupied_player_id,
+                 obj_my_session->u8_is_occupied_token_number,
+                 Get_Token_Progress(_u8_token_number) + _u8_dice_value + 5) &&
+             obj_my_session->u8_is_occupied_player_id ==
+                 u8_player_id) { // token is on the track and would move into
+                                 // the finish and finish is blocked by own
+                                 // token
+    return u8_token_position[_u8_token_number];
+  } else if (this->Get_Token_Progress(_u8_token_number) + _u8_dice_value > 39 &&
              this->Get_Token_Progress(_u8_token_number) + _u8_dice_value <
-                 44) { // token is on the track and would move into the finish
+                 44) { // token is on the track and would move into
+                       // the finish and finish is not blocked by own
+                       // token
     return Get_Token_Progress(_u8_token_number) + _u8_dice_value + 5;
   } else if (this->Get_Token_Progress(_u8_token_number) + _u8_dice_value > 39 &&
              this->Get_Token_Progress(_u8_token_number) + _u8_dice_value >
@@ -115,8 +137,19 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
                        // finish
     return u8_token_position[_u8_token_number];
   } else if (u8_token_position[_u8_token_number] > 44 &&
+             u8_token_position[_u8_token_number] + _u8_dice_value < 49 &&
+             obj_my_session->Is_Occupied(
+                 obj_my_session->u8_is_occupied_player_id,
+                 obj_my_session->u8_is_occupied_token_number,
+                 u8_token_position[_u8_token_number + _u8_dice_value]) &&
+             obj_my_session->u8_is_occupied_player_id == u8_player_id) {
+    // token is in the finish and would not move out of the finish and finish is
+    // blocked by own token
+    return u8_token_position[_u8_token_number];
+  } else if (u8_token_position[_u8_token_number] > 44 &&
              u8_token_position[_u8_token_number] + _u8_dice_value < 49) {
-    // token is in the finish and would not move out of the finish
+    // token is in the finish and would not move out of the finish and finish is
+    // not blocked by own token
     return u8_token_position[_u8_token_number] + _u8_dice_value;
   } else if (u8_token_position[_u8_token_number] > 44 &&
              u8_token_position[_u8_token_number] + _u8_dice_value > 49) {
@@ -153,10 +186,20 @@ uint8_t cla_player::Move_Token(uint8_t _u8_token_number,
                  obj_my_session->u8_is_occupied_player_id,
                  obj_my_session->u8_is_occupied_token_number,
                  u8_possible_position) == true &&
-             obj_my_session->u8_is_occupied_player_id != u8_player_id) {
+             obj_my_session->u8_is_occupied_player_id != u8_player_id &&
+             u8_possible_position <= 44) {
     // possible position is occupied by another player -> other player gets
     // sent home
     obj_my_session->Return_Home(u8_possible_position);
+    u8_token_position[_u8_token_number] = u8_possible_position;
+    return u8_possible_position;
+  } else if (obj_my_session->Is_Occupied(
+                 obj_my_session->u8_is_occupied_player_id,
+                 obj_my_session->u8_is_occupied_token_number,
+                 u8_possible_position) == true &&
+             obj_my_session->u8_is_occupied_player_id != u8_player_id &&
+             u8_possible_position > 44) {
+    // possible position is in the finish and not occupied by the player itself
     u8_token_position[_u8_token_number] = u8_possible_position;
     return u8_possible_position;
   } else {
@@ -257,11 +300,12 @@ uint8_t cla_player::Get_Player_Progress() {
     u8_overall_progress +=
         this->cla_player::Get_Token_Progress(u8_token_number);
   }
-  //return u8_overall_progress;
-  float f_scaled_progress = ((float)u8_overall_progress / 166.0f) * 20.0f + 1.0f;
+  // return u8_overall_progress;
+  float f_scaled_progress =
+      ((float)u8_overall_progress / 166.0f) * 20.0f + 1.0f;
 
   uint8_t u8_scaled_progress_rounded = (uint8_t)(f_scaled_progress + 0.5f);
-  
+
   return u8_scaled_progress_rounded;
 };
 
@@ -318,7 +362,8 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
             // std::cout << "Student thrown someone" << std::endl;
           }
           Move_Token(m, _u8_dice_value);
-          // std::cout << "Professor did a Student move was done" << std::endl;
+          // std::cout << "Professor did a Student move was done" <<
+          // std::endl;
           return m;
         }
       }
