@@ -6,12 +6,19 @@
 volatile ASL::en_state en_current_state = ASL::setup_real_players;
 uint8_t u8_player_quantity = 1;
 uint8_t u8_computer_quantity = 0;
-volatile uint8_t u8_current_player_number = 0;
-volatile uint8_t u8_current_token_number = 0;
+
+// Use int here, as invalid values are -1
+volatile int8_t u8_current_player_number = 0;
+volatile int8_t u8_current_token_number = 0;
 uint8_t u8_dice_value = 0;
 uint8_t u8_dice_roll_counter = 3;
+LOGIC::mode en_computer_mode = LOGIC::Student;
+
+// classes
 LOGIC::cla_session *obj_session;
 ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
+
+// Variables used to check if the new position is occupied
 uint8_t u8_occupying_player;
 uint8_t u8_occupying_token;
 bool bool_occupied_flag = false;
@@ -73,9 +80,27 @@ void loop() {
     en_current_state = ASL::setup_computer_players;
     break;
   // -----------------------------------------------------------------------------
+  case ASL::setup_computer_player_mode:
+    // display mode.
+    break;
+  // -----------------------------------------------------------------------------
+  case ASL::modify_computer_player_mode:
+    // modify the computer player mode
+    switch (en_computer_mode) {
+    case LOGIC::Student:
+      en_computer_mode = LOGIC::Professor;
+      break;
+    case LOGIC::Professor:
+      en_computer_mode = LOGIC::Student;
+      break;
+    }
+    // Go back to setup state
+    en_current_state = ASL::setup_computer_player_mode;
+    break;
+  // -----------------------------------------------------------------------------
   case ASL::init_game_logic:
-    obj_session =
-        new LOGIC::cla_session(u8_player_quantity, u8_computer_quantity);
+    obj_session = new LOGIC::cla_session(
+        u8_player_quantity, u8_computer_quantity, en_computer_mode);
 #if DEBUG
     // First 4 Bits are for the current state, two for the player quantity and
     // two for computer quantity
@@ -233,6 +258,38 @@ void loop() {
       u8_dice_roll_counter = 1;
     }
     en_current_state = ASL::wait_for_dice_roll;
+    // Auto-move if we have a computer player
+    if (obj_session->array_players[u8_current_player_number]->Is_Computer()) {
+      // Computer code here
+      // Get the old position of the token.
+      uint8_t u8_old_position =
+          obj_session->array_players[u8_current_player_number]
+              ->Get_Token_Position(u8_current_token_number);
+      uint8_t u8_new_position = 0;
+      u8_dice_value = ASL::Roll_Dice();
+      obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
+                               u8_current_player_number);
+      u8_current_token_number =
+          obj_session->array_players[u8_current_player_number]->Auto_Move(
+              u8_dice_value, bool_occupied_flag);
+      if (u8_current_token_number != -1) {
+        u8_new_position = obj_session->array_players[u8_current_player_number]
+                              ->Get_Token_Position(u8_current_token_number);
+        obj_display.Move_Token(u8_current_player_number,
+                               u8_current_token_number, u8_old_position,
+                               u8_new_position);
+      }
+      if (bool_occupied_flag) {
+        u8_occupying_player = obj_session->u8_is_occupied_player_id;
+        u8_occupying_token = obj_session->u8_is_occupied_token_number;
+        obj_display.Move_Token(
+            u8_occupying_player, u8_occupying_token, u8_new_position,
+            obj_session->array_players[u8_occupying_player]->Get_Token_Position(
+                u8_occupying_token));
+        bool_occupied_flag = false;
+      }
+      en_current_state = ASL::next_player;
+    }
     break;
   // -----------------------------------------------------------------------------
   case ASL::game_finished:

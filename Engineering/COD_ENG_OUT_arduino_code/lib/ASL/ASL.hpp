@@ -13,15 +13,17 @@ typedef enum {
   modify_real_player_number,     // 1  0001 x
   setup_computer_players,        // 2  0010
   modify_computer_player_number, // 3  0011 x
-  init_game_logic,               // 4  0100 x
-  wait_for_dice_roll,            // 5  0101
-  roll_the_dice,                 // 6  0110 x
-  wait_for_player_input,         // 7  0111
-  display_token,                 // 8  1000 x
-  validate_token,                // 9  1001
-  move_token,                    // 10 1010 x
-  next_player,                   // 11 1011
-  game_finished                  // 12 1100
+  setup_computer_player_mode,    // 4  0100
+  modify_computer_player_mode,   // 5  0101
+  init_game_logic,               // 6  0110
+  wait_for_dice_roll,            // 7  0111
+  roll_the_dice,                 // 8  1000
+  wait_for_player_input,         // 9  1001
+  display_token,                 // 10 1010
+  validate_token,                // 11 1011
+  move_token,                    // 12 1100
+  next_player,                   // 13 1101
+  game_finished                  // 14 1110
 } en_state;
 
 typedef enum { off = 0, fast, slow } en_blink_mode;

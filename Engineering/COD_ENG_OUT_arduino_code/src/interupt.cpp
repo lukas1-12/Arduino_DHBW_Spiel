@@ -28,6 +28,15 @@ ISR(INT4_vect) {
     break;
   case ASL::modify_computer_player_number:
     break;
+  case ASL::setup_computer_player_mode:
+    en_current_state = ASL::modify_computer_player_mode;
+    break;
+  case ASL::modify_computer_player_mode:
+    // NOP
+    break;
+  case ASL::init_game_logic:
+    // NOP
+    break;
   case ASL::wait_for_dice_roll:
     en_current_state = ASL::roll_the_dice;
     break;
@@ -49,6 +58,9 @@ ISR(INT4_vect) {
     // NOP
     break;
   case ASL::move_token:
+    // NOP
+    break;
+  case ASL::next_player:
     // NOP
     break;
   case ASL::game_finished:
@@ -86,9 +98,18 @@ ISR(INT5_vect) {
     // NOP
     break;
   case ASL::setup_computer_players:
-    en_current_state = ASL::init_game_logic;
+    en_current_state = ASL::setup_computer_player_mode;
     break;
   case ASL::modify_computer_player_number:
+    break;
+  case ASL::setup_computer_player_mode:
+    en_current_state = ASL::init_game_logic;
+    break;
+  case ASL::modify_computer_player_mode:
+    // NOP
+    break;
+  case ASL::init_game_logic:
+    // NOP
     break;
   case ASL::wait_for_dice_roll:
     // NOP
@@ -103,7 +124,13 @@ ISR(INT5_vect) {
   case ASL::display_token:
     // NOP
     break;
+  case ASL::validate_token:
+    // NOP
+    break;
   case ASL::move_token:
+    // NOP
+    break;
+  case ASL::next_player:
     // NOP
     break;
   case ASL::game_finished:
