@@ -1,8 +1,9 @@
 #include "logic.hpp"
-#include <cstdint>
-
 #ifndef __AVR__
+#include <cstdint>
 #include <iostream>
+#else 
+#include <Arduino.h>
 #endif
 
 namespace LOGIC {

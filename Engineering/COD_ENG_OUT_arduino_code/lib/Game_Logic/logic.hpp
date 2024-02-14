@@ -1,4 +1,8 @@
+#ifndef __AVR__
 #include <cstdint>
+#else
+#include <Arduino.h>
+#endif
 
 namespace LOGIC {
 
