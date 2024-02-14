@@ -52,6 +52,73 @@ TEST_CASE("Test Is_Startfield_occupied...", "[cla_player]") {
   REQUIRE(game.array_players[0]->Is_Start_Field_Occupied_By_Own_Token() == -1);
 }
 
+//Test all players move into finish:
+TEST_CASE("Test parallel Move into Finish", "[cla_player]") {
+  LOGIC::cla_session game(4, 0, LOGIC::Student);
+
+  // Player 0
+  game.array_players[0]->Set_Token_Position(0, 40);
+  game.array_players[0]->Set_Token_Position(1, 41);
+  game.array_players[0]->Set_Token_Position(2, 42);
+  game.array_players[0]->Set_Token_Position(3, 43);
+  game.array_players[0]->Move_Token(0, 5);
+  game.array_players[0]->Move_Token(1, 5);
+  game.array_players[0]->Move_Token(2, 5);
+  game.array_players[0]->Move_Token(3, 5);
+
+  // Player 1
+  game.array_players[1]->Set_Token_Position(0, 10);
+  game.array_players[1]->Set_Token_Position(1, 11);
+  game.array_players[1]->Set_Token_Position(2, 12);
+  game.array_players[1]->Set_Token_Position(3, 13);
+  game.array_players[1]->Move_Token(0, 6);
+  game.array_players[1]->Move_Token(1, 6);
+  game.array_players[1]->Move_Token(2, 3);
+  game.array_players[1]->Move_Token(3, 5);
+
+  // Player 2
+  game.array_players[2]->Set_Token_Position(0, 24);
+  game.array_players[2]->Set_Token_Position(1, 21);
+  game.array_players[2]->Set_Token_Position(2, 22);
+  game.array_players[2]->Set_Token_Position(3, 23);
+  game.array_players[2]->Move_Token(0, 4);
+  game.array_players[2]->Move_Token(1, 6);
+  game.array_players[2]->Move_Token(2, 4);
+  game.array_players[2]->Move_Token(3, 2);
+
+
+  // Player 3
+  game.array_players[3]->Set_Token_Position(0, 33);
+  game.array_players[3]->Set_Token_Position(1, 31);
+  game.array_players[3]->Set_Token_Position(2, 32);
+  game.array_players[3]->Set_Token_Position(3, 34);
+  game.array_players[3]->Move_Token(0, 2);
+  game.array_players[3]->Move_Token(1, 6);
+  game.array_players[3]->Move_Token(2, 6);
+  game.array_players[3]->Move_Token(3, 2);
+
+  REQUIRE(game.array_players[0]->Get_Token_Position(0) == 45);
+  REQUIRE(game.array_players[0]->Get_Token_Position(1) == 46);
+  REQUIRE(game.array_players[0]->Get_Token_Position(2) == 47);
+  REQUIRE(game.array_players[0]->Get_Token_Position(3) == 48);
+
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 46);
+  REQUIRE(game.array_players[1]->Get_Token_Position(1) == 47);
+  REQUIRE(game.array_players[1]->Get_Token_Position(2) == 45);
+  REQUIRE(game.array_players[1]->Get_Token_Position(3) == 48);
+
+  REQUIRE(game.array_players[2]->Get_Token_Position(0) == 48);
+  REQUIRE(game.array_players[2]->Get_Token_Position(1) == 47);
+  REQUIRE(game.array_players[2]->Get_Token_Position(2) == 46);
+  REQUIRE(game.array_players[2]->Get_Token_Position(3) == 45);
+
+  REQUIRE(game.array_players[3]->Get_Token_Position(0) == 45);
+  REQUIRE(game.array_players[3]->Get_Token_Position(1) == 47);
+  REQUIRE(game.array_players[3]->Get_Token_Position(2) == 48);
+  REQUIRE(game.array_players[3]->Get_Token_Position(3) == 46);
+}
+
+
 // Test hard compter player
 TEST_CASE("Test en_mode = Professor", "[cla_computer_player]") {
   LOGIC::cla_session game(2, 1, LOGIC::Professor);
@@ -78,7 +145,7 @@ TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
   game.array_players[0]->Set_Token_Position(1, 44);
   game.array_players[0]->Set_Token_Position(2, 46);
   game.array_players[0]->Set_Token_Position(3, 47);
-  REQUIRE(game.array_players[0]->Get_Player_Progress() == 21);
+  REQUIRE(game.array_players[0]->Get_Player_Progress() == 27);
 
   game.array_players[1]->Set_Token_Position(0, 1);
   game.array_players[1]->Set_Token_Position(1, 2);
@@ -90,7 +157,7 @@ TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
   game.array_players[2]->Set_Token_Position(1, 44);
   game.array_players[2]->Set_Token_Position(2, 46);
   game.array_players[2]->Set_Token_Position(3, 47);
-  REQUIRE(game.array_players[2]->Get_Player_Progress() == 21);
+  REQUIRE(game.array_players[2]->Get_Player_Progress() == 27);
 
   game.array_players[3]->Set_Token_Position(0, 1);
   game.array_players[3]->Set_Token_Position(1, 2);
@@ -102,7 +169,13 @@ TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
   game.array_players[0]->Set_Token_Position(1, 21);
   game.array_players[0]->Set_Token_Position(2, 22);
   game.array_players[0]->Set_Token_Position(3, 23);
-  REQUIRE(game.array_players[0]->Get_Player_Progress() == 9);
+  REQUIRE(game.array_players[0]->Get_Player_Progress() == 12);
+
+  game.array_players[0]->Set_Token_Position(0, 45);
+  game.array_players[0]->Set_Token_Position(1, 46);
+  game.array_players[0]->Set_Token_Position(2, 47);
+  game.array_players[0]->Set_Token_Position(3, 48);
+  REQUIRE(game.array_players[0]->Get_Player_Progress() == 28);
 }
 
 
