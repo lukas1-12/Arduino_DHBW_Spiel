@@ -126,6 +126,8 @@ TEST_CASE("Test en_mode = Professor", "[cla_computer_player]") {
 
   game.array_players[1]->Set_Token_Position(0, 25);
   game.array_players[1]->Set_Token_Position(1, 35);
+  game.array_players[1]->Set_Token_Position(2, 16);
+  game.array_players[1]->Set_Token_Position(3, 15);
   game.array_players[0]->Set_Token_Position(2, 36);
   game.array_players[0]->Set_Token_Position(3, 37);
   game.array_players[1]->Auto_Move(1, bool_is_occupied);

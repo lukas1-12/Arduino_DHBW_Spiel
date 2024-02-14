@@ -195,7 +195,7 @@ public:
   /**
    * @brief Automatic movement for a computer opponent.
    * @param _u8_dice_value The value of the rolled dice.
-   * @return The new position of the token after automatic movement.
+   * @return The token that was automatically moved.
    */
   int8_t Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag) override;
 

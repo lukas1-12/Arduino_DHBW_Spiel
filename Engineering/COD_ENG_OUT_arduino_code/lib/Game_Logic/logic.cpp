@@ -2,7 +2,7 @@
 #ifndef __AVR__
 #include <cstdint>
 #include <iostream>
-#else 
+#else
 #include <Arduino.h>
 #endif
 
@@ -314,6 +314,21 @@ uint8_t cla_player::Get_Player_Progress() {
 
 int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
                                       bool &_bool_occupied_flag) {
+  if (Is_Start_Field_Occupied_By_Own_Token() != -1) {
+    Move_Token(Is_Start_Field_Occupied_By_Own_Token(), _u8_dice_value);
+    return Is_Start_Field_Occupied_By_Own_Token();
+  } else if (_u8_dice_value == 6) {
+    bool bool_home_occupied = false;
+    for (int i = 0; i < 4; i++) {
+      if (Get_Token_Position(i) <= 4) {
+        bool_home_occupied = true;
+      }
+      if (bool_home_occupied) {
+        Move_Token(i, _u8_dice_value);
+        return i;
+      }
+    }
+  }
   bool token_moved = false;
   // std::cout << "Computer Level: " << en_mode << std::endl;
   switch (en_mode) {
