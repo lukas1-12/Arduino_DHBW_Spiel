@@ -180,6 +180,16 @@ TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
   REQUIRE(game.array_players[0]->Get_Player_Progress() == 28);
 }
 
+//Test Auto_Move
+TEST_CASE("Test Auto_Move", "[cla_player]") {
+  LOGIC::cla_session game(2, 1, LOGIC::Student);
+  bool bool_is_occupied;
+  game.array_players[0]->Set_Token_Position(0, 10);
+  game.array_players[1]->Auto_Move(6, bool_is_occupied);
+  game.array_players[1]->Auto_Move(6, bool_is_occupied);
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 21);
+}
+
 
 
 // Requirement 44: "Landet ein Benutzer mit seiner Spielfigur auf einem bereits

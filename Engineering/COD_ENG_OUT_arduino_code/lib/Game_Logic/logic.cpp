@@ -314,9 +314,11 @@ uint8_t cla_player::Get_Player_Progress() {
 
 int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
                                       bool &_bool_occupied_flag) {
-  if (Is_Start_Field_Occupied_By_Own_Token() != -1) {
-    Move_Token(Is_Start_Field_Occupied_By_Own_Token(), _u8_dice_value);
-    return Is_Start_Field_Occupied_By_Own_Token();
+  int8_t i8_start_field_occupied_by_own_token =
+      Is_Start_Field_Occupied_By_Own_Token();
+  if (i8_start_field_occupied_by_own_token != -1) {
+    Move_Token(i8_start_field_occupied_by_own_token, _u8_dice_value);
+    return i8_start_field_occupied_by_own_token;
   } else if (_u8_dice_value == 6) {
     bool bool_home_occupied = false;
     for (int i = 0; i < 4; i++) {
