@@ -167,10 +167,7 @@ void loop() {
     // Start blinking the token
     obj_display.Blink_Start(ASL::slow, -1, u8_current_player_number,
                             u8_old_position, u8_new_position);
-    // check if the new position is occupied
 
-    bool_occupied_flag = obj_session->Is_Occupied(
-        u8_occupying_player, u8_occupying_token, u8_new_position);
 #if DEBUG
     PORTK = en_current_state | (u8_current_player_number << 4) |
             (u8_current_token_number << 6);
@@ -191,29 +188,52 @@ void loop() {
           obj_session->array_players[u8_current_player_number]
               ->Is_Start_Field_Occupied_By_Own_Token();
     }
-    // variable used to determine if any token can be moved
+    // variable used to determine how many token can be moved
     uint8_t u8_token_counter = 0;
-    // Set next state to display token, might be changed later in the while
-    // loop.
-    en_current_state = ASL::display_token;
-    while (obj_session->array_players[u8_current_player_number]
-               ->Calculate_Possible_Position(u8_current_token_number,
-                                             u8_dice_value) ==
-           obj_session->array_players[u8_current_player_number]
-               ->Get_Token_Position(u8_current_token_number)) {
-      // If there is no possible move, next token is chosen
-      if (u8_current_token_number < 3) {
-        u8_current_token_number++;
-      } else {
-        u8_current_token_number = 0;
-      }
-      u8_token_counter++;
-      if (u8_token_counter > 4) {
-        // If no token can be moved, next player is chosen
-        en_current_state = ASL::next_player;
-        break;
+    // variable used to determine the next movable Token
+    int8_t u8_next_movable_token = -1;
+    // check how many tokens can be moved:
+    for (uint8_t i = 0; i < 4; i++) {
+      if (obj_session->array_players[u8_current_player_number]
+              ->Calculate_Possible_Position(i, u8_dice_value) !=
+          obj_session->array_players[u8_current_player_number]
+              ->Get_Token_Position(i)) {
+        u8_token_counter++;
+        // determine the next movable token
+        if (u8_next_movable_token == -1) {
+          // if it is -1, no token was found yet, so use the current token
+          u8_next_movable_token = i;
+        } else if ((u8_next_movable_token < u8_current_token_number) &&
+                   (i >= u8_current_token_number)) {
+          // we want the smallest token number that is larger than the current
+          // token number, if there is one.
+          u8_next_movable_token = i;
+        }
       }
     }
+    // set current token number to the next movable token
+    u8_current_token_number = u8_next_movable_token;
+    ~u8_next_movable_token;
+    // handle cases of tokens that can be moved.
+    if (u8_token_counter == 0) {
+      // If no token can be moved, next player is chosen
+      en_current_state = ASL::next_player;
+    } else if (u8_token_counter == 1) {
+      // If only one token can be moved, it is chosen and moved.
+      en_current_state = ASL::move_token;
+    } else {
+      // If more than one token can be moved, display it, so the Player can
+      // Choose.
+      en_current_state = ASL::display_token;
+    }
+    // check if the new position is occupied and set the occupied flag
+    // accordingly.
+    bool_occupied_flag = obj_session->Is_Occupied(
+        u8_occupying_player, u8_occupying_token,
+        obj_session->array_players[u8_current_player_number]
+            ->Calculate_Possible_Position(u8_current_token_number,
+                                          u8_dice_value));
+
   } break;
   // -----------------------------------------------------------------------------
   case ASL::move_token: {
@@ -262,10 +282,10 @@ void loop() {
       u8_dice_roll_counter = 1;
     }
     en_current_state = ASL::wait_for_dice_roll;
-    // Auto-move if we have a computer player
+    // ------ Auto-move if we have a computer player ---------
     if (obj_session->array_players[u8_current_player_number]->Is_Computer()) {
       // Computer code here
-      // Get the old position of the token.
+      // Get the old position of the token. THIS IS WRONG. NEEDS TO BE CHANGED
       uint8_t u8_old_position =
           obj_session->array_players[u8_current_player_number]
               ->Get_Token_Position(u8_current_token_number);
