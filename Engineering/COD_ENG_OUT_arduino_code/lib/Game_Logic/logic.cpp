@@ -247,7 +247,7 @@ status cla_player::Get_Player_Status() {
     return Start; // all tokens are in start
   } else if (u8_status > 0 &&
              u8_status <
-                 10) { // at least one token is on the track, rest is in start
+                 4) { // at least one token is on the track, rest is in start
     return Start_Track;
   } else if (u8_status == 10 or u8_status == 20 or
              u8_status == 30) { // max 3 token are finished, rest in start
