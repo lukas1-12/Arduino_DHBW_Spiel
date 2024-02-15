@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cstdint>
-#include <logic.hpp>
 #include <iostream>
+#include <logic.hpp>
 
 TEST_CASE("Test game constructer", "[cla_session]") {
   LOGIC::cla_session game(4, 1, LOGIC::Student);
@@ -53,7 +53,7 @@ TEST_CASE("Test Is_Startfield_occupied...", "[cla_player]") {
   REQUIRE(game.array_players[0]->Is_Start_Field_Occupied_By_Own_Token() == -1);
 }
 
-//Test all players move into finish:
+// Test all players move into finish:
 TEST_CASE("Test parallel Move into Finish", "[cla_player]") {
   LOGIC::cla_session game(4, 0, LOGIC::Student);
 
@@ -87,7 +87,6 @@ TEST_CASE("Test parallel Move into Finish", "[cla_player]") {
   game.array_players[2]->Move_Token(2, 4);
   game.array_players[2]->Move_Token(3, 2);
 
-
   // Player 3
   game.array_players[3]->Set_Token_Position(0, 33);
   game.array_players[3]->Set_Token_Position(1, 31);
@@ -119,12 +118,11 @@ TEST_CASE("Test parallel Move into Finish", "[cla_player]") {
   REQUIRE(game.array_players[3]->Get_Token_Position(3) == 46);
 }
 
-
-//Test Get_Player_Progress
+// Test Get_Player_Progress
 TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
-  LOGIC::cla_session game(4, 2, LOGIC::Student);
+  LOGIC::cla_session game(4, 4, LOGIC::Student);
   game.array_players[0]->Set_Token_Position(0, 45);
-  game.array_players[0]->Set_Token_Position(1, 44);
+  game.array_players[0]->Set_Token_Position(1, 43);
   game.array_players[0]->Set_Token_Position(2, 46);
   game.array_players[0]->Set_Token_Position(3, 47);
   REQUIRE(game.array_players[0]->Get_Player_Progress() == 27);
@@ -159,7 +157,6 @@ TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
   game.array_players[0]->Set_Token_Position(3, 48);
   REQUIRE(game.array_players[0]->Get_Player_Progress() == 28);
 }
-
 
 // Requirement 44: "Landet ein Benutzer mit seiner Spielfigur auf einem bereits
 // von einem anderen Benutzer besetzten Feld, so schmeißt er diesen automatisch"

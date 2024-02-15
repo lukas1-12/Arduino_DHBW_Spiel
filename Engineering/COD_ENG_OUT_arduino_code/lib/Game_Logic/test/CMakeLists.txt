@@ -14,7 +14,9 @@ add_executable( ${PROJECT_NAME}-tests
 
   000-Main.cpp 
 
-  001-TestCase.cpp 					
+  001-TestCase.cpp 	
+  
+  002-TestCase.cpp
 
 ) 
 
