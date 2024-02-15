@@ -1,11 +1,15 @@
+#ifndef __AVR__
+
 #include "logic.hpp"
 #include <cstdint>
 #include <iostream>
+#include <random>
 
 bool bool_is_occupied;
 
 int main() {
-  LOGIC::cla_session game(3, 3, LOGIC::Professor);
+  LOGIC::cla_session game(2, 1, LOGIC::Student);
+  /*
   std::cout << "\033[31m" << (int)game.Get_Player_Quantity()
             << " Players \033[0m" << std::endl;
   std::cout << "\033[31m" << (int)game.Get_Computer_Quantity()
@@ -61,6 +65,76 @@ int main() {
   std::cout << "Possible Position of Token 1: " << (int)game.array_players[0]->Calculate_Possible_Position(1, 5) << std::endl;
   std::cout << "Possible Position of Token 2: " << (int)game.array_players[0]->Calculate_Possible_Position(2, 5) << std::endl;
   std::cout << "Possible Position of Token 3: " << (int)game.array_players[0]->Calculate_Possible_Position(3, 5) << std::endl;
+  */
+
+ /*
+  // Let 2 computers play against each other
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> distribution(1, 6);
+
+  std::cout << "###############################################" << std::endl;
+  std::cout << "\033[31m" << (int)game.Get_Player_Quantity() << " Players \033[0m" << std::endl;
+  int8_t i8_game = 1;
+  int8_t i8_player = 0;
+  int counter = 0;
+  while(i8_game) {
+    std::cout << "\033[31m" << "Player " << (int)i8_player << " is on turn \033[0m" << std::endl;
+    for(int w = 0; w < 4; w++) {
+      std::cout << "Token " << w << " is on position " << (int)game.array_players[i8_player]->Get_Token_Position(w) << std::endl;
+    }
+    int dice_value = 0;
+    std::cout << "Please roll the dice:" << std::endl;
+    dice_value = distribution(gen);
+    std::cout << "Dice value: " << (int)dice_value << std::endl;
+
+    if(dice_value > 6) {
+      i8_game = 0;
+      break;
+    }
+    game.array_players[i8_player]->Auto_Move(dice_value, bool_is_occupied);
+
+    for(int w = 0; w < 4; w++) {
+      std::cout << "Token " << w << " is on position " << (int)game.array_players[i8_player]->Get_Token_Position(w) << std::endl;
+    }
+
+    counter = counter + 1;
+    
+    if(game.array_players[i8_player]->Get_Player_Progress() == 28){
+      std::cout << "Player " << (int)i8_player << " won the game" << std::endl;
+      i8_game = 0;
+    };
+    if(i8_player == 2){
+    i8_player = 0;
+    } else {
+      i8_player = i8_player + 1;
+    }
+    std::cout << "-----------------------------------------------" << std::endl;
+  }
+    std::cout << "###############################################" << std::endl;
+    std::cout << "Game finished with " << counter << " player moves" << std::endl;
 
   return 0;
+*/
+
+  bool bool_is_occupied;
+  game.array_players[0]->Move_Token(0, 6);
+  std::cout << "Token 0 of Player 0 is now at: " << (int)game.array_players[0]->Get_Token_Position(0) << std::endl;
+  game.array_players[0]->Move_Token(0, 4);
+  std::cout << "Token 0 of Player 0 is now at: " << (int)game.array_players[0]->Get_Token_Position(0) << std::endl;
+  std::cout << "Return Value of Auto Move: " << (int)game.array_players[1]->Auto_Move(6, bool_is_occupied) << std::endl;
+  std::cout << "Token 0 of Player 1 is now at: " << (int)game.array_players[1]->Get_Token_Position(0) << std::endl;
+  std::cout << "Token 1 of Player 1 is now at: " << (int)game.array_players[1]->Get_Token_Position(1) << std::endl;
+  std::cout << "Token 2 of Player 1 is now at: " << (int)game.array_players[1]->Get_Token_Position(2) << std::endl;
+  std::cout << "Token 3 of Player 1 is now at: " << (int)game.array_players[1]->Get_Token_Position(3) << std::endl;
+  std::cout << "Return Value of Auto Move: " << (int)game.array_players[1]->Auto_Move(6, bool_is_occupied) << std::endl;
+  std::cout << "Move 2 of Player 1-----------------------------------------------" << std::endl;
+  std::cout << "Token 0 of Player 1 is now at: " << (int)game.array_players[1]->Get_Token_Position(0) << std::endl;
+  std::cout << "Token 1 of Player 1 is now at: " << (int)game.array_players[1]->Get_Token_Position(1) << std::endl;
+  std::cout << "Token 2 of Player 1 is now at: " << (int)game.array_players[1]->Get_Token_Position(2) << std::endl;
+  std::cout << "Token 3 of Player 1 is now at: " << (int)game.array_players[1]->Get_Token_Position(3) << std::endl;
+
+
 }
+
+#endif

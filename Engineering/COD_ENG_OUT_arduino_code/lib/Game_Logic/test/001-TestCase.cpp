@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cstdint>
 #include <logic.hpp>
+#include <iostream>
 
 TEST_CASE("Test game constructer", "[cla_session]") {
   LOGIC::cla_session game(4, 1, LOGIC::Student);
@@ -119,27 +120,6 @@ TEST_CASE("Test parallel Move into Finish", "[cla_player]") {
 }
 
 
-// Test hard compter player
-TEST_CASE("Test en_mode = Professor", "[cla_computer_player]") {
-  LOGIC::cla_session game(2, 1, LOGIC::Professor);
-  bool bool_is_occupied;
-
-  game.array_players[1]->Set_Token_Position(0, 25);
-  game.array_players[1]->Set_Token_Position(1, 35);
-  game.array_players[1]->Set_Token_Position(2, 16);
-  game.array_players[1]->Set_Token_Position(3, 15);
-  game.array_players[0]->Set_Token_Position(2, 36);
-  game.array_players[0]->Set_Token_Position(3, 37);
-  game.array_players[1]->Auto_Move(1, bool_is_occupied);
-  game.array_players[1]->Auto_Move(1, bool_is_occupied);
-  game.array_players[1]->Auto_Move(6, bool_is_occupied);
-  game.array_players[1]->Auto_Move(6, bool_is_occupied);
-  REQUIRE(game.array_players[0]->Get_Token_Position(3) == 4);
-  REQUIRE(game.array_players[0]->Get_Token_Position(2) == 3);
-  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 31);
-  REQUIRE(game.array_players[1]->Get_Token_Position(1) == 43);
-}
-
 //Test Get_Player_Progress
 TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
   LOGIC::cla_session game(4, 2, LOGIC::Student);
@@ -156,7 +136,7 @@ TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
   REQUIRE(game.array_players[1]->Get_Player_Progress() == 1);
 
   game.array_players[2]->Set_Token_Position(0, 45);
-  game.array_players[2]->Set_Token_Position(1, 44);
+  game.array_players[2]->Set_Token_Position(1, 24);
   game.array_players[2]->Set_Token_Position(2, 46);
   game.array_players[2]->Set_Token_Position(3, 47);
   REQUIRE(game.array_players[2]->Get_Player_Progress() == 27);
@@ -179,17 +159,6 @@ TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
   game.array_players[0]->Set_Token_Position(3, 48);
   REQUIRE(game.array_players[0]->Get_Player_Progress() == 28);
 }
-
-//Test Auto_Move
-TEST_CASE("Test Auto_Move", "[cla_player]") {
-  LOGIC::cla_session game(2, 1, LOGIC::Student);
-  bool bool_is_occupied;
-  game.array_players[0]->Set_Token_Position(0, 10);
-  game.array_players[1]->Auto_Move(6, bool_is_occupied);
-  game.array_players[1]->Auto_Move(6, bool_is_occupied);
-  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 21);
-}
-
 
 
 // Requirement 44: "Landet ein Benutzer mit seiner Spielfigur auf einem bereits

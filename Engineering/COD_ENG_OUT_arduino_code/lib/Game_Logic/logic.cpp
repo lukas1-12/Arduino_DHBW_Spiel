@@ -103,7 +103,10 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
     } else {
       return u8_start_position;
     }
-  } else if (obj_my_session->Is_Occupied(
+  }
+
+  /* 
+  else if (obj_my_session->Is_Occupied(
                  obj_my_session->u8_is_occupied_player_id,
                  obj_my_session->u8_is_occupied_token_number,
                  u8_token_position[_u8_token_number] + _u8_dice_value) ==
@@ -111,7 +114,9 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
              obj_my_session->u8_is_occupied_player_id == u8_player_id) {
     return u8_token_position[_u8_token_number]; // token would throw itself ->
                                                 // invalide move
-  } else if (u8_token_position[_u8_token_number] <= 4 &&
+  } */
+
+  else if (u8_token_position[_u8_token_number] <= 4 &&
              _u8_dice_value != 6) { // token is in the home field and would
                                     // not move onto the track
     return u8_token_position[_u8_token_number];
@@ -132,8 +137,7 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
                        // the finish and finish is not blocked by own
                        // token
     return Get_Token_Progress(_u8_token_number) + _u8_dice_value + 5;
-  } else if (this->Get_Token_Progress(_u8_token_number) + _u8_dice_value > 39 &&
-             this->Get_Token_Progress(_u8_token_number) + _u8_dice_value >
+  } else if (this->Get_Token_Progress(_u8_token_number) + _u8_dice_value >
                  43) { // token is on the track and would move out of the
                        // finish
     return u8_token_position[_u8_token_number];
@@ -142,9 +146,9 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
              obj_my_session->Is_Occupied(
                  obj_my_session->u8_is_occupied_player_id,
                  obj_my_session->u8_is_occupied_token_number,
-                 u8_token_position[_u8_token_number + _u8_dice_value]) &&
+                 u8_token_position[_u8_token_number] + _u8_dice_value) &&
              obj_my_session->u8_is_occupied_player_id == u8_player_id) {
-    // token is in the finish and would not move out of the finish and finish is
+    // token is in the finish and would not move out of the finish and possible position is
     // blocked by own token
     return u8_token_position[_u8_token_number];
   } else if (u8_token_position[_u8_token_number] > 44 &&
@@ -163,6 +167,12 @@ uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
         44) { // token is on track and would move out of the track
       u8_possible_position = u8_possible_position - 40;
     }
+    if(obj_my_session->Is_Occupied(obj_my_session->u8_is_occupied_player_id,
+                                   obj_my_session->u8_is_occupied_token_number,
+                                   u8_possible_position) &&
+       obj_my_session->u8_is_occupied_player_id == u8_player_id) {
+      return u8_token_position[_u8_token_number];
+    }
     return u8_possible_position;
   }
 };
@@ -171,22 +181,19 @@ uint8_t cla_player::Move_Token(uint8_t _u8_token_number,
                                uint8_t _u8_dice_value) {
   uint8_t u8_possible_position =
       Calculate_Possible_Position(_u8_token_number, _u8_dice_value);
+  bool bool_is_occupied = obj_my_session->Is_Occupied(
+      obj_my_session->u8_is_occupied_player_id,
+      obj_my_session->u8_is_occupied_token_number, u8_possible_position);
   if (u8_possible_position ==
       Get_Token_Position(
           _u8_token_number)) { // token stays on the same position (e.g would
                                // move out of the finish)
     return Get_Token_Position(_u8_token_number);
-  } else if (obj_my_session->Is_Occupied(
-                 obj_my_session->u8_is_occupied_player_id,
-                 obj_my_session->u8_is_occupied_token_number,
-                 u8_possible_position) == false) {
+  } else if (bool_is_occupied == false) {
     // possible position is not occupied
     u8_token_position[_u8_token_number] = u8_possible_position;
     return u8_possible_position;
-  } else if (obj_my_session->Is_Occupied(
-                 obj_my_session->u8_is_occupied_player_id,
-                 obj_my_session->u8_is_occupied_token_number,
-                 u8_possible_position) == true &&
+  } else if (bool_is_occupied == true &&
              obj_my_session->u8_is_occupied_player_id != u8_player_id &&
              u8_possible_position <= 44) {
     // possible position is occupied by another player -> other player gets
@@ -194,10 +201,7 @@ uint8_t cla_player::Move_Token(uint8_t _u8_token_number,
     obj_my_session->Return_Home(u8_possible_position);
     u8_token_position[_u8_token_number] = u8_possible_position;
     return u8_possible_position;
-  } else if (obj_my_session->Is_Occupied(
-                 obj_my_session->u8_is_occupied_player_id,
-                 obj_my_session->u8_is_occupied_token_number,
-                 u8_possible_position) == true &&
+  } else if (bool_is_occupied == true &&
              obj_my_session->u8_is_occupied_player_id != u8_player_id &&
              u8_possible_position > 44) {
     // possible position is in the finish and not occupied by the player itself
@@ -246,7 +250,7 @@ uint8_t cla_player::Get_Token_Progress(uint8_t _u8_token_number) {
       i8_token_progress =
           u8_token_position[_u8_token_number] + 40 - u8_start_position;
     }
-    if (u8_token_position[_u8_token_number] >= 44) {
+    if (u8_token_position[_u8_token_number] > 44) {
       i8_token_progress = u8_token_position[_u8_token_number] -
                           5; // to compensate the offset on the field
     }
@@ -340,13 +344,11 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
       if (Calculate_Possible_Position(n, _u8_dice_value) > 4 &&
           Calculate_Possible_Position(n, _u8_dice_value) !=
               Get_Token_Position(n)) {
-        if (obj_my_session->Is_Occupied(
-                obj_my_session->u8_is_occupied_player_id,
-                obj_my_session->u8_is_occupied_token_number,
-                Calculate_Possible_Position(n, _u8_dice_value)) == true) {
-          _bool_occupied_flag = true;
-          // std::cout << "Student thrown someone" << std::endl;
-        }
+        _bool_occupied_flag = obj_my_session->Is_Occupied(
+            obj_my_session->u8_is_occupied_player_id,
+            obj_my_session->u8_is_occupied_token_number,
+            Calculate_Possible_Position(n, _u8_dice_value));
+
         Move_Token(n, _u8_dice_value);
         // std::cout << "End of Student move" << std::endl;
         return n; // Token number that was moved
@@ -374,13 +376,10 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
         if (Calculate_Possible_Position(m, _u8_dice_value) > 4 &&
             Calculate_Possible_Position(m, _u8_dice_value) !=
                 Get_Token_Position(m)) {
-          if (obj_my_session->Is_Occupied(
-                  obj_my_session->u8_is_occupied_player_id,
-                  obj_my_session->u8_is_occupied_token_number,
-                  Calculate_Possible_Position(m, _u8_dice_value)) == true) {
-            _bool_occupied_flag = true;
-            // std::cout << "Student thrown someone" << std::endl;
-          }
+          _bool_occupied_flag = obj_my_session->Is_Occupied(
+              obj_my_session->u8_is_occupied_player_id,
+              obj_my_session->u8_is_occupied_token_number,
+              Calculate_Possible_Position(m, _u8_dice_value));
           Move_Token(m, _u8_dice_value);
           // std::cout << "Professor did a Student move was done" <<
           // std::endl;
