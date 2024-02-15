@@ -6,6 +6,7 @@
 #include <random>
 
 bool bool_is_occupied;
+uint8_t u8_old_position;
 
 int main() {
   LOGIC::cla_session game(3, 3, LOGIC::Professor);
@@ -92,7 +93,7 @@ int main() {
       i8_game = 0;
       break;
     }
-    game.array_players[i8_player]->Auto_Move(dice_value, bool_is_occupied);
+    game.array_players[i8_player]->Auto_Move(dice_value, bool_is_occupied, u8_old_position);
 
     for(int w = 0; w < 4; w++) {
       std::cout << "Token " << w << " is on position " << (int)game.array_players[i8_player]->Get_Token_Position(w) << std::endl;

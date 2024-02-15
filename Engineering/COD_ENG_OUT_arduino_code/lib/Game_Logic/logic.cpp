@@ -292,10 +292,12 @@ uint8_t cla_player::Get_Player_Progress() {
 };
 
 int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
-                                      bool &_bool_occupied_flag) {
+                                      bool &_bool_occupied_flag,
+                                      uint8_t &_u8_old_position) {
   int8_t i8_start_field_occupied_by_own_token =
       Is_Start_Field_Occupied_By_Own_Token();
   if (i8_start_field_occupied_by_own_token != -1) {
+    _u8_old_position = Get_Token_Position(i8_start_field_occupied_by_own_token);
     Move_Token(i8_start_field_occupied_by_own_token, _u8_dice_value);
     return i8_start_field_occupied_by_own_token;
   } else if (_u8_dice_value == 6) {
@@ -305,6 +307,7 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
         bool_home_occupied = true;
       }
       if (bool_home_occupied) {
+        _u8_old_position = Get_Token_Position(i);
         Move_Token(i, _u8_dice_value);
         return i;
       }
@@ -323,7 +326,7 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
             obj_my_session->u8_is_occupied_player_id,
             obj_my_session->u8_is_occupied_token_number,
             Calculate_Possible_Position(n, _u8_dice_value));
-
+        _u8_old_position = Get_Token_Position(n);
         Move_Token(n, _u8_dice_value);
         // std::cout << "End of Student move" << std::endl;
         return n; // Token number that was moved
@@ -339,6 +342,7 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
               Calculate_Possible_Position(n, _u8_dice_value)) == true &&
           obj_my_session->u8_is_occupied_player_id != u8_player_id &&
           Calculate_Possible_Position(n, _u8_dice_value) <= 44) {
+        _u8_old_position = Get_Token_Position(n);
         Move_Token(n, _u8_dice_value);
         token_moved = true;
         _bool_occupied_flag = true;
@@ -356,6 +360,7 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
               obj_my_session->u8_is_occupied_player_id,
               obj_my_session->u8_is_occupied_token_number,
               Calculate_Possible_Position(m, _u8_dice_value));
+          _u8_old_position = Get_Token_Position(m);
           Move_Token(m, _u8_dice_value);
           // std::cout << "Professor did a Student move was done" <<
           // std::endl;
@@ -388,8 +393,8 @@ uint8_t cla_session::Get_Is_Occupied_Token_Number() {
   return u8_is_occupied_token_number;
 };
 
-int8_t cla_player::Auto_Move(uint8_t _u8_dice_value,
-                             bool &_bool_occupied_flag) {
+int8_t cla_player::Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag,
+                             uint8_t &_u8_old_position) {
   return 10;
 };
 
