@@ -182,12 +182,31 @@ void loop() {
             (u8_current_token_number << 6);
 #endif
     en_current_state = ASL::wait_for_player_input;
+    LOGIC::status en_player_state =
+        obj_session->array_players[u8_current_player_number]
+            ->Get_Player_Status();
     // check if a token must be moved from starting square
     if (obj_session->array_players[u8_current_player_number]
             ->Is_Start_Field_Occupied_By_Own_Token() != -1) {
       u8_current_token_number =
           obj_session->array_players[u8_current_player_number]
               ->Is_Start_Field_Occupied_By_Own_Token();
+      en_current_state = ASL::move_token;
+    } else if ((u8_dice_value == 6) &&
+               ((en_player_state == LOGIC::Start) ||
+                (en_player_state == LOGIC::Start_Track) ||
+                (en_player_state == LOGIC::Start_Finished) ||
+                (en_player_state == LOGIC::Start_Track_Finished))) {
+      // if a 6 was rolled and there are still token in the starting square, the
+      // player cannot choose a token to move, so lets look for a token in the
+      // starting square
+      u8_current_token_number = 0;
+      while (obj_session->array_players[u8_current_player_number]
+                 ->Get_Token_Position(u8_current_token_number) >= 5) {
+        // increase token number as long as the token is not in the starting
+        // square
+        u8_current_token_number++;
+      }
       en_current_state = ASL::move_token;
     }
     // if no specific token must be moved, check if any token can be moved
