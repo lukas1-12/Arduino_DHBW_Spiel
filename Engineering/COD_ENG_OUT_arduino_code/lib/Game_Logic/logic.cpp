@@ -92,7 +92,7 @@ bool cla_session::Return_Home(uint8_t _u8_affected_track_position) {
 uint8_t cla_player::Calculate_Possible_Position(uint8_t _u8_token_number,
                                                 uint8_t _u8_dice_value) {
   uint8_t u8_token_progress = Get_Token_Progress(_u8_token_number);
-  u_int8_t u8_possible_absolute_position = 0;
+  uint8_t u8_possible_absolute_position = 0;
 
   if ((u8_token_position[_u8_token_number] <= 4) &&
       (_u8_dice_value ==
