@@ -188,43 +188,47 @@ void loop() {
       u8_current_token_number =
           obj_session->array_players[u8_current_player_number]
               ->Is_Start_Field_Occupied_By_Own_Token();
+      en_current_state = ASL::move_token;
     }
-    // variable used to determine how many token can be moved
-    uint8_t u8_token_counter = 0;
-    // variable used to determine the next movable Token
-    int8_t u8_next_movable_token = -1;
-    // check how many tokens can be moved:
-    for (uint8_t i = 0; i < 4; i++) {
-      if (obj_session->array_players[u8_current_player_number]
-              ->Calculate_Possible_Position(i, u8_dice_value) !=
-          obj_session->array_players[u8_current_player_number]
-              ->Get_Token_Position(i)) {
-        u8_token_counter++;
-        // determine the next movable token
-        if (u8_next_movable_token == -1) {
-          // if it is -1, no token was found yet, so use the current token
-          u8_next_movable_token = i;
-        } else if ((u8_next_movable_token < u8_current_token_number) &&
-                   (i >= u8_current_token_number)) {
-          // we want the smallest token number that is larger than the current
-          // token number, if there is one.
-          u8_next_movable_token = i;
+    // if no specific token must be moved, check if any token can be moved
+    else {
+      // variable used to determine how many token can be moved
+      uint8_t u8_token_counter = 0;
+      // variable used to determine the next movable Token
+      int8_t u8_next_movable_token = -1;
+      // check how many tokens can be moved:
+      for (uint8_t i = 0; i < 4; i++) {
+        if (obj_session->array_players[u8_current_player_number]
+                ->Calculate_Possible_Position(i, u8_dice_value) !=
+            obj_session->array_players[u8_current_player_number]
+                ->Get_Token_Position(i)) {
+          u8_token_counter++;
+          // determine the next movable token
+          if (u8_next_movable_token == -1) {
+            // if it is -1, no token was found yet, so use the current token
+            u8_next_movable_token = i;
+          } else if ((u8_next_movable_token < u8_current_token_number) &&
+                     (i >= u8_current_token_number)) {
+            // we want the smallest token number that is larger than the current
+            // token number, if there is one.
+            u8_next_movable_token = i;
+          }
         }
       }
-    }
-    // set current token number to the next movable token
-    u8_current_token_number = u8_next_movable_token;
-    // handle cases of tokens that can be moved.
-    if (u8_token_counter == 0) {
-      // If no token can be moved, next player is chosen
-      en_current_state = ASL::next_player;
-    } else if (u8_token_counter == 1) {
-      // If only one token can be moved, it is chosen and moved.
-      en_current_state = ASL::move_token;
-    } else {
-      // If more than one token can be moved, display it, so the Player can
-      // Choose.
-      en_current_state = ASL::display_token;
+      // set current token number to the next movable token
+      u8_current_token_number = u8_next_movable_token;
+      // handle cases of tokens that can be moved.
+      if (u8_token_counter == 0) {
+        // If no token can be moved, next player is chosen
+        en_current_state = ASL::next_player;
+      } else if (u8_token_counter == 1) {
+        // If only one token can be moved, it is chosen and moved.
+        en_current_state = ASL::move_token;
+      } else {
+        // If more than one token can be moved, display it, so the Player can
+        // Choose.
+        en_current_state = ASL::display_token;
+      }
     }
     // check if the new position is occupied and set the occupied flag
     // accordingly.
@@ -233,7 +237,6 @@ void loop() {
         obj_session->array_players[u8_current_player_number]
             ->Calculate_Possible_Position(u8_current_token_number,
                                           u8_dice_value));
-
   } break;
   // -----------------------------------------------------------------------------
   case ASL::move_token: {
