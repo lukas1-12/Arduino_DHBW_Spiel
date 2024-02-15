@@ -162,4 +162,9 @@ ISR(TIMER3_COMPA_vect) {
   EIFR |= 0b00110000;
 }
 
-ISR(TIMER4_COMPA_vect) { obj_display.Blink_Update(); }
+ISR(TIMER4_COMPA_vect) {
+#if TIMING_DEBUG
+  PORTK ^= 0xff;
+#endif
+  obj_display.Blink_Update();
+}

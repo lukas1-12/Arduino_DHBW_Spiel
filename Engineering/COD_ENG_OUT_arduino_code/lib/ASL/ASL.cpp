@@ -81,9 +81,9 @@ void ASL::cla_display::Blink_Start(en_blink_mode _en_blink_mode,
 
   // Setup Timer 4 to CTC Mode with a prescaler of 256:
   TCCR4A = 0;
-  // WGM 42:40 = 010 -> CTC Mode
-  TCCR0A |= (1 << WGM42);
   TCCR4B = 0;
+  // WGM 42:40 = 010 -> CTC Mode
+  TCCR4B |= (1 << WGM42);
   // CS 42:40 = 100 -> Prescaler 256
   TCCR4B |= (1 << CS42);
   // Set Output Compare:

@@ -18,8 +18,8 @@
 #define WHITE_BRIGHT 0xffff
 
 // See Calculation Excel for more information on the timing.
-#define FAST_BLINK 15625
-#define SLOW_BLINK 31250
+#define FAST_BLINK 7813
+#define SLOW_BLINK 15625
 
 // Define the Debug Flag
 #define DEBUG true
