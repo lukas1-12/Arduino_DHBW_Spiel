@@ -166,6 +166,7 @@ void loop() {
                                                         u8_dice_value);
     // Start blinking the token
     obj_display.Blink_Start(ASL::slow, -1, u8_current_player_number,
+                            u8_occupying_player, bool_occupied_flag,
                             u8_old_position, u8_new_position);
 
 #if DEBUG
@@ -213,7 +214,6 @@ void loop() {
     }
     // set current token number to the next movable token
     u8_current_token_number = u8_next_movable_token;
-    ~u8_next_movable_token;
     // handle cases of tokens that can be moved.
     if (u8_token_counter == 0) {
       // If no token can be moved, next player is chosen
@@ -295,7 +295,7 @@ void loop() {
                                u8_current_player_number);
       u8_current_token_number =
           obj_session->array_players[u8_current_player_number]->Auto_Move(
-              u8_dice_value, bool_occupied_flag);
+              u8_dice_value, bool_occupied_flag, u8_old_position);
       if (u8_current_token_number != -1) {
         u8_new_position = obj_session->array_players[u8_current_player_number]
                               ->Get_Token_Position(u8_current_token_number);

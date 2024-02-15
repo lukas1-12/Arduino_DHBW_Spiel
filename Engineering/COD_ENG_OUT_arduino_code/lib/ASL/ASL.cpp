@@ -69,6 +69,8 @@ void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player) {
 void ASL::cla_display::Blink_Start(en_blink_mode _en_blink_mode,
                                    int8_t _u8_blink_cycles,
                                    uint8_t _u8_blink_player_number,
+                                   int8_t _u8_blink_occupying_player,
+                                   bool _bool_occupied_flag,
                                    uint8_t _u8_old_position,
                                    uint8_t _u8_new_position) {
   // write transfer parameters to class variables:
@@ -78,6 +80,11 @@ void ASL::cla_display::Blink_Start(en_blink_mode _en_blink_mode,
   u8_blink_counter = _u8_blink_cycles;
   u8_blink_state = 0;
   en_current_blink_mode = _en_blink_mode;
+  if (_bool_occupied_flag) {
+    u8_blink_occupying_player = _u8_blink_occupying_player;
+  } else {
+    u8_blink_occupying_player = -1;
+  }
 
   // Setup Timer 4 to CTC Mode with a prescaler of 256:
   TCCR4A = 0;
@@ -106,7 +113,11 @@ void ASL::cla_display::Blink_Update() {
     u8_blink_state = 1;
   } else {
     Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
-    Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
+    if (u8_blink_occupying_player != -1) {
+      Modify_Position(u8_blink_new_position, u8_blink_occupying_player, true);
+    } else {
+      Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
+    }
     u8_blink_state = 0;
   }
 }
@@ -122,7 +133,11 @@ void ASL::cla_display::Blink_Stop() {
     OCR4A = 0;
     // Reset display:
     Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
-    Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
+    if (u8_blink_occupying_player != -1) {
+      Modify_Position(u8_blink_new_position, u8_blink_occupying_player, true);
+    } else {
+      Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
+    }
   }
   en_current_blink_mode = off;
 }

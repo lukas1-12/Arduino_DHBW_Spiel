@@ -103,6 +103,7 @@ class cla_display {
   uint8_t u8_blink_old_position = 0;
   uint8_t u8_blink_new_position = 0;
   uint8_t u8_blink_player_number = 0;
+  int8_t u8_blink_occupying_player = -1;
   uint8_t u8_blink_counter = 0;
   uint8_t u8_blink_state = 0;
   en_blink_mode en_current_blink_mode = off;
@@ -161,8 +162,9 @@ public:
    * \param _u8_new_position new position of the token
    */
   void Blink_Start(en_blink_mode _u8_blink_mode, int8_t _u8_blink_cycles,
-                   uint8_t _u8_blink_player_number, uint8_t _u8_old_position,
-                   uint8_t _u8_new_position);
+                   uint8_t _u8_blink_player_number,
+                   int8_t _u8_blink_occupying_player, bool _bool_occupied_flag,
+                   uint8_t _u8_old_position, uint8_t _u8_new_position);
 
   void Blink_Update();
 
