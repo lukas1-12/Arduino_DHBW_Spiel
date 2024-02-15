@@ -23,4 +23,5 @@
 
 // Define the Debug Flag
 #define DEBUG true
+#define TIMING_DEBUG false
 #define RANDOM_DICE false

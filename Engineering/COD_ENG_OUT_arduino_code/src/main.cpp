@@ -184,6 +184,13 @@ void loop() {
             (u8_current_token_number << 6);
 #endif
     en_current_state = ASL::wait_for_player_input;
+    // check if a token must be moved from starting square
+    if (obj_session->array_players[u8_current_player_number]
+            ->Is_Start_Field_Occupied_By_Own_Token() != -1) {
+      u8_current_token_number =
+          obj_session->array_players[u8_current_player_number]
+              ->Is_Start_Field_Occupied_By_Own_Token();
+    }
     // variable used to determine if any token can be moved
     uint8_t u8_token_counter = 0;
     // Set next state to display token, might be changed later in the while
@@ -244,10 +251,7 @@ void loop() {
       u8_current_player_number = 0;
     }
     obj_display.Display_Current_Player(u8_current_player_number);
-#if DEBUG
-    PORTK = en_current_state | (u8_current_player_number << 4) |
-            (u8_current_token_number << 6);
-#endif
+
     // Set the dice roll counter for the next player:
     if (obj_session->array_players[u8_current_player_number]
             ->Get_Player_Status() == LOGIC::Start) {
@@ -288,6 +292,10 @@ void loop() {
                 u8_occupying_token));
         bool_occupied_flag = false;
       }
+#if DEBUG
+      PORTK = en_current_state | ((u8_current_player_number << 4) && 0x0f) |
+              ((u8_current_token_number << 6) && 0x0f);
+#endif
       en_current_state = ASL::next_player;
     }
     break;
