@@ -183,6 +183,16 @@ public:
                               int8_t _i8_tokens_at_home = -1);
 
   /**
+   * \brief Display the Progress
+   * This method can display the progress of the Player.
+   *
+   * \param _u8_current_player_number The number of the current player.
+   * \param _u8_progress The progress of the player. (0:28)
+   */
+  void Display_Progress(uint8_t _u8_current_player_number,
+                        uint8_t _u8_progress);
+
+  /**
    * \brief Blink method
    *
    * This method can blink

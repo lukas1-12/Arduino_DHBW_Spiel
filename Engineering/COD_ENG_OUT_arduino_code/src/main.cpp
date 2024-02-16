@@ -302,6 +302,7 @@ void loop() {
     } else {
       u8_current_player_number = 0;
     }
+    // Calculate transfer parameter for display current player
     int8_t i8_tokens_at_home = 0;
     for (uint8_t i = 0; i < 4; i++) {
       if (obj_session->array_players[u8_current_player_number]
@@ -311,6 +312,11 @@ void loop() {
     }
     obj_display.Display_Current_Player(u8_current_player_number,
                                        i8_tokens_at_home);
+    // Display the progress bar:
+    obj_display.Display_Progress(
+        u8_current_player_number,
+        obj_session->array_players[u8_current_player_number]
+            ->Get_Player_Progress());
     //  Set the dice roll counter for the next player:
     if (obj_session->array_players[u8_current_player_number]
             ->Get_Player_Status() == LOGIC::Start) {
@@ -321,13 +327,11 @@ void loop() {
       u8_dice_roll_counter = 1;
     }
     en_current_state = ASL::wait_for_dice_roll;
-    PORTK = 0xff;
     while (obj_display.Blink_Is_On()) {
       // Wait for blinking animation to finish, so the starting square isn't
       // getting messed up by the player leaving the starting square.
       asm volatile("nop"); // Do nothing
     }
-    PORTK = 0x00;
     // ------ Auto-move if we have a computer player ---------
     if (obj_session->array_players[u8_current_player_number]->Is_Computer()) {
       while (u8_dice_roll_counter > 0) {

@@ -87,6 +87,13 @@ void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player,
   }
 }
 
+void ASL::cla_display::Display_Progress(uint8_t _u8_current_player_number,
+                                        uint8_t _u8_progress) {
+  obj_matrix->drawLine(2, 14, 29, 14, 0x00);
+  obj_matrix->drawLine(2, 14, (2 + _u8_progress), 14,
+                       u16_player_color[_u8_current_player_number][0]);
+}
+
 void ASL::cla_display::Blink_Start(
     en_blink_mode _en_blink_mode, int8_t _i8_blink_cycles,
     en_blink_type _en_blink_type, uint8_t _u8_blink_player_number,
