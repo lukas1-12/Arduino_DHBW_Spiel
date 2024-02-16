@@ -38,6 +38,7 @@ void setup() {
 }
 
 void loop() {
+  static uint8_t u8_old_position;
   switch (en_current_state) {
   // -----------------------------------------------------------------------------
   case ASL::setup_real_players:
@@ -286,15 +287,14 @@ void loop() {
     }
   } break;
   // -----------------------------------------------------------------------------
-  case ASL::next_player:
+  case ASL::next_player: {
     if (u8_current_player_number < (u8_player_quantity - 1)) {
       u8_current_player_number++;
     } else {
       u8_current_player_number = 0;
     }
     obj_display.Display_Current_Player(u8_current_player_number);
-
-    // Set the dice roll counter for the next player:
+    //  Set the dice roll counter for the next player:
     if (obj_session->array_players[u8_current_player_number]
             ->Get_Player_Status() == LOGIC::Start) {
       // roll the dice 3 times
@@ -307,10 +307,6 @@ void loop() {
     // ------ Auto-move if we have a computer player ---------
     if (obj_session->array_players[u8_current_player_number]->Is_Computer()) {
       // Computer code here
-      // Get the old position of the token. THIS IS WRONG. NEEDS TO BE CHANGED
-      uint8_t u8_old_position =
-          obj_session->array_players[u8_current_player_number]
-              ->Get_Token_Position(u8_current_token_number);
       uint8_t u8_new_position = 0;
       u8_dice_value = ASL::Roll_Dice();
       obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
@@ -340,7 +336,9 @@ void loop() {
 #endif
       en_current_state = ASL::next_player;
     }
-    break;
+    // Reset the token number for the next player
+    u8_current_token_number = 0;
+  } break;
   // -----------------------------------------------------------------------------
   case ASL::game_finished:
 
