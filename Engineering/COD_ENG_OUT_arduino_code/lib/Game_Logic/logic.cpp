@@ -57,20 +57,20 @@ cla_manual_player::cla_manual_player(uint8_t _u8_player_id,
     : cla_player(_u8_player_id, _u8_start_position, _u8_computer_quantity,
                  _obj_my_session) {}
 
-bool cla_session::Is_Occupied(uint8_t &u8_is_occupied_player_id,
-                              uint8_t &u8_is_occupied_token_number,
+bool cla_session::Is_Occupied(uint8_t &_u8_is_occupied_player_id,
+                              uint8_t &_u8_is_occupied_token_number,
                               uint8_t _u8_affected_track_position) {
   for (uint8_t i = 0; i < u8_player_quantity; i++) {
     for (uint8_t a = 0; a < 4; a++) {
       if (array_players[i]->Get_Token_Position(a) ==
           _u8_affected_track_position) {
-        u8_is_occupied_player_id = i;
-        u8_is_occupied_token_number = a;
+        _u8_is_occupied_player_id = i;
+        _u8_is_occupied_token_number = a;
         return true; // i stands for the player ID, a for the token number
       }
     }
   }
-  u8_is_occupied_player_id = 10;
+  _u8_is_occupied_player_id = 10;
   u8_is_occupied_token_number = 10;
   return false; // 10 stands for no player/token at the given track position
 }

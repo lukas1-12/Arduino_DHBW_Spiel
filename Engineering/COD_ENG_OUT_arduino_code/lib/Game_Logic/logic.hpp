@@ -53,8 +53,8 @@ public:
    * @param _u8_affected_track_position The track position to check.
    * @return true if occupied, false otherwise.
    */
-  bool Is_Occupied(uint8_t &u8_is_occupied_player_id,
-                   uint8_t &u8_is_occupied_token_number,
+  bool Is_Occupied(uint8_t &_u8_is_occupied_player_id,
+                   uint8_t &_u8_is_occupied_token_number,
                    uint8_t _u8_affected_track_position);
 
   /**
