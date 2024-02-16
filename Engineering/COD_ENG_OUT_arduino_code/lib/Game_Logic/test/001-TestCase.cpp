@@ -119,7 +119,7 @@ TEST_CASE("Test parallel Move into Finish", "[cla_player]") {
 }
 
 // Test Get_Player_Progress
-TEST_CASE("Test Get_Player_Progress", "[cla_player]") {
+TEST_CASE("Test Get_Player_Progress V1", "[cla_player]") {
   LOGIC::cla_session game(4, 4, LOGIC::Student);
   game.array_players[0]->Set_Token_Position(0, 45);
   game.array_players[0]->Set_Token_Position(1, 43);
@@ -195,6 +195,79 @@ TEST_CASE("Test Home_Position", "[cla_player]") {
   REQUIRE(game.array_players[3]->Get_Token_Position(2) == 3);
   REQUIRE(game.array_players[3]->Get_Token_Position(3) == 4);
 }
+
+
+//Test Get_Player_Status
+TEST_CASE("Test Get_Player_Status", "[cla_player]") {
+  LOGIC::cla_session game(4, 2, LOGIC::Student);
+  game.array_players[0]->Set_Token_Position(0, 45);
+  game.array_players[0]->Set_Token_Position(1, 48);
+  game.array_players[0]->Set_Token_Position(2, 46);
+  game.array_players[0]->Set_Token_Position(3, 47);
+  REQUIRE(game.array_players[0]->Get_Player_Status() == LOGIC::Finished);
+
+  game.array_players[1]->Set_Token_Position(0, 1);
+  game.array_players[1]->Set_Token_Position(1, 2);
+  game.array_players[1]->Set_Token_Position(2, 3);
+  game.array_players[1]->Set_Token_Position(3, 4);
+  REQUIRE(game.array_players[1]->Get_Player_Status() == LOGIC::Start);
+
+  game.array_players[2]->Set_Token_Position(0, 45);
+  game.array_players[2]->Set_Token_Position(1, 24);
+  game.array_players[2]->Set_Token_Position(2, 46);
+  game.array_players[2]->Set_Token_Position(3, 47);
+  REQUIRE(game.array_players[2]->Get_Player_Status() == LOGIC::Track_Finished);
+
+  game.array_players[3]->Set_Token_Position(0, 35);
+  game.array_players[3]->Set_Token_Position(1, 36);
+  game.array_players[3]->Set_Token_Position(2, 37);
+  game.array_players[3]->Set_Token_Position(3, 38);
+  REQUIRE(game.array_players[3]->Get_Player_Status() == LOGIC::Track);
+  REQUIRE(game.array_players[3]->Get_Player_Status() != LOGIC::Start_Track);
+  REQUIRE(game.array_players[3]->Get_Player_Status() != LOGIC::Start_Finished);
+  REQUIRE(game.array_players[3]->Get_Player_Status() != LOGIC::Start_Track_Finished);
+}
+
+
+//Test occuppied flag in Auto Move
+TEST_CASE("Test occupied flag in Auto_Move", "[cla_player]") {
+  bool bool_occupied = false;
+  uint8_t u8_old_position = 0;
+  LOGIC::cla_session game(2, 1, LOGIC::Student);
+  game.array_players[0]->Move_Token(0, 6);
+  game.array_players[0]->Move_Token(0, 6);
+  game.array_players[0]->Move_Token(0, 5);
+  REQUIRE(game.array_players[0]->Get_Token_Position(0) == 16);
+  game.array_players[1]->Auto_Move(6, bool_occupied, u8_old_position);
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 15);
+  REQUIRE(bool_occupied == false);
+  game.array_players[1]->Auto_Move(1, bool_occupied, u8_old_position);
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 16);
+  REQUIRE(game.array_players[0]->Get_Token_Position(0) == 1);
+  REQUIRE(bool_occupied == true);
+
+}
+
+//Test occuppied flag in Auto Move with start position
+TEST_CASE("Test occupied flag in Auto_Move with start position", "[cla_player]") {
+  bool bool_occupied = false;
+  uint8_t u8_old_position = 0;
+  LOGIC::cla_session game(2, 1, LOGIC::Student);
+  game.array_players[0]->Move_Token(0, 6);
+  game.array_players[0]->Move_Token(0, 6);
+  game.array_players[0]->Move_Token(0, 4);
+  REQUIRE(game.array_players[0]->Get_Token_Position(0) == 15);
+  game.array_players[1]->Auto_Move(6, bool_occupied, u8_old_position);
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 15);
+  REQUIRE(game.array_players[0]->Get_Token_Position(0) == 1);
+  REQUIRE(bool_occupied == true);
+  game.array_players[1]->Auto_Move(1, bool_occupied, u8_old_position);
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 16);
+  REQUIRE(bool_occupied == false);
+
+}
+
+
 
 // Requirement  52: "Erreicht eine Spielfigur das Endfeld, so begibt sie sich
 // mit den übrigen, gewürfelten Felder ins Ziel"

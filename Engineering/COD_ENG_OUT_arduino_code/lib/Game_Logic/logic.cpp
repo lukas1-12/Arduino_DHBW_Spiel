@@ -298,6 +298,11 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
       Is_Start_Field_Occupied_By_Own_Token();
   if (i8_start_field_occupied_by_own_token != -1) {
     _u8_old_position = Get_Token_Position(i8_start_field_occupied_by_own_token);
+    _bool_occupied_flag = obj_my_session->Is_Occupied(
+        obj_my_session->u8_is_occupied_player_id,
+        obj_my_session->u8_is_occupied_token_number,
+        Calculate_Possible_Position(i8_start_field_occupied_by_own_token,
+                                    _u8_dice_value));
     Move_Token(i8_start_field_occupied_by_own_token, _u8_dice_value);
     return i8_start_field_occupied_by_own_token;
   } else if (_u8_dice_value == 6) {
@@ -308,6 +313,10 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
       }
       if (bool_home_occupied) {
         _u8_old_position = Get_Token_Position(i);
+    _bool_occupied_flag = obj_my_session->Is_Occupied(
+        obj_my_session->u8_is_occupied_player_id,
+        obj_my_session->u8_is_occupied_token_number,
+        u8_start_position);
         Move_Token(i, _u8_dice_value);
         return i;
       }
