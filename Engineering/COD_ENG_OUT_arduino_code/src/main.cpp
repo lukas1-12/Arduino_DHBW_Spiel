@@ -28,7 +28,7 @@ extern void Move_Token(int8_t _i8_current_player_number,
                        uint8_t _u8_remove_position, uint8_t _u8_add_position,
                        ASL::cla_display *_obj_display,
                        LOGIC::cla_session *_obj_session,
-                       uint8_t _u8_player_quantity);
+                       uint8_t _u8_player_quantity, uint8_t _u8_dice_value);
 
 void setup() {
   obj_display.Set_Colors(0, RED_BRIGHT, RED_DARK);
@@ -59,7 +59,7 @@ void loop() {
     if (u8_player_quantity < 4) {
       u8_player_quantity++;
     } else {
-      u8_player_quantity = 1;
+      u8_player_quantity = 0;
     }
 #if DEBUG
     // First 4 Bits are for the current state, two for the player quantity and
@@ -281,7 +281,7 @@ void loop() {
                                                         u8_dice_value);
     if (bool_occupied_flag) {
       obj_display.Move_Token(
-          u8_occupying_player, u8_occupying_token, u8_new_position,
+          u8_occupying_player, u8_new_position,
           obj_session->array_players[u8_occupying_player]->Get_Token_Position(
               u8_occupying_token));
       obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
@@ -292,10 +292,10 @@ void loop() {
     // move the token on the display
     if (u8_old_position >= 5) {
       Move_Token(i8_current_player_number, u8_old_position, u8_new_position,
-                 &obj_display, obj_session, u8_player_quantity);
+                 &obj_display, obj_session, u8_player_quantity, u8_dice_value);
     } else {
-      obj_display.Move_Token(i8_current_player_number, i8_current_token_number,
-                             u8_old_position, u8_new_position);
+      obj_display.Move_Token(i8_current_player_number, u8_old_position,
+                             u8_new_position);
     }
     // move the token in the logic
     obj_session->array_players[i8_current_player_number]->Move_Token(
@@ -369,8 +369,7 @@ void loop() {
         if (bool_occupied_flag) {
           u8_occupying_player = obj_session->u8_is_occupied_player_id;
           u8_occupying_token = obj_session->u8_is_occupied_token_number;
-          obj_display.Move_Token(u8_occupying_player, u8_occupying_token,
-                                 u8_new_position,
+          obj_display.Move_Token(u8_occupying_player, u8_new_position,
                                  obj_session->array_players[u8_occupying_player]
                                      ->Get_Token_Position(u8_occupying_token));
           obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
@@ -383,10 +382,9 @@ void loop() {
           if (u8_old_position >= 5) {
             Move_Token(i8_current_player_number, u8_old_position,
                        u8_new_position, &obj_display, obj_session,
-                       u8_player_quantity);
+                       u8_player_quantity, u8_dice_value);
           } else {
-            obj_display.Move_Token(i8_current_player_number,
-                                   i8_current_token_number, u8_old_position,
+            obj_display.Move_Token(i8_current_player_number, u8_old_position,
                                    u8_new_position);
           }
         }

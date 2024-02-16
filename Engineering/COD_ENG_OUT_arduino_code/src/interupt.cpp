@@ -4,6 +4,7 @@
 
 extern volatile ASL::en_state en_current_state;
 extern uint8_t u8_player_quantity;
+extern uint8_t u8_computer_quantity;
 extern volatile int8_t i8_current_token_number;
 extern uint8_t u8_dice_value;
 extern ASL::cla_display obj_display;
@@ -91,13 +92,21 @@ ISR(INT5_vect) {
 
   switch (en_current_state) {
   case ASL::setup_real_players:
-    en_current_state = ASL::setup_computer_players;
+    if (u8_player_quantity != 4) {
+      en_current_state = ASL::setup_computer_players;
+    } else {
+      en_current_state = ASL::init_game_logic;
+    }
     break;
   case ASL::modify_real_player_number:
     // NOP
     break;
   case ASL::setup_computer_players:
-    en_current_state = ASL::setup_computer_player_mode;
+    if (u8_computer_quantity != 0) {
+      en_current_state = ASL::setup_computer_player_mode;
+    } else {
+      en_current_state = ASL::init_game_logic;
+    }
     break;
   case ASL::modify_computer_player_number:
     break;

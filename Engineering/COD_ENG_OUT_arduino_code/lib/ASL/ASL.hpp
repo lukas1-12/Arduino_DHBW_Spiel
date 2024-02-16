@@ -244,12 +244,11 @@ public:
    * This method can move a token.
    *
    * \param _u8_player_number chosen player
-   * \param _u8_token_number chosen token
    * \param _u8_old_position old position of the token
    * \param _u8_new_position new position of the token
    */
-  void Move_Token(uint8_t _u8_player_nr, uint8_t u8_token_nr,
-                  uint8_t _u8_remove_position, uint8_t _u8_add_position);
+  void Move_Token(uint8_t _u8_player_nr, uint8_t _u8_remove_position,
+                  uint8_t _u8_add_position);
 
   /**
    * \brief Display the dice

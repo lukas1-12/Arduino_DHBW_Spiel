@@ -276,7 +276,7 @@ void ASL::cla_display::Modify_Position(uint8_t _u8_position,
   }
 }
 
-void ASL::cla_display::Move_Token(uint8_t _u8_player_nr, uint8_t _u8_token_nr,
+void ASL::cla_display::Move_Token(uint8_t _u8_player_nr,
                                   uint8_t _u8_old_position,
                                   uint8_t _u8_new_position) {
   Modify_Position(_u8_old_position, _u8_player_nr, false);

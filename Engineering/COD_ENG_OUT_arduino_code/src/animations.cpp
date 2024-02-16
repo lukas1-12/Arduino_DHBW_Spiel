@@ -7,37 +7,77 @@
 
 void Move_Token(int8_t _i8_current_player_number, uint8_t _u8_remove_position,
                 uint8_t _u8_add_position, ASL::cla_display *_obj_display,
-                LOGIC::cla_session *_obj_session, uint8_t _u8_player_quantity) {
+                LOGIC::cla_session *_obj_session, uint8_t _u8_player_quantity,
+                uint8_t _u8_dice_value) {
   bool bool_jump = false;
-  for (uint8_t i = 1; i <= (_u8_add_position - _u8_remove_position); i++) {
-    // take care about the old position
-    if (bool_jump) {
-      _obj_display->Modify_Position((_u8_remove_position + i - 2),
-                                    _i8_current_player_number, false);
-      bool_jump = false;
-    } else {
-      _obj_display->Modify_Position((_u8_remove_position + i - 1),
-                                    _i8_current_player_number, false);
-    }
-    // check if the current position is occupied
-    if ((_u8_remove_position + i) != _u8_add_position) {
-      for (uint8_t u8_player_i = 0; u8_player_i < _u8_player_quantity;
-           u8_player_i++) {
-        for (uint8_t u8_token_i = 0; u8_token_i < 4; u8_token_i++) {
-          if (_obj_session->array_players[u8_player_i]->Get_Token_Position(
-                  u8_token_i) == (_u8_remove_position + i)) {
-            // skip that position
-            bool_jump = true;
+  uint8_t i = _u8_remove_position;
+  if (_u8_remove_position != _u8_add_position) {
+    // only move if the position is not the same
+    do {
+      i++;
+      // take care about the old position
+      if (bool_jump) {
+        uint8_t u8_modify_position = i - 2;
+        if (i == 5) {
+          u8_modify_position = 43;
+        }
+        _obj_display->Modify_Position((u8_modify_position),
+                                      _i8_current_player_number, false);
+        bool_jump = false;
+      } else {
+        uint8_t u8_modify_position = i - 1;
+        if (i == 5) {
+          u8_modify_position = 44;
+        }
+        _obj_display->Modify_Position((u8_modify_position),
+                                      _i8_current_player_number, false);
+      }
+      // handle case that the end of the track is reached
+      if (((i) == 44) && (_i8_current_player_number != 0)) {
+        i = 5;
+      }
+      // handle case of end position
+      switch (_i8_current_player_number) {
+      case 0:
+        if (i == 45) {
+          i = 45;
+        }
+        break;
+      case 1:
+        if (i == 15) {
+          i = 45;
+        }
+        break;
+      case 2:
+        if (i == 25) {
+          i = 45;
+        }
+        break;
+      case 3:
+        if (i == 35) {
+          i = 45;
+        }
+        break;
+      }
+      // check if the current position is occupied
+      if (i != _u8_add_position) {
+        for (uint8_t u8_player_i = 0; u8_player_i < _u8_player_quantity;
+             u8_player_i++) {
+          for (uint8_t u8_token_i = 0; u8_token_i < 4; u8_token_i++) {
+            if (_obj_session->array_players[u8_player_i]->Get_Token_Position(
+                    u8_token_i) == (i)) {
+              // skip that position
+              bool_jump = true;
+            }
           }
         }
       }
-    }
-    // Set the new position
-    if (!bool_jump) {
-      _obj_display->Modify_Position(_u8_remove_position + i,
-                                    _i8_current_player_number, true);
-      ASL::Delay_256(ANIMATION_SPEED_MOVE);
-    }
+      // Set the new position
+      if (!bool_jump) {
+        _obj_display->Modify_Position(i, _i8_current_player_number, true);
+        ASL::Delay_256(ANIMATION_SPEED_MOVE);
+      }
+    } while (i != _u8_add_position);
   }
 }
 
