@@ -28,7 +28,7 @@ typedef enum {
 
 typedef enum { off = 0, fast, slow } en_blink_mode;
 
-typedef enum { token = 0, display, home } en_blink_type;
+typedef enum { token = 0, token_thrown } en_blink_type;
 
 /**
  * \brief display handler
@@ -150,14 +150,35 @@ public:
   void Begin();
 
   /**
-   * \brief Display the Players.
+   * \brief Display the Track
+   */
+  void Display_Track();
+
+  /**
+   * \brief Display the Players all in home.
    *
    * This method is supposed to be called when setting the Game up. It displays
    * the number of players that are currently chosen.
    *
    * \param _u8_player_quantity The number of Players to be displayed.
    */
-  void Display_Players(uint8_t _u8_player_quantity);
+  void Display_Players(uint8_t _u8_player_quantity,
+                       bool _bool_tokens_at_home = true);
+
+  /**
+   * \brief Display all players at their positionions
+   *
+   * This method is supposed to be called after displaying something other than
+   * the track on the matrix. It displays all players at their current position.
+   *
+   * \param _u8_player_quantity The number of Players to be displayed.
+   * \param _u8_current_positions The current positions of the players.
+   * \param _bool_display_extras flag to determine if the dice etc should be
+   * displayed. default: true
+   */
+  void Display_Restore(uint8_t _u8_player_quantity,
+                       uint8_t _u8_current_positions[4][4],
+                       bool _bool_display_extras = true);
 
   /**
    * \brief Display the Current Player
@@ -173,32 +194,33 @@ public:
    *
    * This method can blink
    * - a token to display possible Progress (token)
-   * - the whole display alternating in the color of two players (display)
-   * - the home of a Player (home)
+   * - two tokens alternating in the color of two players (token_thrown)
    *
    * \param _en_blink_mode The mode of the blinking (fast/slow/off)
    * \param _i8_blink_cycles The number of cycles to blink (-1: infinite)
-   * \param _en_blink_type The type of the blinking (token/display/home)
-   * \param _u8_blink_player_number The number of the player to blink. Used in
-   * token, display and home mode.
+   * \param _en_blink_type The type of the blinking (token/token_thrown)
+   * \param _u8_blink_player_number The number of the player to blink.
    * \param _i8_blink_second_player The number of the second player to blink.
-   * Used in token, if occupied flag is set and in display for the second color.
-   * \param _bool_occupied_flag flag used in token mode to determine the
-   * color to alternate the new position to. default: false
-   * \param _u8_old_position old position of the token. used in token mode only.
-   * default: 0
-   * \param _u8_new_position new position of the token. used in token mode only.
-   * default: 0
+   * \param _u8_new_position new position of the token. default: 0
+   * \param _bool_occupied_flag flag used in token mode to determine the color
+   * to alternate the new position to. default: true
+   * \param _u8_old_position old position of the token. default: 0
    */
   void Blink_Start(en_blink_mode _en_blink_mode, int8_t _i8_blink_cycles,
                    en_blink_type _en_blink_type,
                    uint8_t _u8_blink_player_number,
-                   int8_t _i8_blink_second_player,
-                   bool _bool_occupied_flag = false,
-                   uint8_t _u8_old_position = 0, uint8_t _u8_new_position = 0);
-
+                   int8_t _i8_blink_second_player, uint8_t _u8_new_position = 0,
+                   bool _bool_occupied_flag = true,
+                   uint8_t _u8_old_position = 0);
+  /**
+   * \brief Update the Blink state
+   *
+   */
   void Blink_Update();
 
+  /**
+   * \brief Stop blinking
+   */
   void Blink_Stop();
 
   void Modify_Position(uint8_t _u8_position, uint8_t _u8_player_number,

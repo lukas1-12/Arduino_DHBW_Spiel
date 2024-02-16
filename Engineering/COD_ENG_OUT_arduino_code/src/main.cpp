@@ -167,8 +167,8 @@ void loop() {
                                                         u8_dice_value);
     // Start blinking the token
     obj_display.Blink_Start(ASL::slow, -1, ASL::token, u8_current_player_number,
-                            u8_occupying_player, bool_occupied_flag,
-                            u8_old_position, u8_new_position);
+                            u8_occupying_player, u8_new_position,
+                            bool_occupied_flag, u8_old_position);
 
 #if DEBUG
     PORTK = en_current_state | (u8_current_player_number << 4) |
@@ -276,6 +276,9 @@ void loop() {
           u8_occupying_player, u8_occupying_token, u8_new_position,
           obj_session->array_players[u8_occupying_player]->Get_Token_Position(
               u8_occupying_token));
+      obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
+                              u8_current_player_number, u8_occupying_player,
+                              u8_new_position);
       bool_occupied_flag = false;
     }
     obj_display.Move_Token(u8_current_player_number, u8_current_token_number,
@@ -329,6 +332,9 @@ void loop() {
                                  u8_new_position,
                                  obj_session->array_players[u8_occupying_player]
                                      ->Get_Token_Position(u8_occupying_token));
+          obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
+                                  u8_current_player_number, u8_occupying_player,
+                                  u8_new_position);
           bool_occupied_flag = false;
         }
         if (u8_current_token_number != -1) {

@@ -26,21 +26,32 @@ void ASL::cla_display::Begin() {
   obj_matrix_no_pointer.begin();
   this->obj_matrix = &obj_matrix_no_pointer;
   // Set up starting board:
+  Display_Track();
+}
+
+void ASL::cla_display::Display_Track() {
   for (uint8_t i = 0; i < 40; i++) {
     obj_matrix->drawPixel(u8_track_positions[i][1], u8_track_positions[i][2],
                           u16_track_color);
-    obj_matrix->updateDisplay();
   }
+  obj_matrix->updateDisplay();
 }
 
-void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity) {
+void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity,
+                                       bool _bool_tokens_at_home) {
   // Home Positions:
   for (uint8_t i = 0; i < 4; i++) {
     for (uint8_t j = 0; j < 4; j++) {
       if (_u8_player_quantity > i) {
-        obj_matrix->drawPixel(u8_home_positions[i][j][0],
-                              u8_home_positions[i][j][1],
-                              u16_player_color[i][0]);
+        if (_bool_tokens_at_home) {
+          obj_matrix->drawPixel(u8_home_positions[i][j][0],
+                                u8_home_positions[i][j][1],
+                                u16_player_color[i][0]);
+        } else {
+          obj_matrix->drawPixel(u8_home_positions[i][j][0],
+                                u8_home_positions[i][j][1],
+                                u16_player_color[i][1]);
+        }
       } else {
         obj_matrix->drawPixel(u8_home_positions[i][j][0],
                               u8_home_positions[i][j][1], 0x00);
@@ -62,6 +73,30 @@ void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity) {
   }
 }
 
+void ASL::cla_display::Display_Restore(uint8_t _u8_player_quantity,
+                                       uint8_t _u8_current_positions[4][4],
+                                       bool _bool_display_extras) {
+  obj_matrix->fillScreen(0x00);
+  // Display the Track:
+  Display_Track();
+  // Display the Players home and finish positions:
+  Display_Players(_u8_player_quantity, false);
+  // Display the Tokens:
+  for (uint8_t u8_player_i = 0; u8_player_i < _u8_player_quantity;
+       u8_player_i++) {
+    for (uint8_t u8_token_i = 0; u8_token_i < 4; u8_token_i++) {
+      Modify_Position(_u8_current_positions[u8_player_i][u8_token_i],
+                      u8_player_i, true);
+    }
+  }
+  if (_bool_display_extras) {
+    // Display the Dice:
+    Display_Dice(0, 0, 0);
+    // Display the Current Player:
+    Display_Current_Player(0);
+  }
+}
+
 void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player) {
   obj_matrix->drawLine(14, 2, 14, 12, u16_player_color[_u8_current_player][0]);
 }
@@ -69,11 +104,13 @@ void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player) {
 void ASL::cla_display::Blink_Start(
     en_blink_mode _en_blink_mode, int8_t _i8_blink_cycles,
     en_blink_type _en_blink_type, uint8_t _u8_blink_player_number,
-    int8_t _i8_blink_second_player, bool _bool_occupied_flag,
-    uint8_t _u8_old_position, uint8_t _u8_new_position) {
+    int8_t _i8_blink_second_player, uint8_t _u8_new_position,
+    bool _bool_occupied_flag, uint8_t _u8_old_position) {
   // write transfer parameters to class variables:
   en_current_blink_mode = _en_blink_mode;
-  i8_blink_counter = _i8_blink_cycles;
+  // multiply the blink cycles by 2, because the interupt routine will toggle
+  // AND subtract 1
+  i8_blink_counter = (_i8_blink_cycles << 1);
   en_current_blink_type = _en_blink_type;
   u8_blink_player_number = _u8_blink_player_number;
   u8_blink_old_position = _u8_old_position;
@@ -122,11 +159,14 @@ void ASL::cla_display::Blink_Update() {
       u8_blink_state = 0;
     }
     break;
-  case display: // Display Blink
-    // Blink_Display
-    break;
-  case home: // Home Blink
-    // Blink_Home
+  case token_thrown: // Token Blink
+    if (u8_blink_state == 0) {
+      Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
+      u8_blink_state = 1;
+    } else {
+      Modify_Position(u8_blink_new_position, i8_blink_second_player, true);
+      u8_blink_state = 0;
+    }
     break;
   }
   if (i8_blink_counter != -1) {
@@ -146,6 +186,8 @@ void ASL::cla_display::Blink_Stop() {
     TCCR4A = 0;
     TCCR4B = 0;
     OCR4A = 0;
+    // turn off Blink mode:
+    en_current_blink_mode = off;
     switch (en_current_blink_type) {
     case token:
       // Partially Reset display:
@@ -156,14 +198,11 @@ void ASL::cla_display::Blink_Stop() {
         Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
       }
       break;
-    case display:
-      // Reset Display
-      break;
-    case home:
-      // Reset Home
+    case token_thrown:
+      // Partially Reset display:
+      Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
       break;
     }
-    en_current_blink_mode = off;
   }
 }
 
