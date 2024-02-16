@@ -23,6 +23,13 @@ uint8_t u8_occupying_player;
 uint8_t u8_occupying_token;
 bool bool_occupied_flag = false;
 
+// Function Prototypes
+extern void Move_Token(int8_t _i8_current_player_number,
+                       uint8_t _u8_remove_position, uint8_t _u8_add_position,
+                       ASL::cla_display *_obj_display,
+                       LOGIC::cla_session *_obj_session,
+                       uint8_t _u8_player_quantity);
+
 void setup() {
   obj_display.Set_Colors(0, RED_BRIGHT, RED_DARK);
   obj_display.Set_Colors(1, BLUE_BRIGHT, BLUE_DARK);
@@ -272,8 +279,6 @@ void loop() {
     u8_new_position = obj_session->array_players[i8_current_player_number]
                           ->Calculate_Possible_Position(i8_current_token_number,
                                                         u8_dice_value);
-    obj_session->array_players[i8_current_player_number]->Move_Token(
-        i8_current_token_number, u8_dice_value);
     if (bool_occupied_flag) {
       obj_display.Move_Token(
           u8_occupying_player, u8_occupying_token, u8_new_position,
@@ -284,8 +289,18 @@ void loop() {
                               u8_new_position);
       bool_occupied_flag = false;
     }
-    obj_display.Move_Token(i8_current_player_number, i8_current_token_number,
-                           u8_old_position, u8_new_position);
+    // move the token on the display
+    if (u8_old_position >= 5) {
+      Move_Token(i8_current_player_number, u8_old_position, u8_new_position,
+                 &obj_display, obj_session, u8_player_quantity);
+    } else {
+      obj_display.Move_Token(i8_current_player_number, i8_current_token_number,
+                             u8_old_position, u8_new_position);
+    }
+    // move the token in the logic
+    obj_session->array_players[i8_current_player_number]->Move_Token(
+        i8_current_token_number, u8_dice_value);
+    // determine the next state
     if (u8_dice_roll_counter >= 1) {
       en_current_state = ASL::wait_for_dice_roll;
     } else if (obj_session->array_players[i8_current_player_number]
@@ -306,7 +321,7 @@ void loop() {
     int8_t i8_tokens_at_home = 0;
     for (uint8_t i = 0; i < 4; i++) {
       if (obj_session->array_players[i8_current_player_number]
-              ->Get_Token_Position(i) <= 5) {
+              ->Get_Token_Position(i) < 5) {
         i8_tokens_at_home |= (1 << i);
       }
     }
@@ -364,9 +379,16 @@ void loop() {
           bool_occupied_flag = false;
         }
         if (i8_current_token_number != -1) {
-          obj_display.Move_Token(i8_current_player_number,
-                                 i8_current_token_number, u8_old_position,
-                                 u8_new_position);
+          // move the token on the display
+          if (u8_old_position >= 5) {
+            Move_Token(i8_current_player_number, u8_old_position,
+                       u8_new_position, &obj_display, obj_session,
+                       u8_player_quantity);
+          } else {
+            obj_display.Move_Token(i8_current_player_number,
+                                   i8_current_token_number, u8_old_position,
+                                   u8_new_position);
+          }
         }
         if (u8_dice_roll_counter > 0) {
           ASL::Delay_256(ANIMATION_SPEED_COMPUTER);

@@ -26,6 +26,7 @@
 // Define Animation Speed
 #define ANIMATION_SPEED_COMPUTER 62500 // 1s
 #define ANIMATION_SPEED_DICE 3125      // 6250 -> 100ms, repeated 20 times -> 2s
+#define ANIMATION_SPEED_MOVE 6250      // 6250 -> 100ms
 
 // Define the Debug Flag
 #define DEBUG true
