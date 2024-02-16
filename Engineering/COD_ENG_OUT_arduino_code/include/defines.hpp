@@ -1,3 +1,5 @@
+#ifndef DEFINES_HPP
+#define DEFINES_HPP
 // Define all the Ports here:
 #define CLK 11 // MUST be on PORTB! (Use pin 11 on Mega)
 #define LAT A3
@@ -24,4 +26,11 @@
 // Define the Debug Flag
 #define DEBUG true
 #define TIMING_DEBUG false
-#define RANDOM_DICE false
+// DICE_MODE 0: Normal, Random Dice
+//           1: Dice input via PORT L
+//           2: marked Dice using Array
+#define DICE_MODE 2
+#if DICE_MODE == 2
+#include "../test/marked_dice.hpp"
+#endif
+#endif
