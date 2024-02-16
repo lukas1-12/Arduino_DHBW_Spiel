@@ -242,11 +242,19 @@ public:
   /**
    * \brief Display the dice
    *
-   * Display the Dice on the matrix.
+   * Display the Dice on the matrix. when Set to animate, it will play a small
+   * animation. The animation uses a simple delay instead of interupts, since
+   * the program is not supposed to keep running while the animation is played.
+   *
    * \param _u8_dice_value The value to be displayed.
+   * \param _u8_dice_roll_counter The number of the current roll.
+   * \param _u8_current_player_number The number of the current player.
+   * \param _bool_animate flag to determine if the dice should be animated.
+   * should be handled with care as it uses Delay. default: true
    */
   void Display_Dice(uint8_t _u8_dice_value, uint8_t _u8_dice_roll_counter,
-                    uint8_t _u8_current_player_number);
+                    uint8_t _u8_current_player_number,
+                    bool _bool_animate = true);
 };
 
 /**
@@ -275,5 +283,16 @@ void Setup_Dice();
  * called beforehand (ONCE).
  */
 uint8_t Roll_Dice();
+
+/**
+ * \brief Delay
+ *
+ * This function is a simple delay function. It uses Timer 5 with /256 clk
+ * divider to count to the value in the transfer parameter. when reached, the
+ * function returns.
+ *
+ * \param _u16_delay The number of timer cycles to delay.
+ */
+void Delay_256(uint16_t _u16_delay);
 
 } // namespace ASL

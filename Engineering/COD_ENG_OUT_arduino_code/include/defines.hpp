@@ -23,6 +23,9 @@
 #define FAST_BLINK 7813
 #define SLOW_BLINK 15625
 
+// Define Animation Speed
+#define ANIMATION_SPEED_COMPUTER 62500 // 1s
+
 // Define the Debug Flag
 #define DEBUG true
 #define TIMING_DEBUG false

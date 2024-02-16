@@ -320,6 +320,7 @@ void loop() {
         }
         obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
                                  u8_current_player_number);
+        ASL::Delay_256(ANIMATION_SPEED_COMPUTER);
         u8_current_token_number =
             obj_session->array_players[u8_current_player_number]->Auto_Move(
                 u8_dice_value, bool_occupied_flag, u8_old_position);
@@ -341,6 +342,9 @@ void loop() {
           obj_display.Move_Token(u8_current_player_number,
                                  u8_current_token_number, u8_old_position,
                                  u8_new_position);
+        }
+        if (u8_dice_roll_counter > 0) {
+          ASL::Delay_256(ANIMATION_SPEED_COMPUTER);
         }
 #if DEBUG
         PORTK = en_current_state | ((u8_current_player_number << 4) && 0x0f) |

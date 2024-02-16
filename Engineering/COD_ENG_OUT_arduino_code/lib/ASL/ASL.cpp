@@ -250,7 +250,8 @@ void ASL::cla_display::Move_Token(uint8_t _u8_player_nr, uint8_t _u8_token_nr,
 
 void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value,
                                     uint8_t _u8_dice_roll_counter,
-                                    uint8_t _u8_current_player_number) {
+                                    uint8_t _u8_current_player_number,
+                                    bool _bool_animate) {
   obj_matrix->drawRect(16, 2, 5, 5,
                        u16_player_color[_u8_current_player_number][0]);
   switch (_u8_dice_roll_counter) {
@@ -400,4 +401,25 @@ uint8_t ASL::Roll_Dice() {
   }
 #endif
   return i;
+}
+
+void ASL::Delay_256(uint16_t _u16_delay) {
+  // Set up Timer 5 to CTC Mode with a prescaler of 256:
+  TCCR5A = 0;
+  TCCR5B = 0;
+  TCNT5 = 0;
+  // WGM 52:50 = 010 -> CTC Mode
+  TCCR5B |= (1 << WGM52);
+  // CS 52:50 = 100 -> Prescaler 256
+  TCCR5B |= (1 << CS52);
+  // Set Output Compare:
+  OCR5A = _u16_delay;
+  // Enable Interupt for Output Compare A:
+  TIMSK5 |= 1 << OCIE5A;
+  // Wait for the interupt to finish:
+  while (TIMSK5 & (1 << OCIE5A)) {
+  }
+  // Reset Timer 5:
+  TCCR5A = 0;
+  TCCR5B = 0;
 }

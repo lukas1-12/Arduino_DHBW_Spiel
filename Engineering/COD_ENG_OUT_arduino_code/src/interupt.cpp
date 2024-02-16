@@ -168,3 +168,8 @@ ISR(TIMER4_COMPA_vect) {
 #endif
   obj_display.Blink_Update();
 }
+
+ISR(TIMER5_COMPA_vect) {
+  // Disable Timer Interupt:
+  TIMSK5 &= ~(1 << OCIE5A);
+}

@@ -319,4 +319,4 @@ AutoMove() might need two return parameters. This could be done like this:
 - Timer 2: ( 8Bit) Not in Use
 - Timer 3: (16Bit) Used for Button Debounce
 - Timer 4: (16Bit) Used for Led Blinking
-- TImer 5: (16Bit) Not in Use
+- TImer 5: (16Bit) Used for Delay function.
