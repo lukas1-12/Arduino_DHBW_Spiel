@@ -42,6 +42,9 @@ void loop() {
   switch (en_current_state) {
   // -----------------------------------------------------------------------------
   case ASL::setup_real_players:
+    if (obj_display.Blink_Is_On()) {
+      obj_display.Blink_Stop();
+    }
     obj_display.Display_Players(u8_player_quantity);
     break;
   // -----------------------------------------------------------------------------
@@ -285,6 +288,9 @@ void loop() {
                            u8_old_position, u8_new_position);
     if (u8_dice_roll_counter >= 1) {
       en_current_state = ASL::wait_for_dice_roll;
+    } else if (obj_session->array_players[u8_current_player_number]
+                   ->Get_Player_Status() == LOGIC::Finished) {
+      en_current_state = ASL::game_finished;
     } else {
       en_current_state = ASL::next_player;
     }
@@ -373,7 +379,15 @@ void loop() {
   } break;
   // -----------------------------------------------------------------------------
   case ASL::game_finished:
-
+    // delete obj_session;
+    static bool bool_do_once = true;
+    if (bool_do_once) {
+      obj_display.Blink_Start(ASL::fast, -1, ASL::starting_square,
+                              u8_current_player_number, -1, 0x0f);
+      obj_display.Display_Restore();
+      bool_do_once = false;
+    }
+    asm volatile("nop"); // Do nothing
     break;
   default:
     // An error occured, go back to setup.

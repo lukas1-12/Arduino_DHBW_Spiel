@@ -166,19 +166,9 @@ public:
                        bool _bool_tokens_at_home = true);
 
   /**
-   * \brief Display all players at their positionions
-   *
-   * This method is supposed to be called after displaying something other than
-   * the track on the matrix. It displays all players at their current position.
-   *
-   * \param _u8_player_quantity The number of Players to be displayed.
-   * \param _u8_current_positions The current positions of the players.
-   * \param _bool_display_extras flag to determine if the dice etc should be
-   * displayed. default: true
+   * \brief Restore Display to track only
    */
-  void Display_Restore(uint8_t _u8_player_quantity,
-                       uint8_t _u8_current_positions[4][4],
-                       bool _bool_display_extras = true);
+  void Display_Restore();
 
   /**
    * \brief Display the Current Player

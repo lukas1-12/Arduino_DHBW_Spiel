@@ -73,28 +73,9 @@ void ASL::cla_display::Display_Players(uint8_t _u8_player_quantity,
   }
 }
 
-void ASL::cla_display::Display_Restore(uint8_t _u8_player_quantity,
-                                       uint8_t _u8_current_positions[4][4],
-                                       bool _bool_display_extras) {
+void ASL::cla_display::Display_Restore() {
   obj_matrix->fillScreen(0x00);
-  // Display the Track:
   Display_Track();
-  // Display the Players home and finish positions:
-  Display_Players(_u8_player_quantity, false);
-  // Display the Tokens:
-  for (uint8_t u8_player_i = 0; u8_player_i < _u8_player_quantity;
-       u8_player_i++) {
-    for (uint8_t u8_token_i = 0; u8_token_i < 4; u8_token_i++) {
-      Modify_Position(_u8_current_positions[u8_player_i][u8_token_i],
-                      u8_player_i, true);
-    }
-  }
-  if (_bool_display_extras) {
-    // Display the Dice:
-    Display_Dice(0, 0, 0);
-    // Display the Current Player:
-    Display_Current_Player(0);
-  }
 }
 
 void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player,
