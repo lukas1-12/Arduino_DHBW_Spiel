@@ -320,13 +320,8 @@ void loop() {
         u8_current_token_number =
             obj_session->array_players[u8_current_player_number]->Auto_Move(
                 u8_dice_value, bool_occupied_flag, u8_old_position);
-        if (u8_current_token_number != -1) {
-          u8_new_position = obj_session->array_players[u8_current_player_number]
-                                ->Get_Token_Position(u8_current_token_number);
-          obj_display.Move_Token(u8_current_player_number,
-                                 u8_current_token_number, u8_old_position,
-                                 u8_new_position);
-        }
+        u8_new_position = obj_session->array_players[u8_current_player_number]
+                              ->Get_Token_Position(u8_current_token_number);
         if (bool_occupied_flag) {
           u8_occupying_player = obj_session->u8_is_occupied_player_id;
           u8_occupying_token = obj_session->u8_is_occupied_token_number;
@@ -335,6 +330,11 @@ void loop() {
                                  obj_session->array_players[u8_occupying_player]
                                      ->Get_Token_Position(u8_occupying_token));
           bool_occupied_flag = false;
+        }
+        if (u8_current_token_number != -1) {
+          obj_display.Move_Token(u8_current_player_number,
+                                 u8_current_token_number, u8_old_position,
+                                 u8_new_position);
         }
 #if DEBUG
         PORTK = en_current_state | ((u8_current_player_number << 4) && 0x0f) |
