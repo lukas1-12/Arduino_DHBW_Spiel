@@ -306,35 +306,42 @@ void loop() {
     en_current_state = ASL::wait_for_dice_roll;
     // ------ Auto-move if we have a computer player ---------
     if (obj_session->array_players[u8_current_player_number]->Is_Computer()) {
-      // Computer code here
-      uint8_t u8_new_position = 0;
-      u8_dice_value = ASL::Roll_Dice();
-      obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
-                               u8_current_player_number);
-      u8_current_token_number =
-          obj_session->array_players[u8_current_player_number]->Auto_Move(
-              u8_dice_value, bool_occupied_flag, u8_old_position);
-      if (u8_current_token_number != -1) {
-        u8_new_position = obj_session->array_players[u8_current_player_number]
-                              ->Get_Token_Position(u8_current_token_number);
-        obj_display.Move_Token(u8_current_player_number,
-                               u8_current_token_number, u8_old_position,
-                               u8_new_position);
-      }
-      if (bool_occupied_flag) {
-        u8_occupying_player = obj_session->u8_is_occupied_player_id;
-        u8_occupying_token = obj_session->u8_is_occupied_token_number;
-        obj_display.Move_Token(
-            u8_occupying_player, u8_occupying_token, u8_new_position,
-            obj_session->array_players[u8_occupying_player]->Get_Token_Position(
-                u8_occupying_token));
-        bool_occupied_flag = false;
-      }
+      while (u8_dice_roll_counter > 0) {
+        // Computer code here
+        uint8_t u8_new_position = 0;
+        u8_dice_value = ASL::Roll_Dice();
+        if (u8_dice_value == 6) {
+          u8_dice_roll_counter = 1;
+        } else {
+          u8_dice_roll_counter--;
+        }
+        obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
+                                 u8_current_player_number);
+        u8_current_token_number =
+            obj_session->array_players[u8_current_player_number]->Auto_Move(
+                u8_dice_value, bool_occupied_flag, u8_old_position);
+        if (u8_current_token_number != -1) {
+          u8_new_position = obj_session->array_players[u8_current_player_number]
+                                ->Get_Token_Position(u8_current_token_number);
+          obj_display.Move_Token(u8_current_player_number,
+                                 u8_current_token_number, u8_old_position,
+                                 u8_new_position);
+        }
+        if (bool_occupied_flag) {
+          u8_occupying_player = obj_session->u8_is_occupied_player_id;
+          u8_occupying_token = obj_session->u8_is_occupied_token_number;
+          obj_display.Move_Token(u8_occupying_player, u8_occupying_token,
+                                 u8_new_position,
+                                 obj_session->array_players[u8_occupying_player]
+                                     ->Get_Token_Position(u8_occupying_token));
+          bool_occupied_flag = false;
+        }
 #if DEBUG
-      PORTK = en_current_state | ((u8_current_player_number << 4) && 0x0f) |
-              ((u8_current_token_number << 6) && 0x0f);
+        PORTK = en_current_state | ((u8_current_player_number << 4) && 0x0f) |
+                ((u8_current_token_number << 6) && 0x0f);
 #endif
-      en_current_state = ASL::next_player;
+        en_current_state = ASL::next_player;
+      }
     }
     // Reset the token number for the next player
     u8_current_token_number = 0;

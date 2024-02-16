@@ -329,8 +329,7 @@ uint8_t ASL::Roll_Dice() {
 #elif DICE_MODE == 2
   static uint8_t u8_dice_value_array_position;
   uint8_t i = u8_dice_value_array[u8_dice_value_array_position];
-  if (u8_dice_value_array_position <=
-      ((sizeof(u8_dice_value_array) / sizeof(u8_dice_value_array[0])) - 1)) {
+  if (u8_dice_value_array_position < ((sizeof(u8_dice_value_array)) - 1)) {
     u8_dice_value_array_position++;
   } else {
     u8_dice_value_array_position = 0;
