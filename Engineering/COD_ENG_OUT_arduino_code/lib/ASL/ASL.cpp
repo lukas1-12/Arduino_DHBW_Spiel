@@ -66,24 +66,23 @@ void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player) {
   obj_matrix->drawLine(14, 2, 14, 12, u16_player_color[_u8_current_player][0]);
 }
 
-void ASL::cla_display::Blink_Start(en_blink_mode _en_blink_mode,
-                                   int8_t _u8_blink_cycles,
-                                   uint8_t _u8_blink_player_number,
-                                   int8_t _u8_blink_occupying_player,
-                                   bool _bool_occupied_flag,
-                                   uint8_t _u8_old_position,
-                                   uint8_t _u8_new_position) {
+void ASL::cla_display::Blink_Start(
+    en_blink_mode _en_blink_mode, int8_t _i8_blink_cycles,
+    en_blink_type _en_blink_type, uint8_t _u8_blink_player_number,
+    int8_t _i8_blink_second_player, bool _bool_occupied_flag,
+    uint8_t _u8_old_position, uint8_t _u8_new_position) {
   // write transfer parameters to class variables:
+  en_current_blink_mode = _en_blink_mode;
+  i8_blink_counter = _i8_blink_cycles;
+  en_current_blink_type = _en_blink_type;
+  u8_blink_player_number = _u8_blink_player_number;
   u8_blink_old_position = _u8_old_position;
   u8_blink_new_position = _u8_new_position;
-  u8_blink_player_number = _u8_blink_player_number;
-  u8_blink_counter = _u8_blink_cycles;
   u8_blink_state = 0;
-  en_current_blink_mode = _en_blink_mode;
   if (_bool_occupied_flag) {
-    u8_blink_occupying_player = _u8_blink_occupying_player;
+    i8_blink_second_player = _i8_blink_second_player;
   } else {
-    u8_blink_occupying_player = -1;
+    i8_blink_second_player = -1;
   }
 
   // Setup Timer 4 to CTC Mode with a prescaler of 256:
@@ -107,18 +106,34 @@ void ASL::cla_display::Blink_Start(en_blink_mode _en_blink_mode,
 
 void ASL::cla_display::Blink_Update() {
   // Blinking is done in the interupt routine.
-  if (u8_blink_state == 0) {
-    Modify_Position(u8_blink_old_position, u8_blink_player_number, false);
-    Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
-    u8_blink_state = 1;
-  } else {
-    Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
-    if (u8_blink_occupying_player != -1) {
-      Modify_Position(u8_blink_new_position, u8_blink_occupying_player, true);
+  switch (en_current_blink_type) {
+  case token: // Token Blink
+    if (u8_blink_state == 0) {
+      Modify_Position(u8_blink_old_position, u8_blink_player_number, false);
+      Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
+      u8_blink_state = 1;
     } else {
-      Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
+      Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
+      if (i8_blink_second_player != -1) {
+        Modify_Position(u8_blink_new_position, i8_blink_second_player, true);
+      } else {
+        Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
+      }
+      u8_blink_state = 0;
     }
-    u8_blink_state = 0;
+    break;
+  case display: // Display Blink
+    // Blink_Display
+    break;
+  case home: // Home Blink
+    // Blink_Home
+    break;
+  }
+  if (i8_blink_counter != -1) {
+    i8_blink_counter--;
+  }
+  if (i8_blink_counter == 0) {
+    Blink_Stop();
   }
 }
 
@@ -131,15 +146,25 @@ void ASL::cla_display::Blink_Stop() {
     TCCR4A = 0;
     TCCR4B = 0;
     OCR4A = 0;
-    // Reset display:
-    Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
-    if (u8_blink_occupying_player != -1) {
-      Modify_Position(u8_blink_new_position, u8_blink_occupying_player, true);
-    } else {
-      Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
+    switch (en_current_blink_type) {
+    case token:
+      // Partially Reset display:
+      Modify_Position(u8_blink_old_position, u8_blink_player_number, true);
+      if (i8_blink_second_player != -1) {
+        Modify_Position(u8_blink_new_position, i8_blink_second_player, true);
+      } else {
+        Modify_Position(u8_blink_new_position, u8_blink_player_number, false);
+      }
+      break;
+    case display:
+      // Reset Display
+      break;
+    case home:
+      // Reset Home
+      break;
     }
+    en_current_blink_mode = off;
   }
-  en_current_blink_mode = off;
 }
 
 void ASL::cla_display::Modify_Position(uint8_t _u8_position,

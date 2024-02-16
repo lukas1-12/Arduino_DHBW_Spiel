@@ -166,7 +166,7 @@ void loop() {
                           ->Calculate_Possible_Position(u8_current_token_number,
                                                         u8_dice_value);
     // Start blinking the token
-    obj_display.Blink_Start(ASL::slow, -1, u8_current_player_number,
+    obj_display.Blink_Start(ASL::slow, -1, ASL::token, u8_current_player_number,
                             u8_occupying_player, bool_occupied_flag,
                             u8_old_position, u8_new_position);
 
