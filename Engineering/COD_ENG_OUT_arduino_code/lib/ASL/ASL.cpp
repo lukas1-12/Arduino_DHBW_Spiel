@@ -286,8 +286,47 @@ void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value,
                                     uint8_t _u8_dice_roll_counter,
                                     uint8_t _u8_current_player_number,
                                     bool _bool_animate) {
-  obj_matrix->drawRect(16, 2, 5, 5,
-                       u16_player_color[_u8_current_player_number][0]);
+  // Turn it all off:
+  obj_matrix->drawRect(16, 2, 5, 5, 0x00);
+  obj_matrix->drawPixel(18, 4, 0x00);
+  obj_matrix->drawPixel(17, 3, 0x00);
+  obj_matrix->drawPixel(17, 4, 0x00);
+  obj_matrix->drawPixel(17, 5, 0x00);
+  obj_matrix->drawPixel(19, 3, 0x00);
+  obj_matrix->drawPixel(19, 4, 0x00);
+  obj_matrix->drawPixel(19, 5, 0x00);
+  if (_bool_animate) {
+    // animate the rectangle drawing:
+    // set the rectangle values:
+    int x = 16; // top left corner
+    int y = 2;  // top left corner
+    int width = 5;
+    int height = 5;
+    // draw rectangle clockwise:
+    for (int i = 0; i < width; i++) {
+      obj_matrix->drawPixel(x + i, y,
+                            u16_player_color[_u8_current_player_number][0]);
+      Delay_256(ANIMATION_SPEED_DICE);
+    }
+    for (int i = 1; i < height; i++) {
+      obj_matrix->drawPixel(x + width - 1, y + i,
+                            u16_player_color[_u8_current_player_number][0]);
+      Delay_256(ANIMATION_SPEED_DICE);
+    }
+    for (int i = width - 2; i >= 0; i--) {
+      obj_matrix->drawPixel(x + i, y + height - 1,
+                            u16_player_color[_u8_current_player_number][0]);
+      Delay_256(ANIMATION_SPEED_DICE);
+    }
+    for (int i = height - 2; i > 0; i--) {
+      obj_matrix->drawPixel(x, y + i,
+                            u16_player_color[_u8_current_player_number][0]);
+      Delay_256(ANIMATION_SPEED_DICE);
+    }
+  } else {
+    obj_matrix->drawRect(16, 2, 5, 5,
+                         u16_player_color[_u8_current_player_number][0]);
+  }
   switch (_u8_dice_roll_counter) {
   case 0:
     obj_matrix->drawPixel(17, 2, 0x00);
@@ -317,13 +356,6 @@ void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value,
     break;
   }
 
-  obj_matrix->drawPixel(18, 4, 0x00);
-  obj_matrix->drawPixel(17, 3, 0x00);
-  obj_matrix->drawPixel(17, 4, 0x00);
-  obj_matrix->drawPixel(17, 5, 0x00);
-  obj_matrix->drawPixel(19, 3, 0x00);
-  obj_matrix->drawPixel(19, 4, 0x00);
-  obj_matrix->drawPixel(19, 5, 0x00);
   switch (_u8_dice_value) {
   case 0:
     // Just leave it turned off.
