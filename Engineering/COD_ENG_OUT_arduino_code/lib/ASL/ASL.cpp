@@ -97,8 +97,13 @@ void ASL::cla_display::Display_Restore(uint8_t _u8_player_quantity,
   }
 }
 
-void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player) {
+void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player,
+                                              int8_t _i8_tokens_at_home) {
   obj_matrix->drawLine(14, 2, 14, 12, u16_player_color[_u8_current_player][0]);
+  if (_i8_tokens_at_home != -1) {
+    Blink_Start(fast, 3, starting_square, _u8_current_player, -1,
+                _i8_tokens_at_home);
+  }
 }
 
 void ASL::cla_display::Blink_Start(
@@ -168,6 +173,27 @@ void ASL::cla_display::Blink_Update() {
       u8_blink_state = 0;
     }
     break;
+  case starting_square: // Starting Square Blink
+    if (u8_blink_state == 0) {
+      // Turn off all starting square positions of the player:
+      for (uint8_t i = 0; i < 4; i++) {
+        obj_matrix->drawPixel(u8_home_positions[u8_blink_player_number][i][0],
+                              u8_home_positions[u8_blink_player_number][i][1],
+                              0x00);
+      }
+      u8_blink_state = 1;
+    } else {
+      uint8_t u8_tokens_at_home = u8_blink_new_position;
+      for (uint8_t i = 1; i < 5; i++) {
+        if (u8_tokens_at_home & 0x01) {
+          Modify_Position(i, u8_blink_player_number, true);
+        } else {
+          Modify_Position(i, u8_blink_player_number, false);
+        }
+        u8_tokens_at_home >>= 1;
+      }
+      u8_blink_state = 0;
+    }
   }
   if (i8_blink_counter != -1) {
     i8_blink_counter--;
@@ -202,7 +228,27 @@ void ASL::cla_display::Blink_Stop() {
       // Partially Reset display:
       Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
       break;
+    case starting_square:
+      // Partially Reset display:
+      uint8_t u8_tokens_at_home = u8_blink_new_position;
+      for (uint8_t i = 1; i < 5; i++) {
+        if (u8_tokens_at_home & 0x01) {
+          Modify_Position(i, u8_blink_player_number, true);
+        } else {
+          Modify_Position(i, u8_blink_player_number, false);
+        }
+        u8_tokens_at_home >>= 1;
+      }
+      break;
     }
+  }
+}
+
+bool ASL::cla_display::Blink_Is_On() {
+  if (en_current_blink_mode == off) {
+    return false;
+  } else {
+    return true;
   }
 }
 

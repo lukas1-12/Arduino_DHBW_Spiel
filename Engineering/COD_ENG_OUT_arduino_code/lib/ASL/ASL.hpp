@@ -28,7 +28,7 @@ typedef enum {
 
 typedef enum { off = 0, fast, slow } en_blink_mode;
 
-typedef enum { token = 0, token_thrown } en_blink_type;
+typedef enum { token = 0, token_thrown, starting_square } en_blink_type;
 
 /**
  * \brief display handler
@@ -186,8 +186,11 @@ public:
    * This method can display the current player on the matrix.
    *
    * \param _u8_current_player_number The number of the current player.
+   * \param _u8_tokens_at_home Tokens at home, signaled by the bit position
+   * (1 << tokennr -> token is home). default: -1 (don't animate)
    */
-  void Display_Current_Player(uint8_t _u8_current_player_number);
+  void Display_Current_Player(uint8_t _u8_current_player_number,
+                              int8_t _i8_tokens_at_home = -1);
 
   /**
    * \brief Blink method
@@ -198,13 +201,16 @@ public:
    *
    * \param _en_blink_mode The mode of the blinking (fast/slow/off)
    * \param _i8_blink_cycles The number of cycles to blink (-1: infinite)
-   * \param _en_blink_type The type of the blinking (token/token_thrown)
+   * \param _en_blink_type The type of the blinking
+   * (token/token_thrown/starting_square)
    * \param _u8_blink_player_number The number of the player to blink.
    * \param _i8_blink_second_player The number of the second player to blink.
-   * \param _u8_new_position new position of the token. default: 0
-   * \param _bool_occupied_flag flag used in token mode to determine the color
-   * to alternate the new position to. default: true
-   * \param _u8_old_position old position of the token. default: 0
+   * \param _u8_new_position new position of the token. default: 0. Different
+   * use in case of blink_type starting_square: Tokens at home, signaled by the
+   * bit position (1 << tokennr -> token is home). \param _bool_occupied_flag
+   * flag used in token mode to determine the color to alternate the new
+   * position to. default: true \param _u8_old_position old position of the
+   * token. default: 0
    */
   void Blink_Start(en_blink_mode _en_blink_mode, int8_t _i8_blink_cycles,
                    en_blink_type _en_blink_type,
@@ -222,6 +228,13 @@ public:
    * \brief Stop blinking
    */
   void Blink_Stop();
+
+  /**
+   * \brief Is Blinking On?
+   *
+   * \return true if blinking is on, false otherwise
+   */
+  bool Blink_Is_On();
 
   void Modify_Position(uint8_t _u8_position, uint8_t _u8_player_number,
                        bool bool_remove);
