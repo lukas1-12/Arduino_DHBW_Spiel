@@ -8,8 +8,8 @@ uint8_t u8_player_quantity = 1;
 uint8_t u8_computer_quantity = 0;
 
 // Use int here, as invalid values are -1
-volatile int8_t u8_current_player_number = 0;
-volatile int8_t u8_current_token_number = 0;
+volatile int8_t i8_current_player_number = 0;
+volatile int8_t i8_current_token_number = 0;
 uint8_t u8_dice_value = 0;
 uint8_t u8_dice_roll_counter = 3;
 LOGIC::mode en_computer_mode = LOGIC::Student;
@@ -111,7 +111,7 @@ void loop() {
     PORTK = en_current_state | ((u8_player_quantity - 1) << 4) |
             (u8_computer_quantity << 6);
 #endif
-    obj_display.Display_Current_Player(u8_current_player_number);
+    obj_display.Display_Current_Player(i8_current_player_number);
     en_current_state = ASL::wait_for_dice_roll;
     break;
   // -----------------------------------------------------------------------------
@@ -123,15 +123,15 @@ void loop() {
     u8_dice_value = ASL::Roll_Dice();
     u8_dice_roll_counter--;
     obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
-                             u8_current_player_number);
+                             i8_current_player_number);
     // You can roll the dice up to 3 times, when all your tokens are still in
     // the Starting Square and you did not get a 6.
-    if ((obj_session->array_players[u8_current_player_number]
+    if ((obj_session->array_players[i8_current_player_number]
              ->Get_Player_Status() == LOGIC::Start) &&
         (u8_dice_roll_counter >= 1) && (u8_dice_value != 6)) {
       // one more chance for the same player
       en_current_state = ASL::wait_for_dice_roll;
-    } else if ((obj_session->array_players[u8_current_player_number]
+    } else if ((obj_session->array_players[i8_current_player_number]
                     ->Get_Player_Status() == LOGIC::Start) &&
                u8_dice_roll_counter <= 0 && u8_dice_value != 6) {
       // If you did not get a 6 and dice roll counter is 0,
@@ -146,8 +146,8 @@ void loop() {
       en_current_state = ASL::validate_token;
     }
 #if DEBUG
-    PORTK = en_current_state | (u8_current_player_number << 4) |
-            (u8_current_token_number << 6);
+    PORTK = en_current_state | (i8_current_player_number << 4) |
+            (i8_current_token_number << 6);
     ;
 #endif
     break;
@@ -163,37 +163,37 @@ void loop() {
     uint8_t u8_old_position;
     uint8_t u8_new_position;
     // Get the old and new position of the token.
-    u8_old_position = obj_session->array_players[u8_current_player_number]
-                          ->Get_Token_Position(u8_current_token_number);
-    u8_new_position = obj_session->array_players[u8_current_player_number]
-                          ->Calculate_Possible_Position(u8_current_token_number,
+    u8_old_position = obj_session->array_players[i8_current_player_number]
+                          ->Get_Token_Position(i8_current_token_number);
+    u8_new_position = obj_session->array_players[i8_current_player_number]
+                          ->Calculate_Possible_Position(i8_current_token_number,
                                                         u8_dice_value);
     // Start blinking the token
-    obj_display.Blink_Start(ASL::slow, -1, ASL::token, u8_current_player_number,
+    obj_display.Blink_Start(ASL::slow, -1, ASL::token, i8_current_player_number,
                             u8_occupying_player, u8_new_position,
                             bool_occupied_flag, u8_old_position);
 
 #if DEBUG
-    PORTK = en_current_state | (u8_current_player_number << 4) |
-            (u8_current_token_number << 6);
+    PORTK = en_current_state | (i8_current_player_number << 4) |
+            (i8_current_token_number << 6);
 #endif
     en_current_state = ASL::wait_for_player_input;
   } break;
   // -----------------------------------------------------------------------------
   case ASL::validate_token: {
 #if DEBUG
-    PORTK = en_current_state | (u8_current_player_number << 4) |
-            (u8_current_token_number << 6);
+    PORTK = en_current_state | (i8_current_player_number << 4) |
+            (i8_current_token_number << 6);
 #endif
     en_current_state = ASL::wait_for_player_input;
     LOGIC::status en_player_state =
-        obj_session->array_players[u8_current_player_number]
+        obj_session->array_players[i8_current_player_number]
             ->Get_Player_Status();
     // check if a token must be moved from starting square
-    if (obj_session->array_players[u8_current_player_number]
+    if (obj_session->array_players[i8_current_player_number]
             ->Is_Start_Field_Occupied_By_Own_Token() != -1) {
-      u8_current_token_number =
-          obj_session->array_players[u8_current_player_number]
+      i8_current_token_number =
+          obj_session->array_players[i8_current_player_number]
               ->Is_Start_Field_Occupied_By_Own_Token();
       en_current_state = ASL::move_token;
     } else if ((u8_dice_value == 6) &&
@@ -204,12 +204,12 @@ void loop() {
       // if a 6 was rolled and there are still token in the starting square, the
       // player cannot choose a token to move, so lets look for a token in the
       // starting square
-      u8_current_token_number = 0;
-      while (obj_session->array_players[u8_current_player_number]
-                 ->Get_Token_Position(u8_current_token_number) >= 5) {
+      i8_current_token_number = 0;
+      while (obj_session->array_players[i8_current_player_number]
+                 ->Get_Token_Position(i8_current_token_number) >= 5) {
         // increase token number as long as the token is not in the starting
         // square
-        u8_current_token_number++;
+        i8_current_token_number++;
       }
       en_current_state = ASL::move_token;
     }
@@ -221,17 +221,17 @@ void loop() {
       int8_t u8_next_movable_token = -1;
       // check how many tokens can be moved:
       for (uint8_t i = 0; i < 4; i++) {
-        if (obj_session->array_players[u8_current_player_number]
+        if (obj_session->array_players[i8_current_player_number]
                 ->Calculate_Possible_Position(i, u8_dice_value) !=
-            obj_session->array_players[u8_current_player_number]
+            obj_session->array_players[i8_current_player_number]
                 ->Get_Token_Position(i)) {
           u8_token_counter++;
           // determine the next movable token
           if (u8_next_movable_token == -1) {
             // if it is -1, no token was found yet, so use the current token
             u8_next_movable_token = i;
-          } else if ((u8_next_movable_token < u8_current_token_number) &&
-                     (i >= u8_current_token_number)) {
+          } else if ((u8_next_movable_token < i8_current_token_number) &&
+                     (i >= i8_current_token_number)) {
             // we want the smallest token number that is larger than the current
             // token number, if there is one.
             u8_next_movable_token = i;
@@ -239,7 +239,7 @@ void loop() {
         }
       }
       // set current token number to the next movable token
-      u8_current_token_number = u8_next_movable_token;
+      i8_current_token_number = u8_next_movable_token;
       // handle cases of tokens that can be moved.
       if (u8_token_counter == 0) {
         // If no token can be moved, next player is chosen
@@ -257,8 +257,8 @@ void loop() {
     // accordingly.
     bool_occupied_flag = obj_session->Is_Occupied(
         u8_occupying_player, u8_occupying_token,
-        obj_session->array_players[u8_current_player_number]
-            ->Calculate_Possible_Position(u8_current_token_number,
+        obj_session->array_players[i8_current_player_number]
+            ->Calculate_Possible_Position(i8_current_token_number,
                                           u8_dice_value));
   } break;
   // -----------------------------------------------------------------------------
@@ -267,28 +267,28 @@ void loop() {
     uint8_t u8_old_position;
     uint8_t u8_new_position;
     obj_display.Blink_Stop();
-    u8_old_position = obj_session->array_players[u8_current_player_number]
-                          ->Get_Token_Position(u8_current_token_number);
-    u8_new_position = obj_session->array_players[u8_current_player_number]
-                          ->Calculate_Possible_Position(u8_current_token_number,
+    u8_old_position = obj_session->array_players[i8_current_player_number]
+                          ->Get_Token_Position(i8_current_token_number);
+    u8_new_position = obj_session->array_players[i8_current_player_number]
+                          ->Calculate_Possible_Position(i8_current_token_number,
                                                         u8_dice_value);
-    obj_session->array_players[u8_current_player_number]->Move_Token(
-        u8_current_token_number, u8_dice_value);
+    obj_session->array_players[i8_current_player_number]->Move_Token(
+        i8_current_token_number, u8_dice_value);
     if (bool_occupied_flag) {
       obj_display.Move_Token(
           u8_occupying_player, u8_occupying_token, u8_new_position,
           obj_session->array_players[u8_occupying_player]->Get_Token_Position(
               u8_occupying_token));
       obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
-                              u8_current_player_number, u8_occupying_player,
+                              i8_current_player_number, u8_occupying_player,
                               u8_new_position);
       bool_occupied_flag = false;
     }
-    obj_display.Move_Token(u8_current_player_number, u8_current_token_number,
+    obj_display.Move_Token(i8_current_player_number, i8_current_token_number,
                            u8_old_position, u8_new_position);
     if (u8_dice_roll_counter >= 1) {
       en_current_state = ASL::wait_for_dice_roll;
-    } else if (obj_session->array_players[u8_current_player_number]
+    } else if (obj_session->array_players[i8_current_player_number]
                    ->Get_Player_Status() == LOGIC::Finished) {
       en_current_state = ASL::game_finished;
     } else {
@@ -297,28 +297,28 @@ void loop() {
   } break;
   // -----------------------------------------------------------------------------
   case ASL::next_player: {
-    if (u8_current_player_number < (u8_player_quantity - 1)) {
-      u8_current_player_number++;
+    if (i8_current_player_number < (u8_player_quantity - 1)) {
+      i8_current_player_number++;
     } else {
-      u8_current_player_number = 0;
+      i8_current_player_number = 0;
     }
     // Calculate transfer parameter for display current player
     int8_t i8_tokens_at_home = 0;
     for (uint8_t i = 0; i < 4; i++) {
-      if (obj_session->array_players[u8_current_player_number]
+      if (obj_session->array_players[i8_current_player_number]
               ->Get_Token_Position(i) <= 5) {
         i8_tokens_at_home |= (1 << i);
       }
     }
-    obj_display.Display_Current_Player(u8_current_player_number,
+    obj_display.Display_Current_Player(i8_current_player_number,
                                        i8_tokens_at_home);
     // Display the progress bar:
     obj_display.Display_Progress(
-        u8_current_player_number,
-        obj_session->array_players[u8_current_player_number]
+        i8_current_player_number,
+        obj_session->array_players[i8_current_player_number]
             ->Get_Player_Progress());
     //  Set the dice roll counter for the next player:
-    if (obj_session->array_players[u8_current_player_number]
+    if (obj_session->array_players[i8_current_player_number]
             ->Get_Player_Status() == LOGIC::Start) {
       // roll the dice 3 times
       u8_dice_roll_counter = 3;
@@ -333,7 +333,7 @@ void loop() {
       asm volatile("nop"); // Do nothing
     }
     // ------ Auto-move if we have a computer player ---------
-    if (obj_session->array_players[u8_current_player_number]->Is_Computer()) {
+    if (obj_session->array_players[i8_current_player_number]->Is_Computer()) {
       while (u8_dice_roll_counter > 0) {
         // Computer code here
         uint8_t u8_new_position = 0;
@@ -344,13 +344,13 @@ void loop() {
           u8_dice_roll_counter--;
         }
         obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
-                                 u8_current_player_number);
+                                 i8_current_player_number);
         ASL::Delay_256(ANIMATION_SPEED_COMPUTER);
-        u8_current_token_number =
-            obj_session->array_players[u8_current_player_number]->Auto_Move(
+        i8_current_token_number =
+            obj_session->array_players[i8_current_player_number]->Auto_Move(
                 u8_dice_value, bool_occupied_flag, u8_old_position);
-        u8_new_position = obj_session->array_players[u8_current_player_number]
-                              ->Get_Token_Position(u8_current_token_number);
+        u8_new_position = obj_session->array_players[i8_current_player_number]
+                              ->Get_Token_Position(i8_current_token_number);
         if (bool_occupied_flag) {
           u8_occupying_player = obj_session->u8_is_occupied_player_id;
           u8_occupying_token = obj_session->u8_is_occupied_token_number;
@@ -359,27 +359,27 @@ void loop() {
                                  obj_session->array_players[u8_occupying_player]
                                      ->Get_Token_Position(u8_occupying_token));
           obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
-                                  u8_current_player_number, u8_occupying_player,
+                                  i8_current_player_number, u8_occupying_player,
                                   u8_new_position);
           bool_occupied_flag = false;
         }
-        if (u8_current_token_number != -1) {
-          obj_display.Move_Token(u8_current_player_number,
-                                 u8_current_token_number, u8_old_position,
+        if (i8_current_token_number != -1) {
+          obj_display.Move_Token(i8_current_player_number,
+                                 i8_current_token_number, u8_old_position,
                                  u8_new_position);
         }
         if (u8_dice_roll_counter > 0) {
           ASL::Delay_256(ANIMATION_SPEED_COMPUTER);
         }
 #if DEBUG
-        PORTK = en_current_state | ((u8_current_player_number << 4) && 0x0f) |
-                ((u8_current_token_number << 6) && 0x0f);
+        PORTK = en_current_state | ((i8_current_player_number << 4) && 0x0f) |
+                ((i8_current_token_number << 6) && 0x0f);
 #endif
         en_current_state = ASL::next_player;
       }
     }
     // Reset the token number for the next player
-    u8_current_token_number = 0;
+    i8_current_token_number = 0;
   } break;
   // -----------------------------------------------------------------------------
   case ASL::game_finished:
@@ -387,7 +387,7 @@ void loop() {
     static bool bool_do_once = true;
     if (bool_do_once) {
       obj_display.Blink_Start(ASL::fast, -1, ASL::starting_square,
-                              u8_current_player_number, -1, 0x0f);
+                              i8_current_player_number, -1, 0x0f);
       obj_display.Display_Restore();
       bool_do_once = false;
     }

@@ -78,20 +78,21 @@ void ASL::cla_display::Display_Restore() {
   Display_Track();
 }
 
-void ASL::cla_display::Display_Current_Player(uint8_t _u8_current_player,
+void ASL::cla_display::Display_Current_Player(int8_t _i8_current_player_number,
                                               int8_t _i8_tokens_at_home) {
-  obj_matrix->drawLine(14, 2, 14, 12, u16_player_color[_u8_current_player][0]);
+  obj_matrix->drawLine(14, 2, 14, 12,
+                       u16_player_color[_i8_current_player_number][0]);
   if (_i8_tokens_at_home != -1) {
-    Blink_Start(fast, 3, starting_square, _u8_current_player, -1,
+    Blink_Start(fast, 3, starting_square, _i8_current_player_number, -1,
                 _i8_tokens_at_home);
   }
 }
 
-void ASL::cla_display::Display_Progress(uint8_t _u8_current_player_number,
+void ASL::cla_display::Display_Progress(int8_t _i8_current_player_number,
                                         uint8_t _u8_progress) {
   obj_matrix->drawLine(2, 14, 29, 14, 0x00);
   obj_matrix->drawLine(2, 14, (2 + _u8_progress), 14,
-                       u16_player_color[_u8_current_player_number][0]);
+                       u16_player_color[_i8_current_player_number][0]);
 }
 
 void ASL::cla_display::Blink_Start(
@@ -284,7 +285,7 @@ void ASL::cla_display::Move_Token(uint8_t _u8_player_nr, uint8_t _u8_token_nr,
 
 void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value,
                                     uint8_t _u8_dice_roll_counter,
-                                    uint8_t _u8_current_player_number,
+                                    int8_t _i8_current_player_number,
                                     bool _bool_animate) {
   // Turn it all off:
   obj_matrix->drawRect(16, 2, 5, 5, 0x00);
@@ -305,27 +306,27 @@ void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value,
     // draw rectangle clockwise:
     for (int i = 0; i < width; i++) {
       obj_matrix->drawPixel(x + i, y,
-                            u16_player_color[_u8_current_player_number][0]);
+                            u16_player_color[_i8_current_player_number][0]);
       Delay_256(ANIMATION_SPEED_DICE);
     }
     for (int i = 1; i < height; i++) {
       obj_matrix->drawPixel(x + width - 1, y + i,
-                            u16_player_color[_u8_current_player_number][0]);
+                            u16_player_color[_i8_current_player_number][0]);
       Delay_256(ANIMATION_SPEED_DICE);
     }
     for (int i = width - 2; i >= 0; i--) {
       obj_matrix->drawPixel(x + i, y + height - 1,
-                            u16_player_color[_u8_current_player_number][0]);
+                            u16_player_color[_i8_current_player_number][0]);
       Delay_256(ANIMATION_SPEED_DICE);
     }
     for (int i = height - 2; i > 0; i--) {
       obj_matrix->drawPixel(x, y + i,
-                            u16_player_color[_u8_current_player_number][0]);
+                            u16_player_color[_i8_current_player_number][0]);
       Delay_256(ANIMATION_SPEED_DICE);
     }
   } else {
     obj_matrix->drawRect(16, 2, 5, 5,
-                         u16_player_color[_u8_current_player_number][0]);
+                         u16_player_color[_i8_current_player_number][0]);
   }
   switch (_u8_dice_roll_counter) {
   case 0:
@@ -335,24 +336,24 @@ void ASL::cla_display::Display_Dice(uint8_t _u8_dice_value,
     break;
   case 1:
     obj_matrix->drawPixel(17, 2,
-                          u16_player_color[_u8_current_player_number][0]);
+                          u16_player_color[_i8_current_player_number][0]);
     obj_matrix->drawPixel(18, 2, 0x00);
     obj_matrix->drawPixel(19, 2, 0x00);
     break;
   case 2:
     obj_matrix->drawPixel(17, 2,
-                          u16_player_color[_u8_current_player_number][0]);
+                          u16_player_color[_i8_current_player_number][0]);
     obj_matrix->drawPixel(18, 2,
-                          u16_player_color[_u8_current_player_number][0]);
+                          u16_player_color[_i8_current_player_number][0]);
     obj_matrix->drawPixel(19, 2, 0x00);
     break;
   case 3:
     obj_matrix->drawPixel(17, 2,
-                          u16_player_color[_u8_current_player_number][0]);
+                          u16_player_color[_i8_current_player_number][0]);
     obj_matrix->drawPixel(18, 2,
-                          u16_player_color[_u8_current_player_number][0]);
+                          u16_player_color[_i8_current_player_number][0]);
     obj_matrix->drawPixel(19, 2,
-                          u16_player_color[_u8_current_player_number][0]);
+                          u16_player_color[_i8_current_player_number][0]);
     break;
   }
 

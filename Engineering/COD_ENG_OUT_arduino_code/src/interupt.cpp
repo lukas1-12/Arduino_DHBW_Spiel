@@ -4,8 +4,7 @@
 
 extern volatile ASL::en_state en_current_state;
 extern uint8_t u8_player_quantity;
-extern volatile uint8_t u8_current_player_number;
-extern volatile uint8_t u8_current_token_number;
+extern volatile int8_t i8_current_token_number;
 extern uint8_t u8_dice_value;
 extern ASL::cla_display obj_display;
 extern LOGIC::cla_session *obj_session;
@@ -44,10 +43,10 @@ ISR(INT4_vect) {
     // NOP
     break;
   case ASL::wait_for_player_input:
-    if (u8_current_token_number < 3) {
-      u8_current_token_number++;
+    if (i8_current_token_number < 3) {
+      i8_current_token_number++;
     } else {
-      u8_current_token_number = 0;
+      i8_current_token_number = 0;
     }
     en_current_state = ASL::validate_token;
     break;

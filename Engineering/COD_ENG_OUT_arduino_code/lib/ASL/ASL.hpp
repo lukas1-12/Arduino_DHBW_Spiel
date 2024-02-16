@@ -175,22 +175,21 @@ public:
    *
    * This method can display the current player on the matrix.
    *
-   * \param _u8_current_player_number The number of the current player.
+   * \param _i8_current_player_number The number of the current player.
    * \param _u8_tokens_at_home Tokens at home, signaled by the bit position
    * (1 << tokennr -> token is home). default: -1 (don't animate)
    */
-  void Display_Current_Player(uint8_t _u8_current_player_number,
+  void Display_Current_Player(int8_t _i8_current_player_number,
                               int8_t _i8_tokens_at_home = -1);
 
   /**
    * \brief Display the Progress
    * This method can display the progress of the Player.
    *
-   * \param _u8_current_player_number The number of the current player.
+   * \param _i8_current_player_number The number of the current player.
    * \param _u8_progress The progress of the player. (0:28)
    */
-  void Display_Progress(uint8_t _u8_current_player_number,
-                        uint8_t _u8_progress);
+  void Display_Progress(int8_t _i8_current_player_number, uint8_t _u8_progress);
 
   /**
    * \brief Blink method
@@ -261,12 +260,12 @@ public:
    *
    * \param _u8_dice_value The value to be displayed.
    * \param _u8_dice_roll_counter The number of the current roll.
-   * \param _u8_current_player_number The number of the current player.
+   * \param _i8_current_player_number The number of the current player.
    * \param _bool_animate flag to determine if the dice should be animated.
    * should be handled with care as it uses Delay. default: true
    */
   void Display_Dice(uint8_t _u8_dice_value, uint8_t _u8_dice_roll_counter,
-                    uint8_t _u8_current_player_number,
+                    int8_t _i8_current_player_number,
                     bool _bool_animate = true);
 };
 
