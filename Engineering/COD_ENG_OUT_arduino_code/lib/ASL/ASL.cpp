@@ -91,7 +91,7 @@ void ASL::cla_display::Display_Current_Player(int8_t _i8_current_player_number,
 void ASL::cla_display::Display_Progress(int8_t _i8_current_player_number,
                                         uint8_t _u8_progress) {
   obj_matrix->drawLine(2, 14, 29, 14, 0x00);
-  obj_matrix->drawLine(2, 14, (2 + _u8_progress), 14,
+  obj_matrix->drawLine(2, 14, (1 + _u8_progress), 14,
                        u16_player_color[_i8_current_player_number][0]);
 }
 

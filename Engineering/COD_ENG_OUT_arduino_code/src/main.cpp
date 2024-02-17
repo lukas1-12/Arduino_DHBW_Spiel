@@ -119,7 +119,16 @@ void loop() {
             (u8_computer_quantity << 6);
 #endif
     obj_display.Display_Current_Player(i8_current_player_number);
-    en_current_state = ASL::wait_for_dice_roll;
+    if (u8_player_quantity != u8_computer_quantity) {
+      // Only wait for dice roll, if there are real players
+      en_current_state = ASL::wait_for_dice_roll;
+    } else {
+      // Set the player number to minus one: In next_player state, the next
+      // player is chosen by adding one to the current player number, and we
+      // want to start at player 0.
+      i8_current_player_number = -1;
+      en_current_state = ASL::next_player;
+    }
     break;
   // -----------------------------------------------------------------------------
   case ASL::wait_for_dice_roll:
@@ -303,113 +312,117 @@ void loop() {
     // determine the next state
     if (u8_dice_roll_counter >= 1) {
       en_current_state = ASL::wait_for_dice_roll;
-    } else if (obj_session->array_players[i8_current_player_number]
-                   ->Get_Player_Status() == LOGIC::Finished) {
-      en_current_state = ASL::game_finished;
     } else {
       en_current_state = ASL::next_player;
     }
   } break;
   // -----------------------------------------------------------------------------
   case ASL::next_player: {
-    if (i8_current_player_number < (u8_player_quantity - 1)) {
-      i8_current_player_number++;
-    } else {
-      i8_current_player_number = 0;
-    }
-    // Calculate transfer parameter for display current player
-    int8_t i8_tokens_at_home = 0;
-    for (uint8_t i = 0; i < 4; i++) {
-      if (obj_session->array_players[i8_current_player_number]
-              ->Get_Token_Position(i) < 5) {
-        i8_tokens_at_home |= (1 << i);
-      }
-    }
-    // before the current player can be displayed, blinking animation (throw)
-    // must be finished. Otherwise the wrong token might be displayed on the
-    // position somebody was thrown from, because the blinking is restarted in
-    // another mode (starting_square) and the Blink_Stop() method was never
-    // called. This could lead to the wrong token being displayed, since the
-    // position is alternating in the two colors. If the blinking gets disrupted
-    // while the thrown token is displayed, the wrong token stays displayed.
-    while (obj_display.Blink_Is_On()) {
-      // Wait for blinking animation to finish, so the thrown animation isn't
-      // getting messed up by the next player's starting square blinking.
-      // If no token was thrown, Blink_Is_On will immediatly return false and
-      // the loop will never be executed.
-      asm volatile("nop"); // Do nothing
-    }
-    obj_display.Display_Current_Player(i8_current_player_number,
-                                       i8_tokens_at_home);
-    // Display the progress bar:
-    obj_display.Display_Progress(
-        i8_current_player_number,
-        obj_session->array_players[i8_current_player_number]
-            ->Get_Player_Progress());
-    //  Set the dice roll counter for the next player:
     if (obj_session->array_players[i8_current_player_number]
-            ->Get_Player_Status() == LOGIC::Start) {
-      // roll the dice 3 times
-      u8_dice_roll_counter = 3;
+            ->Get_Player_Status() == LOGIC::Finished) {
+      en_current_state = ASL::game_finished;
     } else {
-      // roll the dice 1 time (unless you get a 6)
-      u8_dice_roll_counter = 1;
-    }
-    en_current_state = ASL::wait_for_dice_roll;
-    while (obj_display.Blink_Is_On()) {
-      // Wait for blinking animation to finish, so the starting square isn't
-      // getting messed up by the player leaving the starting square.
-      asm volatile("nop"); // Do nothing
-    }
-    // ------ Auto-move if we have a computer player ---------
-    if (obj_session->array_players[i8_current_player_number]->Is_Computer()) {
-      while (u8_dice_roll_counter > 0) {
-        // Computer code here
-        uint8_t u8_new_position = 0;
-        u8_dice_value = ASL::Roll_Dice();
-        if (u8_dice_value == 6) {
-          u8_dice_roll_counter = 1;
-        } else {
-          u8_dice_roll_counter--;
+      if (i8_current_player_number < (u8_player_quantity - 1)) {
+        i8_current_player_number++;
+      } else {
+        i8_current_player_number = 0;
+      }
+      // Calculate transfer parameter for display current player
+      int8_t i8_tokens_at_home = 0;
+      for (uint8_t i = 0; i < 4; i++) {
+        if (obj_session->array_players[i8_current_player_number]
+                ->Get_Token_Position(i) < 5) {
+          i8_tokens_at_home |= (1 << i);
         }
-        obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
-                                 i8_current_player_number);
-        ASL::Delay_256(ANIMATION_SPEED_COMPUTER);
-        i8_current_token_number =
-            obj_session->array_players[i8_current_player_number]->Auto_Move(
-                u8_dice_value, bool_occupied_flag, u8_old_position);
-        u8_new_position = obj_session->array_players[i8_current_player_number]
-                              ->Get_Token_Position(i8_current_token_number);
-        if (i8_current_token_number != -1) {
-          // move the token on the display
-          if (u8_old_position >= 5) {
-            Move_Token(i8_current_player_number, u8_old_position,
-                       u8_new_position, &obj_display, obj_session,
-                       u8_player_quantity, u8_dice_value);
+      }
+      // before the current player can be displayed, blinking animation (throw)
+      // must be finished. Otherwise the wrong token might be displayed on the
+      // position somebody was thrown from, because the blinking is restarted in
+      // another mode (starting_square) and the Blink_Stop() method was never
+      // called. This could lead to the wrong token being displayed, since the
+      // position is alternating in the two colors. If the blinking gets
+      // disrupted while the thrown token is displayed, the wrong token stays
+      // displayed.
+      while (obj_display.Blink_Is_On()) {
+        // Wait for blinking animation to finish, so the thrown animation isn't
+        // getting messed up by the next player's starting square blinking.
+        // If no token was thrown, Blink_Is_On will immediatly return false and
+        // the loop will never be executed.
+        asm volatile("nop"); // Do nothing
+      }
+      obj_display.Display_Current_Player(i8_current_player_number,
+                                         i8_tokens_at_home);
+      // Display the progress bar:
+      obj_display.Display_Progress(
+          i8_current_player_number,
+          obj_session->array_players[i8_current_player_number]
+              ->Get_Player_Progress());
+      //  Set the dice roll counter for the next player:
+      if (obj_session->array_players[i8_current_player_number]
+              ->Get_Player_Status() == LOGIC::Start) {
+        // roll the dice 3 times
+        u8_dice_roll_counter = 3;
+      } else {
+        // roll the dice 1 time (unless you get a 6)
+        u8_dice_roll_counter = 1;
+      }
+      en_current_state = ASL::wait_for_dice_roll;
+      while (obj_display.Blink_Is_On()) {
+        // Wait for blinking animation to finish, so the starting square isn't
+        // getting messed up by the player leaving the starting square.
+        asm volatile("nop"); // Do nothing
+      }
+      // ------ Auto-move if we have a computer player ---------
+      if (obj_session->array_players[i8_current_player_number]->Is_Computer()) {
+        while (u8_dice_roll_counter > 0) {
+          // Computer code here
+          uint8_t u8_new_position = 0;
+          u8_dice_value = ASL::Roll_Dice();
+          if (u8_dice_value == 6) {
+            u8_dice_roll_counter = 1;
           } else {
-            obj_display.Move_Token(i8_current_player_number, u8_old_position,
-                                   u8_new_position);
+            u8_dice_roll_counter--;
           }
-        }
-        if (bool_occupied_flag) {
-          u8_occupying_player = obj_session->u8_is_occupied_player_id;
-          u8_occupying_token = obj_session->u8_is_occupied_token_number;
-          obj_display.Move_Token(u8_occupying_player, u8_new_position,
-                                 obj_session->array_players[u8_occupying_player]
-                                     ->Get_Token_Position(u8_occupying_token));
-          obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
-                                  i8_current_player_number, u8_occupying_player,
-                                  u8_new_position);
-          bool_occupied_flag = false;
-        }
-        if (u8_dice_roll_counter > 0) {
+          obj_display.Display_Dice(u8_dice_value, u8_dice_roll_counter,
+                                   i8_current_player_number);
           ASL::Delay_256(ANIMATION_SPEED_COMPUTER);
-        }
+          i8_current_token_number =
+              obj_session->array_players[i8_current_player_number]->Auto_Move(
+                  u8_dice_value, bool_occupied_flag, u8_old_position);
+          u8_new_position = obj_session->array_players[i8_current_player_number]
+                                ->Get_Token_Position(i8_current_token_number);
+          if (i8_current_token_number != -1) {
+            // move the token on the display
+            if (u8_old_position >= 5) {
+              Move_Token(i8_current_player_number, u8_old_position,
+                         u8_new_position, &obj_display, obj_session,
+                         u8_player_quantity, u8_dice_value);
+            } else {
+              obj_display.Move_Token(i8_current_player_number, u8_old_position,
+                                     u8_new_position);
+            }
+          }
+          if (bool_occupied_flag) {
+            u8_occupying_player = obj_session->u8_is_occupied_player_id;
+            u8_occupying_token = obj_session->u8_is_occupied_token_number;
+            obj_display.Move_Token(
+                u8_occupying_player, u8_new_position,
+                obj_session->array_players[u8_occupying_player]
+                    ->Get_Token_Position(u8_occupying_token));
+            obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
+                                    i8_current_player_number,
+                                    u8_occupying_player, u8_new_position);
+            bool_occupied_flag = false;
+          }
+          if (u8_dice_roll_counter > 0) {
+            ASL::Delay_256(ANIMATION_SPEED_COMPUTER);
+          }
 #if DEBUG
-        PORTK = en_current_state | ((i8_current_player_number << 4) && 0x0f) |
-                ((i8_current_token_number << 6) && 0x0f);
+          PORTK = en_current_state | ((i8_current_player_number << 4) && 0x0f) |
+                  ((i8_current_token_number << 6) && 0x0f);
 #endif
-        en_current_state = ASL::next_player;
+          en_current_state = ASL::next_player;
+        }
       }
     }
     // Reset the token number for the next player
