@@ -23,6 +23,9 @@ uint8_t u8_occupying_player;
 uint8_t u8_occupying_token;
 bool bool_occupied_flag = false;
 
+// Used for blinking
+volatile bool bool_blink_flag = false;
+
 // Function Prototypes
 extern void Move_Token(int8_t _i8_current_player_number,
                        uint8_t _u8_remove_position, uint8_t _u8_add_position,
@@ -444,5 +447,9 @@ void loop() {
     // An error occured, go back to setup.
     en_current_state = ASL::setup_real_players;
     break;
+  }
+  if (bool_blink_flag) {
+    obj_display.Blink_Update(false);
+    bool_blink_flag = false;
   }
 }

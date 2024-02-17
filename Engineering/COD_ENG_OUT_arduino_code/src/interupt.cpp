@@ -9,6 +9,8 @@ extern volatile int8_t i8_current_token_number;
 extern uint8_t u8_dice_value;
 extern ASL::cla_display obj_display;
 extern LOGIC::cla_session *obj_session;
+extern volatile bool bool_blink_flag;
+
 /**
  * \brief interupt routine for the Choose (green) Button.
  */
@@ -174,7 +176,7 @@ ISR(TIMER4_COMPA_vect) {
 #if TIMING_DEBUG
   PORTK ^= 0xff;
 #endif
-  obj_display.Blink_Update();
+  bool_blink_flag = obj_display.Blink_Update(true);
 }
 
 ISR(TIMER5_COMPA_vect) {

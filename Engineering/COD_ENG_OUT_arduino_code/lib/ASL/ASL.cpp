@@ -135,7 +135,7 @@ void ASL::cla_display::Blink_Start(
   TIMSK4 |= 1 << OCIE4A;
 }
 
-void ASL::cla_display::Blink_Update() {
+bool ASL::cla_display::Blink_Update(bool _bool_isr_active) {
   // Blinking is done in the interupt routine.
   switch (en_current_blink_type) {
   case token: // Token Blink
@@ -185,6 +185,11 @@ void ASL::cla_display::Blink_Update() {
     }
     break;
   case winner_animation: // Winner Animation
+    // This animation is very cpu intensive, so we will only do it at the end of
+    // the loop funciton if the corresponding flag is set.
+    if (_bool_isr_active) {
+      return true;
+    }
     if (u8_blink_state == 0) {
       // Draw a Human beeing on the right side of the matrix:
       for (uint8_t i = 0; i < 26; i++) {
@@ -217,6 +222,7 @@ void ASL::cla_display::Blink_Update() {
   if (i8_blink_counter == 0) {
     Blink_Stop();
   }
+  return false;
 }
 
 void ASL::cla_display::Blink_Stop() {

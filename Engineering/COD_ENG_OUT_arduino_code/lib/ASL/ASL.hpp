@@ -232,8 +232,12 @@ public:
   /**
    * \brief Update the Blink state
    *
+   * \param _bool_isr_active flag to determine if the function is called from an
+   * interupt service routine.
+   * \return true if the Blinking wasn't executed due to it possibly taking too
+   * long.
    */
-  void Blink_Update();
+  bool Blink_Update(bool _bool_isr_active);
 
   /**
    * \brief Stop blinking
