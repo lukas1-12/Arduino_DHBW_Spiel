@@ -125,9 +125,14 @@ void ASL::cla_display::Blink_Start(
     bool _bool_occupied_flag, uint8_t _u8_old_position) {
   // write transfer parameters to class variables:
   en_current_blink_mode = _en_blink_mode;
-  // multiply the blink cycles by 2, because the interupt routine will toggle
-  // AND subtract 1
-  i8_blink_counter = (_i8_blink_cycles << 1);
+  if (_i8_blink_cycles == -1) {
+    // if it is set to -1, we will blink forever.
+    i8_blink_counter = -1;
+  } else {
+    // multiply the blink cycles by 2, because the interupt routine will toggle
+    // AND subtract 1
+    i8_blink_counter = (_i8_blink_cycles << 1);
+  }
   en_current_blink_type = _en_blink_type;
   u8_blink_player_number = _u8_blink_player_number;
   u8_blink_old_position = _u8_old_position;
