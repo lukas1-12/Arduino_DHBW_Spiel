@@ -34,7 +34,7 @@
 // DICE_MODE 0: Normal, Random Dice
 //           1: Dice input via PORT L
 //           2: marked Dice using Array
-#define DICE_MODE 2
+#define DICE_MODE 0
 #if DICE_MODE == 2
 #include "../test/marked_dice.hpp"
 #endif

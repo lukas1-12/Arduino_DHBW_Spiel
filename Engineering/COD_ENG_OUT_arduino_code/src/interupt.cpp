@@ -19,16 +19,26 @@ ISR(INT4_vect) {
   EIMSK &= 0b11101111;
 
   switch (en_current_state) {
+  case ASL::display_setup_real_players:
+    // NOP
+    break;
   case ASL::setup_real_players:
     en_current_state = ASL::modify_real_player_number;
     break;
   case ASL::modify_real_player_number:
     // NOP
     break;
+  case ASL::display_setup_computer_players:
+    // NOP
+    break;
   case ASL::setup_computer_players:
     en_current_state = ASL::modify_computer_player_number;
     break;
   case ASL::modify_computer_player_number:
+    // NOP
+    break;
+  case ASL::display_setup_computer_player_mode:
+    // NOP
     break;
   case ASL::setup_computer_player_mode:
     en_current_state = ASL::modify_computer_player_mode;
@@ -66,11 +76,13 @@ ISR(INT4_vect) {
     // NOP
     break;
   case ASL::game_finished:
-    en_current_state = ASL::setup_real_players;
+    // NOP
+    break;
+    en_current_state = ASL::display_setup_real_players;
     break;
   default:
     // An error occured, go back to setup.
-    en_current_state = ASL::setup_real_players;
+    en_current_state = ASL::display_setup_real_players;
     break;
   }
 
@@ -93,9 +105,12 @@ ISR(INT5_vect) {
   EIMSK &= 0b11011111;
 
   switch (en_current_state) {
+  case ASL::display_setup_real_players:
+    // NOP
+    break;
   case ASL::setup_real_players:
     if (u8_player_quantity != 4) {
-      en_current_state = ASL::setup_computer_players;
+      en_current_state = ASL::display_setup_computer_players;
     } else {
       en_current_state = ASL::init_game_logic;
     }
@@ -103,14 +118,21 @@ ISR(INT5_vect) {
   case ASL::modify_real_player_number:
     // NOP
     break;
+  case ASL::display_setup_computer_players:
+    // NOP
+    break;
   case ASL::setup_computer_players:
     if (u8_computer_quantity != 0) {
-      en_current_state = ASL::setup_computer_player_mode;
+      en_current_state = ASL::display_setup_computer_player_mode;
     } else {
       en_current_state = ASL::init_game_logic;
     }
     break;
   case ASL::modify_computer_player_number:
+    // NOP
+    break;
+  case ASL::display_setup_computer_player_mode:
+    // NOP
     break;
   case ASL::setup_computer_player_mode:
     en_current_state = ASL::init_game_logic;
@@ -128,7 +150,6 @@ ISR(INT5_vect) {
     // NOP
     break;
   case ASL::wait_for_player_input:
-
     en_current_state = ASL::move_token;
     break;
   case ASL::display_token:
@@ -144,11 +165,11 @@ ISR(INT5_vect) {
     // NOP
     break;
   case ASL::game_finished:
-    en_current_state = ASL::setup_real_players;
+    en_current_state = ASL::display_setup_real_players;
     break;
   default:
     // An error occured, go back to setup.
-    en_current_state = ASL::setup_real_players;
+    en_current_state = ASL::display_setup_real_players;
     break;
   }
 

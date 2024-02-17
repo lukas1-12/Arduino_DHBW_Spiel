@@ -9,21 +9,24 @@ namespace ASL {
  * Defines the states of the finite state machine. Starting state is 1.
  */
 typedef enum {
-  setup_real_players = 0,
-  modify_real_player_number,     // 1  0001 x
-  setup_computer_players,        // 2  0010
-  modify_computer_player_number, // 3  0011 x
-  setup_computer_player_mode,    // 4  0100
-  modify_computer_player_mode,   // 5  0101
-  init_game_logic,               // 6  0110
-  wait_for_dice_roll,            // 7  0111
-  roll_the_dice,                 // 8  1000
-  wait_for_player_input,         // 9  1001
-  display_token,                 // 10 1010
-  validate_token,                // 11 1011
-  move_token,                    // 12 1100
-  next_player,                   // 13 1101
-  game_finished                  // 14 1110
+  display_setup_real_players = 0,
+  setup_real_players,                 // 1   0001
+  modify_real_player_number,          // 2   0010
+  display_setup_computer_players,     // 3   0011
+  setup_computer_players,             // 4   0100
+  modify_computer_player_number,      // 5   0101
+  display_setup_computer_player_mode, // 6   0110
+  setup_computer_player_mode,         // 7   0111
+  modify_computer_player_mode,        // 8   1000
+  init_game_logic,                    // 9   1001
+  wait_for_dice_roll,                 // 10  1010
+  roll_the_dice,                      // 11  1011
+  wait_for_player_input,              // 12  1100
+  display_token,                      // 13  1101
+  validate_token,                     // 14  1110
+  move_token,                         // 15  1111
+  next_player,                        // 16 10000
+  game_finished                       // 17 10001
 } en_state;
 
 typedef enum { off = 0, fast, slow } en_blink_mode;
@@ -202,6 +205,21 @@ public:
    * \param _u8_progress The progress of the player. (0:28)
    */
   void Display_Progress(int8_t _i8_current_player_number, uint8_t _u8_progress);
+
+  /**
+   * \brief Display the Word
+   *
+   * \param _ch_first_letter The first letter of the word to display. default: '
+   * ' \param _ch_second_letter The second letter of the word to display.
+   * default: ' '
+   */
+  void Display_Char(char _ch_first_letter = ' ', char _ch_second_letter = ' ',
+                    char _ch_third_letter = ' ');
+
+  /**
+   * \brief clears the right half of the display.
+   */
+  void Display_Clear_Right();
 
   /**
    * \brief Blink method

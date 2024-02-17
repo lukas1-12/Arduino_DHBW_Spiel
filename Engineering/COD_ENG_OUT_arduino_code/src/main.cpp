@@ -3,7 +3,7 @@
 #include <defines.hpp>
 #include <logic.hpp>
 
-volatile ASL::en_state en_current_state = ASL::setup_real_players;
+volatile ASL::en_state en_current_state = ASL::display_setup_real_players;
 uint8_t u8_player_quantity = 1;
 uint8_t u8_computer_quantity = 0;
 
@@ -51,11 +51,18 @@ void loop() {
   static uint8_t u8_old_position;
   switch (en_current_state) {
   // -----------------------------------------------------------------------------
-  case ASL::setup_real_players:
+  case ASL::display_setup_real_players:
     if (obj_display.Blink_Is_On()) {
       obj_display.Blink_Stop();
     }
+    obj_display.Display_Restore();
     obj_display.Display_Players(u8_player_quantity);
+    obj_display.Display_Char('R', 'E', 'A');
+    en_current_state = ASL::setup_real_players;
+    break;
+  // -----------------------------------------------------------------------------
+  case ASL::setup_real_players:
+    // NOP
     break;
   // -----------------------------------------------------------------------------
   case ASL::modify_real_player_number:
@@ -64,6 +71,7 @@ void loop() {
     } else {
       u8_player_quantity = 0;
     }
+    obj_display.Display_Players(u8_player_quantity);
 #if DEBUG
     // First 4 Bits are for the current state, two for the player quantity and
     // two for computer quantity
@@ -73,8 +81,14 @@ void loop() {
     en_current_state = ASL::setup_real_players;
     break;
   // -----------------------------------------------------------------------------
-  case ASL::setup_computer_players:
+  case ASL::display_setup_computer_players:
     obj_display.Display_Players(u8_player_quantity);
+    obj_display.Display_Char('C', 'O', 'M');
+    en_current_state = ASL::setup_computer_players;
+    break;
+  // -----------------------------------------------------------------------------
+  case ASL::setup_computer_players:
+    // NOP
     break;
   // -----------------------------------------------------------------------------
   case ASL::modify_computer_player_number:
@@ -85,6 +99,7 @@ void loop() {
       u8_player_quantity = u8_player_quantity - u8_computer_quantity;
       u8_computer_quantity = 0;
     }
+    obj_display.Display_Players(u8_player_quantity);
 #if DEBUG
     // First 4 Bits are for the current state, two for the player quantity and
     // two for computer quantity
@@ -94,6 +109,10 @@ void loop() {
     en_current_state = ASL::setup_computer_players;
     break;
   // -----------------------------------------------------------------------------
+  case ASL::display_setup_computer_player_mode:
+    obj_display.Display_Char('S', 'T', 'U');
+    en_current_state = ASL::setup_computer_player_mode;
+    break;
   case ASL::setup_computer_player_mode:
     // display mode.
     break;
@@ -103,9 +122,11 @@ void loop() {
     switch (en_computer_mode) {
     case LOGIC::Student:
       en_computer_mode = LOGIC::Professor;
+      obj_display.Display_Char('P', 'R', 'O');
       break;
     case LOGIC::Professor:
       en_computer_mode = LOGIC::Student;
+      obj_display.Display_Char('S', 'T', 'U');
       break;
     }
     // Go back to setup state
@@ -113,6 +134,8 @@ void loop() {
     break;
   // -----------------------------------------------------------------------------
   case ASL::init_game_logic:
+    // remove txt from display
+    obj_display.Display_Char();
     obj_session = new LOGIC::cla_session(
         u8_player_quantity, u8_computer_quantity, en_computer_mode);
 #if DEBUG
@@ -323,7 +346,15 @@ void loop() {
   case ASL::next_player: {
     if (obj_session->array_players[i8_current_player_number]
             ->Get_Player_Status() == LOGIC::Finished) {
+      // clear the right half of the display
+      obj_display.Display_Clear_Right();
+      // Start winner animation
+      obj_display.Display_Progress(i8_current_player_number, 28);
+      obj_display.Blink_Start(ASL::slow, -1, ASL::winner_animation,
+                              i8_current_player_number, -1);
+      delete obj_session;
       en_current_state = ASL::game_finished;
+      break;
     } else {
       if (i8_current_player_number < (u8_player_quantity - 1)) {
         i8_current_player_number++;
@@ -433,21 +464,14 @@ void loop() {
   } break;
   // -----------------------------------------------------------------------------
   case ASL::game_finished:
-    // delete obj_session;
-    static bool bool_do_once = true;
-    if (bool_do_once) {
-      obj_display.Blink_Start(ASL::slow, -1, ASL::winner_animation,
-                              i8_current_player_number, -1);
-      obj_display.Display_Restore();
-      bool_do_once = false;
-    }
     asm volatile("nop"); // Do nothing
     break;
   default:
     // An error occured, go back to setup.
-    en_current_state = ASL::setup_real_players;
+    en_current_state = ASL::display_setup_real_players;
     break;
   }
+  // ------------------------------Blinking--------------------------------------
   if (bool_blink_flag) {
     obj_display.Blink_Update(false);
     bool_blink_flag = false;

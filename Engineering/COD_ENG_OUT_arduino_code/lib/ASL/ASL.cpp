@@ -95,6 +95,29 @@ void ASL::cla_display::Display_Progress(int8_t _i8_current_player_number,
                        u16_player_color[_i8_current_player_number][0]);
 }
 
+void ASL::cla_display::Display_Char(char _ch_first_letter,
+                                    char _ch_second_letter,
+                                    char _ch_third_letter) {
+  // turn off the word pixels:
+  for (uint8_t i = 16; i <= 31; i++) {
+    for (uint8_t j = 8; j <= 12; j++) {
+      obj_matrix->drawPixel(i, j, 0x00);
+    }
+  }
+
+  obj_matrix->drawChar(15, 4, _ch_first_letter, u16_track_color, 0x00, 1);
+  obj_matrix->drawChar(20, 4, _ch_second_letter, u16_track_color, 0x00, 1);
+  obj_matrix->drawChar(25, 4, _ch_third_letter, u16_track_color, 0x00, 1);
+}
+
+void ASL::cla_display::Display_Clear_Right() {
+  for (uint8_t i = 16; i <= 31; i++) {
+    for (uint8_t j = 0; j <= 16; j++) {
+      obj_matrix->drawPixel(i, j, 0x00);
+    }
+  }
+}
+
 void ASL::cla_display::Blink_Start(
     en_blink_mode _en_blink_mode, int8_t _i8_blink_cycles,
     en_blink_type _en_blink_type, uint8_t _u8_blink_player_number,
