@@ -28,7 +28,12 @@ typedef enum {
 
 typedef enum { off = 0, fast, slow } en_blink_mode;
 
-typedef enum { token = 0, token_thrown, starting_square } en_blink_type;
+typedef enum {
+  token = 0,
+  token_thrown,
+  starting_square,
+  winner_animation
+} en_blink_type;
 
 /**
  * \brief display handler
@@ -87,6 +92,14 @@ class cla_display {
   };
 
   /**
+   * \brief Stores the smiley for the winner animation.
+   */
+  uint8_t u8_smiley_postitions[26][2] = {
+      {0, 2}, {0, 3}, {0, 4}, {0, 5}, {1, 1}, {1, 6}, {2, 0}, {2, 2}, {2, 4},
+      {2, 7}, {3, 0}, {3, 5}, {3, 7}, {4, 0}, {4, 5}, {4, 7}, {5, 0}, {5, 2},
+      {5, 4}, {5, 7}, {6, 1}, {6, 6}, {7, 2}, {7, 3}, {7, 4}, {7, 5}};
+
+  /**
    * \brief Stores the Players Colors.
    * Order: player_nr, bright/dark
    */
@@ -112,8 +125,7 @@ class cla_display {
   int8_t i8_blink_counter = 0;
   /** current blink type, determines what is blinking */
   en_blink_type en_current_blink_type = token;
-  /** he number of the player to blink. Used in
-   * token, display and home mode. */
+  /** he number of the player to blink. */
   uint8_t u8_blink_player_number = 0;
   /** The number of the second player to blink. Used in token, if occupied flag
    * is set and in display for the second color. */
@@ -201,7 +213,7 @@ public:
    * \param _en_blink_mode The mode of the blinking (fast/slow/off)
    * \param _i8_blink_cycles The number of cycles to blink (-1: infinite)
    * \param _en_blink_type The type of the blinking
-   * (token/token_thrown/starting_square)
+   * (token/token_thrown/starting_square/winner_animation)
    * \param _u8_blink_player_number The number of the player to blink.
    * \param _i8_blink_second_player The number of the second player to blink.
    * \param _u8_new_position new position of the token. default: 0. Different

@@ -183,6 +183,33 @@ void ASL::cla_display::Blink_Update() {
       }
       u8_blink_state = 0;
     }
+    break;
+  case winner_animation: // Winner Animation
+    if (u8_blink_state == 0) {
+      // Draw a Human beeing on the right side of the matrix:
+      for (uint8_t i = 0; i < 26; i++) {
+        obj_matrix->drawPixel(u8_smiley_postitions[i][0] + 19,
+                              u8_smiley_postitions[i][1] + 4, 0x00);
+      }
+      for (uint8_t i = 0; i < 26; i++) {
+        obj_matrix->drawPixel(u8_smiley_postitions[i][0] + 19,
+                              u8_smiley_postitions[i][1] + 3,
+                              u16_player_color[u8_blink_player_number][0]);
+      }
+      u8_blink_state = 1;
+    } else {
+      for (uint8_t i = 0; i < 26; i++) {
+        obj_matrix->drawPixel(u8_smiley_postitions[i][0] + 19,
+                              u8_smiley_postitions[i][1] + 3, 0x00);
+      }
+      for (uint8_t i = 0; i < 26; i++) {
+        obj_matrix->drawPixel(u8_smiley_postitions[i][0] + 19,
+                              u8_smiley_postitions[i][1] + 4,
+                              u16_player_color[u8_blink_player_number][0]);
+      }
+      u8_blink_state = 0;
+    }
+    break;
   }
   if (i8_blink_counter != -1) {
     i8_blink_counter--;
@@ -217,7 +244,7 @@ void ASL::cla_display::Blink_Stop() {
       // Partially Reset display:
       Modify_Position(u8_blink_new_position, u8_blink_player_number, true);
       break;
-    case starting_square:
+    case starting_square: {
       // Partially Reset display:
       uint8_t u8_tokens_at_home = u8_blink_new_position;
       for (uint8_t i = 1; i < 5; i++) {
@@ -227,6 +254,21 @@ void ASL::cla_display::Blink_Stop() {
           Modify_Position(i, u8_blink_player_number, false);
         }
         u8_tokens_at_home >>= 1;
+      }
+      break;
+    }
+    case winner_animation: // Winner Animation
+      if (u8_blink_state == 0) {
+        // Draw a Human beeing on the right side of the matrix:
+        for (uint8_t i = 0; i < 26; i++) {
+          obj_matrix->drawPixel(u8_smiley_postitions[i][0] + 19,
+                                u8_smiley_postitions[i][1] + 4, 0x00);
+        }
+      } else {
+        for (uint8_t i = 0; i < 26; i++) {
+          obj_matrix->drawPixel(u8_smiley_postitions[i][0] + 19,
+                                u8_smiley_postitions[i][1] + 3, 0x00);
+        }
       }
       break;
     }

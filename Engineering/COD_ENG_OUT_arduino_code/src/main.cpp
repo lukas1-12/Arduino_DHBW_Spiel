@@ -406,8 +406,8 @@ void loop() {
     // delete obj_session;
     static bool bool_do_once = true;
     if (bool_do_once) {
-      obj_display.Blink_Start(ASL::fast, -1, ASL::starting_square,
-                              i8_current_player_number, -1, 0x0f);
+      obj_display.Blink_Start(ASL::slow, -1, ASL::winner_animation,
+                              i8_current_player_number, -1);
       obj_display.Display_Restore();
       bool_do_once = false;
     }
