@@ -279,6 +279,14 @@ void loop() {
     u8_new_position = obj_session->array_players[i8_current_player_number]
                           ->Calculate_Possible_Position(i8_current_token_number,
                                                         u8_dice_value);
+    // move the token on the display
+    if (u8_old_position >= 5) {
+      Move_Token(i8_current_player_number, u8_old_position, u8_new_position,
+                 &obj_display, obj_session, u8_player_quantity, u8_dice_value);
+    } else {
+      obj_display.Move_Token(i8_current_player_number, u8_old_position,
+                             u8_new_position);
+    }
     if (bool_occupied_flag) {
       obj_display.Move_Token(
           u8_occupying_player, u8_new_position,
@@ -288,14 +296,6 @@ void loop() {
                               i8_current_player_number, u8_occupying_player,
                               u8_new_position);
       bool_occupied_flag = false;
-    }
-    // move the token on the display
-    if (u8_old_position >= 5) {
-      Move_Token(i8_current_player_number, u8_old_position, u8_new_position,
-                 &obj_display, obj_session, u8_player_quantity, u8_dice_value);
-    } else {
-      obj_display.Move_Token(i8_current_player_number, u8_old_position,
-                             u8_new_position);
     }
     // move the token in the logic
     obj_session->array_players[i8_current_player_number]->Move_Token(
@@ -324,6 +324,20 @@ void loop() {
               ->Get_Token_Position(i) < 5) {
         i8_tokens_at_home |= (1 << i);
       }
+    }
+    // before the current player can be displayed, blinking animation (throw)
+    // must be finished. Otherwise the wrong token might be displayed on the
+    // position somebody was thrown from, because the blinking is restarted in
+    // another mode (starting_square) and the Blink_Stop() method was never
+    // called. This could lead to the wrong token being displayed, since the
+    // position is alternating in the two colors. If the blinking gets disrupted
+    // while the thrown token is displayed, the wrong token stays displayed.
+    while (obj_display.Blink_Is_On()) {
+      // Wait for blinking animation to finish, so the thrown animation isn't
+      // getting messed up by the next player's starting square blinking.
+      // If no token was thrown, Blink_Is_On will immediatly return false and
+      // the loop will never be executed.
+      asm volatile("nop"); // Do nothing
     }
     obj_display.Display_Current_Player(i8_current_player_number,
                                        i8_tokens_at_home);
@@ -366,17 +380,6 @@ void loop() {
                 u8_dice_value, bool_occupied_flag, u8_old_position);
         u8_new_position = obj_session->array_players[i8_current_player_number]
                               ->Get_Token_Position(i8_current_token_number);
-        if (bool_occupied_flag) {
-          u8_occupying_player = obj_session->u8_is_occupied_player_id;
-          u8_occupying_token = obj_session->u8_is_occupied_token_number;
-          obj_display.Move_Token(u8_occupying_player, u8_new_position,
-                                 obj_session->array_players[u8_occupying_player]
-                                     ->Get_Token_Position(u8_occupying_token));
-          obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
-                                  i8_current_player_number, u8_occupying_player,
-                                  u8_new_position);
-          bool_occupied_flag = false;
-        }
         if (i8_current_token_number != -1) {
           // move the token on the display
           if (u8_old_position >= 5) {
@@ -387,6 +390,17 @@ void loop() {
             obj_display.Move_Token(i8_current_player_number, u8_old_position,
                                    u8_new_position);
           }
+        }
+        if (bool_occupied_flag) {
+          u8_occupying_player = obj_session->u8_is_occupied_player_id;
+          u8_occupying_token = obj_session->u8_is_occupied_token_number;
+          obj_display.Move_Token(u8_occupying_player, u8_new_position,
+                                 obj_session->array_players[u8_occupying_player]
+                                     ->Get_Token_Position(u8_occupying_token));
+          obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
+                                  i8_current_player_number, u8_occupying_player,
+                                  u8_new_position);
+          bool_occupied_flag = false;
         }
         if (u8_dice_roll_counter > 0) {
           ASL::Delay_256(ANIMATION_SPEED_COMPUTER);
