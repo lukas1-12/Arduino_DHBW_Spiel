@@ -3,25 +3,20 @@
 #include <defines.hpp>
 #include <logic.hpp>
 
+// Global Variables, because they are used in the interupt routine or setup
+// function.
 volatile ASL::en_state en_current_state = ASL::display_setup_real_players;
-uint8_t u8_player_quantity = 1;
-uint8_t u8_computer_quantity = 0;
+// used in ISR (but not changed):
+uint8_t u8_player_quantity;
+uint8_t u8_computer_quantity;
 
 // Use int here, as invalid values are -1
-volatile int8_t i8_current_player_number = 0;
-volatile int8_t i8_current_token_number = 0;
-uint8_t u8_dice_value = 0;
-uint8_t u8_dice_roll_counter = 3;
-LOGIC::mode en_computer_mode = LOGIC::Student;
+volatile int8_t i8_current_player_number;
+volatile int8_t i8_current_token_number;
 
 // classes
 LOGIC::cla_session *obj_session;
 ASL::cla_display obj_display(A, B, C, CLK, LAT, OE);
-
-// Variables used to check if the new position is occupied
-uint8_t u8_occupying_player;
-uint8_t u8_occupying_token;
-bool bool_occupied_flag = false;
 
 // Used for blinking
 volatile bool bool_blink_flag = false;
@@ -48,10 +43,36 @@ void setup() {
 }
 
 void loop() {
+  // Variables used to check if the new position is occupied
+  static uint8_t u8_occupying_player;
+  static uint8_t u8_occupying_token;
+  static bool bool_occupied_flag;
+
+  // dice variables
+  static uint8_t u8_dice_value;
+  static uint8_t u8_dice_roll_counter;
+
+  // player setup variables
+  static LOGIC::mode en_computer_mode;
+
   static uint8_t u8_old_position;
+  static uint8_t u8_new_position;
   switch (en_current_state) {
   // -----------------------------------------------------------------------------
   case ASL::display_setup_real_players:
+    // ...........................................................................
+    // .............................INITIALIZATION................................
+    // ...........................................................................
+    // This is the first state, so we will set some initial values here.
+    u8_dice_value = 0;
+    u8_dice_roll_counter = 3;
+    en_computer_mode = LOGIC::Student;
+    u8_player_quantity = 1;
+    u8_computer_quantity = 0;
+    i8_current_player_number = 0;
+    i8_current_token_number = 0;
+    bool_blink_flag = false;
+    // ...........................................................................
     if (obj_display.Blink_Is_On()) {
       obj_display.Blink_Stop();
     }
@@ -201,15 +222,6 @@ void loop() {
   case ASL::display_token: {
     // First, stop previous blinking, if it was blinking.
     obj_display.Blink_Stop();
-    // temporary variables to store the old and new position of the token
-    uint8_t u8_old_position;
-    uint8_t u8_new_position;
-    // Get the old and new position of the token.
-    u8_old_position = obj_session->array_players[i8_current_player_number]
-                          ->Get_Token_Position(i8_current_token_number);
-    u8_new_position = obj_session->array_players[i8_current_player_number]
-                          ->Calculate_Possible_Position(i8_current_token_number,
-                                                        u8_dice_value);
     // Start blinking the token
     obj_display.Blink_Start(ASL::slow, -1, ASL::token, i8_current_player_number,
                             u8_occupying_player, u8_new_position,
@@ -223,11 +235,15 @@ void loop() {
   } break;
   // -----------------------------------------------------------------------------
   case ASL::validate_token: {
+    if (i8_current_token_number < 3) {
+      i8_current_token_number++;
+    } else {
+      i8_current_token_number = 0;
+    }
 #if DEBUG
     PORTK = en_current_state | (i8_current_player_number << 4) |
             (i8_current_token_number << 6);
 #endif
-    en_current_state = ASL::wait_for_player_input;
     // Lets get the current player state, so we don't have to do it several
     // times in the else if statement.
     LOGIC::status en_player_state =
@@ -304,18 +320,16 @@ void loop() {
         obj_session->array_players[i8_current_player_number]
             ->Calculate_Possible_Position(i8_current_token_number,
                                           u8_dice_value));
-  } break;
-  // -----------------------------------------------------------------------------
-  case ASL::move_token: {
-    // temporary variables to store the old and new position of the token
-    uint8_t u8_old_position;
-    uint8_t u8_new_position;
-    obj_display.Blink_Stop();
+    // Get the old and new position of the token.
     u8_old_position = obj_session->array_players[i8_current_player_number]
                           ->Get_Token_Position(i8_current_token_number);
     u8_new_position = obj_session->array_players[i8_current_player_number]
                           ->Calculate_Possible_Position(i8_current_token_number,
                                                         u8_dice_value);
+  } break;
+  // -----------------------------------------------------------------------------
+  case ASL::move_token: {
+    obj_display.Blink_Stop();
     // move the token on the display
     if (u8_old_position >= 5) {
       Move_Token(i8_current_player_number, u8_old_position, u8_new_position,
@@ -414,7 +428,6 @@ void loop() {
       if (obj_session->array_players[i8_current_player_number]->Is_Computer()) {
         while (u8_dice_roll_counter > 0) {
           // Computer code here
-          uint8_t u8_new_position = 0;
           u8_dice_value = ASL::Roll_Dice();
           if (u8_dice_value == 6) {
             u8_dice_roll_counter = 1;

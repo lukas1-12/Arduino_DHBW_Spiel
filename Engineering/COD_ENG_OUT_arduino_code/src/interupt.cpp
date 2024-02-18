@@ -6,9 +6,7 @@ extern volatile ASL::en_state en_current_state;
 extern uint8_t u8_player_quantity;
 extern uint8_t u8_computer_quantity;
 extern volatile int8_t i8_current_token_number;
-extern uint8_t u8_dice_value;
 extern ASL::cla_display obj_display;
-extern LOGIC::cla_session *obj_session;
 extern volatile bool bool_blink_flag;
 
 /**
@@ -56,11 +54,6 @@ ISR(INT4_vect) {
     // NOP
     break;
   case ASL::wait_for_player_input:
-    if (i8_current_token_number < 3) {
-      i8_current_token_number++;
-    } else {
-      i8_current_token_number = 0;
-    }
     en_current_state = ASL::validate_token;
     break;
   case ASL::display_token:
@@ -76,8 +69,6 @@ ISR(INT4_vect) {
     // NOP
     break;
   case ASL::game_finished:
-    // NOP
-    break;
     en_current_state = ASL::display_setup_real_players;
     break;
   default:

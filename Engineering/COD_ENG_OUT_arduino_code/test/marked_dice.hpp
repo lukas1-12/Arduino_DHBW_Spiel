@@ -2,7 +2,7 @@
 #define MARKED_DICE_HPP
 #include "Arduino.h"
 
-#define TEST_CASE 10
+#define TEST_CASE 2
 
 #if TEST_CASE == 0
 // 1 Real Player, 1 Computer Player
@@ -15,7 +15,8 @@ const uint8_t u8_dice_value_array[] = {6, 5, 6, 1, 6, 4, 1, 4, 1, 4, 1, 1, 1};
 #elif TEST_CASE == 2
 // Test winner
 // 1 Real Player
-const uint8_t u8_dice_value_array[] = {6, 40, 6, 41, 6, 42, 6, 43};
+const uint8_t u8_dice_value_array[] = {6, 40, 6, 41, 6, 42, 6, 43,
+                                       1, 1,  1, 1,  1, 1,  1};
 #elif TEST_CASE == 3
 // Test walking
 // 2 Real Players
