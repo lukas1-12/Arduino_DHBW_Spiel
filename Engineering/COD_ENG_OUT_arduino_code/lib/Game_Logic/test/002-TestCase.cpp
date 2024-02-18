@@ -178,3 +178,23 @@ TEST_CASE("Test if player throws himself in and before finish",
   REQUIRE(game.array_players[1]->Get_Token_Position(2) == 13);
   REQUIRE(game.array_players[1]->Get_Token_Position(3) == 45);
 }
+
+//Test professor mode V2
+TEST_CASE("Big test for professor mode", "[cla_computer_player]") {
+  LOGIC::cla_session game(4, 2, LOGIC::Professor);
+  bool bool_is_occupied;
+  uint8_t u8_old_position;
+
+  game.array_players[0]->Set_Token_Position(3, 29);
+  game.array_players[0]->Set_Token_Position(0, 28);
+  game.array_players[2]->Auto_Move(6, bool_is_occupied, u8_old_position);
+  REQUIRE(game.array_players[2]->Get_Token_Position(0) == 25);
+  game.array_players[2]->Auto_Move(2, bool_is_occupied, u8_old_position);
+  REQUIRE(game.array_players[2]->Get_Token_Position(0) == 27);
+  game.array_players[2]->Auto_Move(6, bool_is_occupied, u8_old_position);
+  REQUIRE(game.array_players[2]->Get_Token_Position(1) == 25);
+  game.array_players[2]->Auto_Move(3, bool_is_occupied, u8_old_position);
+  REQUIRE(game.array_players[2]->Get_Token_Position(1) == 28);
+  std::cout << (int)game.array_players[2]->Auto_Move(5, bool_is_occupied, u8_old_position) << std::endl;
+  REQUIRE(game.array_players[2]->Get_Token_Position(0) == 32);
+}

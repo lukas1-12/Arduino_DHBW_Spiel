@@ -313,10 +313,9 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
       }
       if (bool_home_occupied) {
         _u8_old_position = Get_Token_Position(i);
-    _bool_occupied_flag = obj_my_session->Is_Occupied(
-        obj_my_session->u8_is_occupied_player_id,
-        obj_my_session->u8_is_occupied_token_number,
-        u8_start_position);
+        _bool_occupied_flag = obj_my_session->Is_Occupied(
+            obj_my_session->u8_is_occupied_player_id,
+            obj_my_session->u8_is_occupied_token_number, u8_start_position);
         Move_Token(i, _u8_dice_value);
         return i;
       }
@@ -345,12 +344,14 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
 
   case Professor:
     for (int n = 0; n < 4; n++) {
+      uint8_t u8_possible_position =
+          Calculate_Possible_Position(n, _u8_dice_value);
       if (obj_my_session->Is_Occupied(
               obj_my_session->u8_is_occupied_player_id,
               obj_my_session->u8_is_occupied_token_number,
-              Calculate_Possible_Position(n, _u8_dice_value)) == true &&
+              u8_possible_position) == true &&
           obj_my_session->u8_is_occupied_player_id != u8_player_id &&
-          Calculate_Possible_Position(n, _u8_dice_value) <= 44) {
+          u8_possible_position <= 44 && u8_possible_position > 4) {
         _u8_old_position = Get_Token_Position(n);
         Move_Token(n, _u8_dice_value);
         token_moved = true;
@@ -360,15 +361,16 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
       }
     }
 
-    if (!token_moved) { // If no token could be moved -> student move
+    if (token_moved == false) { // If no token could be moved -> student move
       for (int m = 0; m < 4; m++) {
-        if (Calculate_Possible_Position(m, _u8_dice_value) > 4 &&
-            Calculate_Possible_Position(m, _u8_dice_value) !=
-                Get_Token_Position(m)) {
+        uint8_t u8_possible_position =
+            Calculate_Possible_Position(m, _u8_dice_value);
+        if (u8_possible_position > 4 &&
+            u8_possible_position != Get_Token_Position(m)) {
           _bool_occupied_flag = obj_my_session->Is_Occupied(
               obj_my_session->u8_is_occupied_player_id,
               obj_my_session->u8_is_occupied_token_number,
-              Calculate_Possible_Position(m, _u8_dice_value));
+              u8_possible_position);
           _u8_old_position = Get_Token_Position(m);
           Move_Token(m, _u8_dice_value);
           // std::cout << "Professor did a Student move was done" <<
