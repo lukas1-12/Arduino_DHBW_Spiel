@@ -2,7 +2,7 @@
 #define MARKED_DICE_HPP
 #include "Arduino.h"
 
-#define TEST_CASE 9
+#define TEST_CASE 12
 
 #if TEST_CASE == 0
 // 1 Real Player, 1 Computer Player
@@ -53,6 +53,28 @@ const uint8_t u8_dice_value_array[] = {6, 39, 6, 39, 6, 39, 6, 39, 1, 1,
 // Expected behavior: Player1 should finish
 // 1 real player
 const uint8_t u8_dice_value_array[] = {6, 39, 1, 6, 38, 3, 6, 42, 6, 43};
+// BUGS THAT NEED FIXING
+#elif TEST_CASE == 10
+// Test Bug: Player 1 throw player 3
+// Expected behavior: Player 3 should be thrown and immediatly appear in his
+// starting square 3 real players
+const uint8_t u8_dice_value_array[] = {6, 21, 6, 1, 6, 3, 2};
+#elif TEST_CASE == 11
+// Test Bug: Player 1 blink in finish position [Bug not appearing]
+// Expected behavior: Player 1 should blink in his finish position
+// 1 real player
+const uint8_t u8_dice_value_array[] = {6, 41, 6, 1, 1};
+#elif TEST_CASE == 12
+// Test Bug: Player 1 blink in finish position [seems like bug appears if finish
+// position is occupied by other player]
+// Expected behavior: Player 1 should
+// blink in his finish position 2 real player
+const uint8_t u8_dice_value_array[] = {6, 40, 6, 41, 6, 1, 0, 1};
+#elif TEST_CASE == 13
+// Test Bug: Player 1 blink in finish position [Bug not appearing]
+// Expected behavior: Player 1 should blink in his finish position
+// 2 real player
+const uint8_t u8_dice_value_array[] = {6, 40, 6, 41, 6, 1, 0, 2};
 #endif
 
 #endif

@@ -228,6 +228,8 @@ void loop() {
             (i8_current_token_number << 6);
 #endif
     en_current_state = ASL::wait_for_player_input;
+    // Lets get the current player state, so we don't have to do it several
+    // times in the else if statement.
     LOGIC::status en_player_state =
         obj_session->array_players[i8_current_player_number]
             ->Get_Player_Status();
