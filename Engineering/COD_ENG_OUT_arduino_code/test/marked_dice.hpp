@@ -2,7 +2,7 @@
 #define MARKED_DICE_HPP
 #include "Arduino.h"
 
-#define TEST_CASE 12
+#define TEST_CASE 10
 
 #if TEST_CASE == 0
 // 1 Real Player, 1 Computer Player
@@ -53,7 +53,7 @@ const uint8_t u8_dice_value_array[] = {6, 39, 6, 39, 6, 39, 6, 39, 1, 1,
 // Expected behavior: Player1 should finish
 // 1 real player
 const uint8_t u8_dice_value_array[] = {6, 39, 1, 6, 38, 3, 6, 42, 6, 43};
-// BUGS THAT NEED FIXING
+// BUG-SPECIFIC TEST CASES
 #elif TEST_CASE == 10
 // Test Bug: Player 1 throw player 3
 // Expected behavior: Player 3 should be thrown and immediatly appear in his

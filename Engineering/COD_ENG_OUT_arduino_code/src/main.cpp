@@ -324,6 +324,11 @@ void loop() {
       obj_display.Move_Token(i8_current_player_number, u8_old_position,
                              u8_new_position);
     }
+    // move the token in the logic (must be done before setting the occupied
+    // token, because the new position is set here.)
+    obj_session->array_players[i8_current_player_number]->Move_Token(
+        i8_current_token_number, u8_dice_value);
+    // Move the occupying token on the display, if needed.
     if (bool_occupied_flag) {
       obj_display.Move_Token(
           u8_occupying_player, u8_new_position,
@@ -334,9 +339,6 @@ void loop() {
                               u8_new_position);
       bool_occupied_flag = false;
     }
-    // move the token in the logic
-    obj_session->array_players[i8_current_player_number]->Move_Token(
-        i8_current_token_number, u8_dice_value);
     // determine the next state
     if (u8_dice_roll_counter >= 1) {
       en_current_state = ASL::wait_for_dice_roll;
