@@ -177,12 +177,6 @@ uint8_t cla_player::Move_Token(uint8_t _u8_token_number,
     obj_my_session->Return_Home(u8_possible_position);
     u8_token_position[_u8_token_number] = u8_possible_position;
     return u8_possible_position;
-  } else if (bool_is_occupied == true &&
-             obj_my_session->u8_is_occupied_player_id != u8_player_id &&
-             u8_possible_position > 44) {
-    // possible position is in the finish and not occupied by the player itself
-    u8_token_position[_u8_token_number] = u8_possible_position;
-    return u8_possible_position;
   } else {
     return 0; // Error
   }
@@ -230,7 +224,7 @@ uint8_t cla_player::Get_Token_Progress(uint8_t _u8_token_number) {
       i8_token_progress = u8_token_position[_u8_token_number] -
                           5; // to compensate the offset on the field
     }
-    return i8_token_progress;
+    return i8_token_progress; // cannot be negative
   } else {
     return 0;
   }
@@ -282,16 +276,17 @@ uint8_t cla_player::Get_Player_Progress() {
         this->cla_player::Get_Token_Progress(u8_token_number);
   }
   if (u8_overall_progress == 166) {
-    return 28;
+    return 28; // 166 means all tokens are in the finish
   }
   float f_scaled_progress =
       ((float)u8_overall_progress / 166.0f) * 27.0f + 1.0f;
-
+  // To display the progress on LED-Matrix it nedds to be scaled to 1-28
   uint8_t u8_scaled_progress_rounded = (uint8_t)(f_scaled_progress + 0.5f);
 
   if (u8_scaled_progress_rounded > 27) {
     u8_scaled_progress_rounded = 27;
-  }
+  } // 28 is the maximum progress and is only allowed to be reached when all
+    // tokens are in the finish (166)
 
   return u8_scaled_progress_rounded;
 };
@@ -309,6 +304,7 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
         Calculate_Possible_Position(i8_start_field_occupied_by_own_token,
                                     _u8_dice_value));
     Move_Token(i8_start_field_occupied_by_own_token, _u8_dice_value);
+    // Computer must move away from start field if other tokens are in start
     return i8_start_field_occupied_by_own_token;
   } else if (_u8_dice_value == 6) {
     bool bool_home_occupied = false;
@@ -323,25 +319,27 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
             obj_my_session->u8_is_occupied_token_number, u8_start_position);
         Move_Token(i, _u8_dice_value);
         return i;
+        // Computer must move a token out of the home field if at least one
+        // token is in the home field
       }
     }
   }
   bool token_moved = false;
-  // std::cout << "Computer Level: " << en_mode << std::endl;
   switch (en_mode) {
   case Student:
-    // std::cout << "Student" << std::endl;
     for (int n = 0; n < 4; n++) {
-      if (Calculate_Possible_Position(n, _u8_dice_value) > 4 &&
-          Calculate_Possible_Position(n, _u8_dice_value) !=
-              Get_Token_Position(n)) {
+      uint8_t u8_possible_position =
+          Calculate_Possible_Position(n, _u8_dice_value);
+      // Check if a token can be moved (from token 0 to 3)
+      if (u8_possible_position > 4 &&
+          u8_possible_position != Get_Token_Position(n)) {
+        // set occupied flag
         _bool_occupied_flag = obj_my_session->Is_Occupied(
             obj_my_session->u8_is_occupied_player_id,
-            obj_my_session->u8_is_occupied_token_number,
-            Calculate_Possible_Position(n, _u8_dice_value));
+            obj_my_session->u8_is_occupied_token_number, u8_possible_position);
+        // set old position flag
         _u8_old_position = Get_Token_Position(n);
         Move_Token(n, _u8_dice_value);
-        // std::cout << "End of Student move" << std::endl;
         return n; // Token number that was moved
       }
     }
@@ -361,25 +359,25 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
         Move_Token(n, _u8_dice_value);
         token_moved = true;
         _bool_occupied_flag = true;
-        // std::cout << "Professor thrown someone" << std::endl;
         return n;
       }
     }
-
-    if (token_moved == false) { // If no token could be moved -> student move
+    // If no token could be moved -> student move (Fallback-Solution)
+    if (token_moved == false) {
       for (int m = 0; m < 4; m++) {
         uint8_t u8_possible_position =
             Calculate_Possible_Position(m, _u8_dice_value);
+        // Check if a token can be moved (from token 0 to 3)
         if (u8_possible_position > 4 &&
             u8_possible_position != Get_Token_Position(m)) {
+          // set occupied flag
           _bool_occupied_flag = obj_my_session->Is_Occupied(
               obj_my_session->u8_is_occupied_player_id,
               obj_my_session->u8_is_occupied_token_number,
               u8_possible_position);
+          // set old position flag
           _u8_old_position = Get_Token_Position(m);
           Move_Token(m, _u8_dice_value);
-          // std::cout << "Professor did a Student move was done" <<
-          // std::endl;
           return m;
         }
       }
@@ -391,29 +389,15 @@ int8_t cla_computer_player::Auto_Move(uint8_t _u8_dice_value,
   }
 }
 
-uint8_t cla_manual_player::Manual_Move(uint8_t _u8_token_number) { return 0; };
-
 uint8_t cla_session::Get_Player_Quantity() { return u8_player_quantity; };
 
 uint8_t cla_session::Get_Computer_Quantity() { return u8_computer_quantity; };
 
 uint8_t cla_player::Get_Start_Position() { return u8_start_position; };
 
-uint8_t cla_player::Get_Player_ID() { return u8_player_id; };
-
-uint8_t cla_session::Get_Is_Occupied_Player_ID() {
-  return u8_is_occupied_player_id;
-};
-
-uint8_t cla_session::Get_Is_Occupied_Token_Number() {
-  return u8_is_occupied_token_number;
-};
-
 int8_t cla_player::Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag,
                              uint8_t &_u8_old_position) {
   return 10;
 };
-
-mode cla_computer_player::Get_En_Mode() { return en_mode; };
 
 } // namespace LOGIC

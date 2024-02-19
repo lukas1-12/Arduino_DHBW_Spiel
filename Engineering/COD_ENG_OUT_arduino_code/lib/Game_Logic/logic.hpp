@@ -9,9 +9,6 @@ namespace LOGIC {
 // Forward declaration of cla_player
 class cla_player;
 
-// Forward declaration of cla_computer_player
-class cla_computer_player;
-
 typedef enum {
   Start = 0,
   Start_Track,
@@ -30,7 +27,9 @@ typedef enum {
 
 /**
  * @class cla_session
- * @brief Description of the cla_session class.
+ * @brief The cla_session class is the main class of the game logic. It
+ * initializes the players with their methods and it provides essential methods
+ * for the game logic.
  */
 class cla_session {
 public:
@@ -68,11 +67,6 @@ public:
 
   uint8_t Get_Computer_Quantity(); ///< Returns the number of computer players.
 
-  uint8_t Get_Is_Occupied_Player_ID(); ///< Returns the ID of the player at the
-                                       ///< occupied track position.
-
-  uint8_t Get_Is_Occupied_Token_Number(); ///< Returns the token number on the
-                                          ///< occupied track position.
   uint8_t u8_is_occupied_player_id;    /**< The ID of the player at the occupied
                                           track    position. */
   uint8_t u8_is_occupied_token_number; /**< The token number at the occupied
@@ -85,7 +79,9 @@ private:
 
 /**
  * @class cla_player
- * @brief Description of the cla_player class.
+ * @brief This class represents a player in the game. It provides methods for
+ * moving tokens and checking the status of the player. It is an abstract class
+ * and has two derived classes: cla_computer_player and cla_manual_player.
  */
 class cla_player {
 public:
@@ -148,11 +144,12 @@ public:
 
   /**
    * @brief Outputs the status of player.
+   * @return The status of the player.
    */
   status Get_Player_Status();
 
   /**
-   * @brief Returns the overall progress of the player.
+   * @brief Returns the overall progress of the player (Value between 1-28).
    * @return The overall progress of the player on the track.
    */
   uint8_t Get_Player_Progress();
@@ -166,9 +163,8 @@ public:
   uint8_t
   Get_Start_Position(); ///< Returns the starting position of the player.
 
-  uint8_t Get_Player_ID(); ///< Returns the ID of the player.
-
-  virtual int8_t Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag, uint8_t &_u8_old_position);
+  virtual int8_t Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag,
+                           uint8_t &_u8_old_position);
 
 protected:
   uint8_t u8_start_position;    ///< The starting position of the player.
@@ -179,13 +175,16 @@ protected:
 
 /**
  * @class cla_computer_player
- * @brief Description of the cla_computer_player class.
+ * @brief This class represents a computer opponent in the game. It provides
+ * methods for automatic movement of tokens. It is derived from the cla_player.
  */
 class cla_computer_player : public cla_player {
 public:
   /**
    * @brief Constructor for the cla_computer_player class.
-   * @param _obj_player Pointer to the associated session.
+   * @param _u8_player_id The ID of the player.
+   * @param _u8_start_position The individual starting position of the player.
+   * @param _u8_computer_quantity The number of computer controlled players.
    * @param _u8_mode The mode of the computer opponent.
    */
   cla_computer_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
@@ -197,14 +196,13 @@ public:
    * @param _u8_dice_value The value of the rolled dice.
    * @param &_bool_occupied_flag Reference to a variable to store the occupied
    * flag.
-   * 
+   * @param &_u8_old_position Reference to a variable to store the old position.
    * @return The token that was automatically moved.
    */
-  int8_t Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag, uint8_t &_u8_old_position) override;
+  int8_t Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag,
+                   uint8_t &_u8_old_position) override;
 
   virtual bool Is_Computer() const override { return true; }
-
-  mode Get_En_Mode();
 
 protected:
   mode en_mode; ///< The mode of the computer opponent.
@@ -212,7 +210,8 @@ protected:
 
 /**
  * @class cla_manual_player
- * @brief Description of the cla_manual_player class.
+ * @brief This class represents a manual player in a game.
+ * It is derived from the cla_player class. 
  */
 class cla_manual_player : public cla_player {
 public:
@@ -222,13 +221,6 @@ public:
   cla_manual_player(uint8_t _u8_player_id, uint8_t _u8_start_position,
                     uint8_t _u8_computer_quantity,
                     cla_session *_obj_my_session);
-  /**
-   * @brief Manual movement for a human player.
-   * @param _u8_dice_value The value of the rolled dice.
-   * @return The new position of the token after manual movement.
-   */
-  uint8_t Manual_Move(uint8_t _u8_dice_value);
-
   virtual bool Is_Computer() const override { return false; }
 };
 

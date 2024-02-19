@@ -195,6 +195,6 @@ TEST_CASE("Big test for professor mode", "[cla_computer_player]") {
   REQUIRE(game.array_players[2]->Get_Token_Position(1) == 25);
   game.array_players[2]->Auto_Move(3, bool_is_occupied, u8_old_position);
   REQUIRE(game.array_players[2]->Get_Token_Position(1) == 28);
-  std::cout << (int)game.array_players[2]->Auto_Move(5, bool_is_occupied, u8_old_position) << std::endl;
+  game.array_players[2]->Auto_Move(5, bool_is_occupied, u8_old_position);
   REQUIRE(game.array_players[2]->Get_Token_Position(0) == 32);
 }
