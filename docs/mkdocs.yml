@@ -1,0 +1,82 @@
+site_name: Student Ärgere Dich nicht!
+
+theme:
+  name: material
+  palette:
+    primary: 'red'
+    accent: 'orange'
+
+nav:
+  - Requirements: 'DOC_REQ_RE_Requirements.md'
+  - Design Description: 
+    - Software Architektur: 'DOC_DED_SOA_Software_Architecture.md'
+  - Management and Development Plan:
+    - Schedule: 'DOC_MAD_SH_Schedule.md'
+    - Coding Rules: 'DOC_MAD_SR_Coding_Rules.md'
+  - Test Specification and Report:
+    - Test Cases: 'DOC_TES_CAS_Test_Cases.md'
+    - Test Results: 'DOC_TES_RES_Test_Results.md'
+    - Test Log: 'DOC_TES_LOG_Test_Logs.md'
+    - Verification and Validation: 'DOC_TES_VER_Test_Verification_Control.md'
+  - Engineering:
+    - Trades and Analysis: 'DOC_ENG_TA_Trades_Analysis.md'
+    - Device Code: 
+      - All Pages: 'DeviceCode/links/index.html'
+      - Files: '/DeviceCode/files/index.html'
+      - Classes: '/DeviceCode/annotated/index.html'
+      - Namespaces: '/DeviceCode/namespaces/index.html'
+      - Functions: '/DeviceCode/functions/index.html'
+      - Variables: '/DeviceCode/variables/index.html'
+      - Makros: '/DeviceCode/macros/index.html'
+    - Test Code: 
+      - All Pages: 'TestCode/links/index.html'
+      - Files: '/TestCode/files/index.html'
+      - Classes: '/TestCode/annotated/index.html'
+      - Namespaces: '/TestCode/namespaces/index.html'
+      - Functions: '/TestCode/functions/index.html'
+      - Variables: '/TestCode/variables/index.html'
+      - Makros: '/TestCode/macros/index.html'
+    - Calculations:
+      - All Pages: 'Calculations/links/index.html'
+      - Files: '/Calculations/files/index.html'
+      - Classes: '/Calculations/annotated/index.html'
+      - Namespaces: '/Calculations/namespaces/index.html'
+      - Functions: '/Calculations/functions/index.html'
+      - Variables: '/Calculations/variables/index.html'
+      - Makros: '/Calculations/macros/index.html'
+
+plugins:
+  - search
+  - mkdoxy:
+      projects:
+        DeviceCode: # name of project must be alphanumeric + numbers (without spaces)
+          src-dirs: ../Engineering/COD_ENG_OUT_arduino_code/ # path to source code (support multiple paths separated by space) => INPUT
+          full-doc: true # if you want to generate full documentation
+          doxy-cfg:
+            FULL_PATH_NAMES: NO
+            SHOW_USED_FILES: NO
+        TestCode:
+          src-dirs: ../Engineering/COD_ENG_OUT_Pruefgeraet/
+          full-doc: True
+          doxy-cfg:
+            FULL_PATH_NAMES: NO
+            SHOW_USED_FILES: NO
+        Calculations:
+          src-dirs: ../Engineering/COD_ENG_CALC_calculators/
+          full-doc: True
+          doxy-cfg:
+            FULL_PATH_NAMES: NO
+            SHOW_USED_FILES: NO
+
+markdown_extensions:
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_div_format
+
+extra_css:
+  - https://unpkg.com/mermaid@10.8.0/dist/mermaid.css
+extra_javascript:
+  - https://unpkg.com/mermaid@10.8.0/dist/mermaid.min.js

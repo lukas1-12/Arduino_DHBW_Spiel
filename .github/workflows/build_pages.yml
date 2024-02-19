@@ -1,0 +1,34 @@
+name: build_pages 
+on:
+  push:
+    branches:
+      - master 
+      - main
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}
+          path: .cache
+      - run: sudo apt-get install -y doxygen
+      - run: pip install mkdocs-material
+      - run: pip install pillow cairosvg
+      - run: pip install mkdocs_custom_fences
+      - run: pip install markdown-include
+      - run: pip install mkdoxy
+      - run: |
+            cp Requirements/DOC_REQ_RE_Requirements.md docs/docs/DOC_REQ_RE_Requirements.md
+            cp Design_Description/Software_Architecture/DOC_DED_SOA_Software_Architecture.md docs/docs/DOC_DED_SOA_Software_Architecture.md
+            cp Management_Development/Schedule/Schedule.md docs/docs/DOC_MAD_SH_Schedule.md
+            cp Test_Specification_Report/* docs/docs/
+            cp Engineering/DOC_ENG_TA_Trades_Analysis.md docs/docs/DOC_ENG_TA_Trades_Analysis.md
+            cd docs/ 
+            mkdocs gh-deploy --force

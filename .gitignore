@@ -12,3 +12,6 @@ notizen.txt
 *.pio
 Engineering/COD_ENG_OUT_arduino_code/.gitignore
 Engineering/COD_ENG_OUT_arduino_code/lib/Game_Logic/build
+docs/env
+docs/site
+docs/docs/DOC*
