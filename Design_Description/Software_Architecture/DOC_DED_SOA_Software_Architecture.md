@@ -129,9 +129,8 @@ note:   - : private
     }
 
     cla_player <|-- cla_manual_player
-    class cla_manual_player {
-
-    }
+    class cla_manual_player
+    
     cla_player <|-- cla_computer_player
     class cla_computer_player{
         - uint8_t u8_en_mode
