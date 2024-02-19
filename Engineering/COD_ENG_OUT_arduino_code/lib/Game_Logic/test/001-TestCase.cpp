@@ -196,8 +196,7 @@ TEST_CASE("Test Home_Position", "[cla_player]") {
   REQUIRE(game.array_players[3]->Get_Token_Position(3) == 4);
 }
 
-
-//Test Get_Player_Status
+// Test Get_Player_Status
 TEST_CASE("Test Get_Player_Status", "[cla_player]") {
   LOGIC::cla_session game(4, 2, LOGIC::Student);
   game.array_players[0]->Set_Token_Position(0, 45);
@@ -225,11 +224,11 @@ TEST_CASE("Test Get_Player_Status", "[cla_player]") {
   REQUIRE(game.array_players[3]->Get_Player_Status() == LOGIC::Track);
   REQUIRE(game.array_players[3]->Get_Player_Status() != LOGIC::Start_Track);
   REQUIRE(game.array_players[3]->Get_Player_Status() != LOGIC::Start_Finished);
-  REQUIRE(game.array_players[3]->Get_Player_Status() != LOGIC::Start_Track_Finished);
+  REQUIRE(game.array_players[3]->Get_Player_Status() !=
+          LOGIC::Start_Track_Finished);
 }
 
-
-//Test occuppied flag in Auto Move
+// Test occuppied flag in Auto Move
 TEST_CASE("Test occupied flag in Auto_Move", "[cla_player]") {
   bool bool_occupied = false;
   uint8_t u8_old_position = 0;
@@ -245,11 +244,11 @@ TEST_CASE("Test occupied flag in Auto_Move", "[cla_player]") {
   REQUIRE(game.array_players[1]->Get_Token_Position(0) == 16);
   REQUIRE(game.array_players[0]->Get_Token_Position(0) == 1);
   REQUIRE(bool_occupied == true);
-
 }
 
-//Test occuppied flag in Auto Move with start position
-TEST_CASE("Test occupied flag in Auto_Move with start position", "[cla_player]") {
+// Test occuppied flag in Auto Move with start position
+TEST_CASE("Test occupied flag in Auto_Move with start position",
+          "[cla_player]") {
   bool bool_occupied = false;
   uint8_t u8_old_position = 0;
   LOGIC::cla_session game(2, 1, LOGIC::Student);
@@ -264,10 +263,7 @@ TEST_CASE("Test occupied flag in Auto_Move with start position", "[cla_player]")
   game.array_players[1]->Auto_Move(1, bool_occupied, u8_old_position);
   REQUIRE(game.array_players[1]->Get_Token_Position(0) == 16);
   REQUIRE(bool_occupied == false);
-
 }
-
-
 
 // Requirement  52: "Erreicht eine Spielfigur das Endfeld, so begibt sie sich
 // mit den übrigen, gewürfelten Felder ins Ziel"
@@ -371,4 +367,75 @@ TEST_CASE("Test Skip_And_Kick_Tokens", "[cla_player]") {
   REQUIRE(game.array_players[1]->Get_Token_Position(1) == 2);
   REQUIRE(game.array_players[2]->Get_Token_Position(1) == 17);
   REQUIRE(game.array_players[3]->Get_Token_Position(1) == 18);
+}
+
+// Requirement 54: "Ein Spielzug bei dem ein Spieler mit seiner Spiellfigur auf
+// einem von sich selbst besetztem Feld landet, kann nicht ausgeführt werden"
+
+// Test if player throws himself out of the game after start and on the field
+TEST_CASE("Test if player throws himself (Requirement 54)", "[cla_player]") {
+  LOGIC::cla_session game(2, 1, LOGIC::Student);
+  bool bool_is_occupied;
+  uint8_t u8_old_position;
+
+  game.array_players[0]->Move_Token(0, 6);
+  game.array_players[0]->Move_Token(1, 6);
+  REQUIRE(game.array_players[0]->Get_Token_Position(0) == 5);
+  REQUIRE(game.array_players[0]->Get_Token_Position(1) == 2);
+  game.array_players[0]->Move_Token(0, 4);
+  game.array_players[0]->Move_Token(1, 6);
+  REQUIRE(game.array_players[0]->Get_Token_Position(0) == 9);
+  REQUIRE(game.array_players[0]->Get_Token_Position(1) == 5);
+  game.array_players[0]->Move_Token(1, 4);
+  REQUIRE(game.array_players[0]->Get_Token_Position(1) == 5);
+
+  game.array_players[1]->Auto_Move(6, bool_is_occupied, u8_old_position);
+  game.array_players[1]->Auto_Move(6, bool_is_occupied, u8_old_position);
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 21);
+  REQUIRE(game.array_players[1]->Get_Token_Position(1) == 2);
+  game.array_players[1]->Auto_Move(6, bool_is_occupied, u8_old_position);
+  game.array_players[1]->Auto_Move(6, bool_is_occupied, u8_old_position);
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 21);
+  REQUIRE(game.array_players[1]->Get_Token_Position(1) == 15);
+  game.array_players[1]->Auto_Move(4, bool_is_occupied, u8_old_position);
+  REQUIRE(game.array_players[1]->Get_Token_Position(1) == 19);
+}
+
+// Test if player throws himself out of the game in and before finish
+TEST_CASE("Test if player throws himself in and before finish (Requirement 54)",
+          "[cla_player]") {
+  LOGIC::cla_session game(2, 1, LOGIC::Student);
+  bool bool_is_occupied;
+  uint8_t u8_old_position;
+
+  game.array_players[0]->Set_Token_Position(0, 46);
+  game.array_players[0]->Set_Token_Position(1, 44);
+  game.array_players[0]->Set_Token_Position(2, 43);
+  game.array_players[0]->Set_Token_Position(3, 45);
+  game.array_players[0]->Move_Token(2, 4);
+  game.array_players[0]->Move_Token(1, 3);
+  game.array_players[0]->Move_Token(0, 2);
+  game.array_players[0]->Move_Token(3, 3);
+  REQUIRE(game.array_players[0]->Get_Token_Position(0) == 48);
+  REQUIRE(game.array_players[0]->Get_Token_Position(1) == 44);
+  REQUIRE(game.array_players[0]->Get_Token_Position(2) == 47);
+  REQUIRE(game.array_players[0]->Get_Token_Position(3) == 45);
+
+  game.array_players[1]->Set_Token_Position(0, 46);
+  game.array_players[1]->Set_Token_Position(1, 14);
+  game.array_players[1]->Set_Token_Position(2, 13);
+  game.array_players[1]->Set_Token_Position(3, 45);
+
+  game.array_players[1]->Auto_Move(3, bool_is_occupied, u8_old_position);
+
+  game.array_players[1]->Auto_Move(6, bool_is_occupied, u8_old_position);
+
+  game.array_players[1]->Auto_Move(4, bool_is_occupied, u8_old_position);
+
+  game.array_players[1]->Auto_Move(2, bool_is_occupied, u8_old_position);
+
+  REQUIRE(game.array_players[1]->Get_Token_Position(0) == 48);
+  REQUIRE(game.array_players[1]->Get_Token_Position(1) == 47);
+  REQUIRE(game.array_players[1]->Get_Token_Position(2) == 13);
+  REQUIRE(game.array_players[1]->Get_Token_Position(3) == 45);
 }

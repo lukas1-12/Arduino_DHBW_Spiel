@@ -60,6 +60,11 @@ cla_manual_player::cla_manual_player(uint8_t _u8_player_id,
 bool cla_session::Is_Occupied(uint8_t &_u8_is_occupied_player_id,
                               uint8_t &_u8_is_occupied_token_number,
                               uint8_t _u8_affected_track_position) {
+  if (_u8_affected_track_position > 44) {
+    _u8_is_occupied_player_id = 10;
+    u8_is_occupied_token_number = 10;
+    return false;
+  } // In finish no token of a other player can be thrown
   for (uint8_t i = 0; i < u8_player_quantity; i++) {
     for (uint8_t a = 0; a < 4; a++) {
       if (array_players[i]->Get_Token_Position(a) ==
