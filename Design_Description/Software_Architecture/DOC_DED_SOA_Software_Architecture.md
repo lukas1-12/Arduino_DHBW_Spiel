@@ -35,22 +35,28 @@
 
 ```mermaid
     stateDiagram-v2
-        [*] --> s1
+        [*] --> s0
+    s0 : Display Setup Real Players
+        s0 --> s1: Code Executed
     s1 : Setup real Players
         s1 --> s2 : Green Button
-        s2 --> s1: Calculation Complete
+        s2 --> s1: Code Executed
     s2 : Modify real Player Number
-        s1 --> s3: Red Button
+        s1 --> s3c: Red Button
+    s3c : Display Setup Computer Players
+        s3c --> s3: Code Executed
     s3 : Setup Computer Players
         s3 --> s4 : Green Button
     s4 : Modify Computer Player Number
-        s4 --> s3: Calculation Complete
-        s3 --> s3a : Red Button
+        s4 --> s3: Code Excuted
+        s3 --> s3d : Red Button
+    s3d: Display Setup Computer Player Mode
+        s3d --> s3a: Code executed
     s3a: Setup Computer Player Mode
         s3a --> s3b: Green Button
         s3a --> s4a: Red Button
     s3b: Modify Computer Player Mode
-        s3b --> s3a: Calculation Complete
+        s3b --> s3a: Code Executed
     s4a: Init Game Logic
         s4a --> s5: Init Complete
     s5 : Wait for Dice Roll
@@ -65,7 +71,7 @@
     s7 : Wait for Player Input
         s7 --> s8a : Green Button (next token)
     s8 : Display token
-        s8 --> s7 : Calculation Complete
+        s8 --> s7 : Code Executed
         s7 --> s9 : Red Button
     s8a: Validate token
         s8a --> s8 : Valid Token found.
@@ -77,9 +83,9 @@
         if1 --> s9a : not all tokens in finishing square,\n next player.
         if1 --> s10 : all tokens in finishing square.
     s9a: Next Player
-        s9a --> s5: calculation complete
+        s9a --> s5: Code Executed
     s10: Game finished
-        s10 --> s1 : Button pressed.
+        s10 --> s0 : Button pressed.
 ```
 
 ## Class Diagram Game Logic Library
@@ -130,7 +136,7 @@ note:   - : private
 
     cla_player <|-- cla_manual_player
     class cla_manual_player
-    
+
     cla_player <|-- cla_computer_player
     class cla_computer_player{
         - uint8_t u8_en_mode
@@ -211,7 +217,9 @@ Returns the relative Position (1-39) of the Token (progress)
 ```cpp 
 status Get_Player_Status() 
 ```
+
 Returns the Players status. Status is defined via typedef enum and can have the following values:
+
 en_status           |Token(s) in Starting Square| Token(s) on Game Track| Token(s) in Finishing Square
 --------------------|---------------------------|-----------------------|---------------------------
 Start               | YES                       | NO                    | NO
@@ -279,35 +287,85 @@ AutoMove() might need two return parameters. This could be done like this:
         - RGBmatrixPanel *obj_matrix
         - uint8_t u8_track_positions[40][3]
         - uint8_t u8_home_positions[4][4][2]
-        - uint8_t u8_finished_positions[4][4][2]
+        - uint8_t u8_finish_positions[4][4][2]
+        - uint8_t u8_smiley_postitions[26][2]
         - int16_t u16_player_color[4][2]
         - uint16_t u16_track_color
         - en_blink_mode en_current_blink_mode
-        - u8_blink_player
-        - u8_blink_track_position
+        - int8_t i8_blink_counter
+        - en_blink_type en_current_blink_type
+        - uint8_t u8_blink_player_number
+        - int8_t i8_blink_second_player
+        - uint8_t u8_blink_old_position
+        - uint8_t u8_blink_new_position
+        - uint8_t u8_blink_state
 
-        + cla_display(uint8_t _u8_matrix_a, uint8_t _u8_matrix_b, uint8_t _u8_matrix_c, uint8_t _u8_matrix_clk, uint8_t _u8_matrix_lat, uint8_t _u8_matrix_oe)
-        + Set_Colors(uint8_t _u8_player_nr, uint16_t _u16_bright_color, uint16_t _u16_dark_color) void
-        + Begin() void
-        + Display_Players() void
-        + Display_Token(uint8_t _u8_player_number, uint8_t _u8_new_position)
-        + Move_Token(uint8_t _u8_player_number, uint8_t _u8_remove_position, uint8_t _u8_add_position) void
-        + Display_Dice() void
-        + Winner_Animation(uint8_t _u8_player_number) void
-        - Blink(en_blink_mode _en_current_blink_mode, int8_t _u8_switching_cycles, uint8_t _u8_player_number, uint8_t _u8_track_position)
+        + cla_display(uint8_t _u8_matrix_a, uint8_t u8_matrix_b, uint8_t u8_matrix_c, uint8_t \n    u8_matrix_clk, uint8_t u8_lat, uint8_t u8_matrix_oe)
+        + void Set_Colors(uint8_t _u8_player_nr, uint16_t _u16_bright_color, uint16_t \n _u16_dark_color)
+        + void Begin()
+        + void Display_Track()
+        + void Display_Players(uint8_t _u8_player_quantity,bool _bool_tokens_at_home = true)
+        + void Display_Restore()
+        + void Display_Current_Player(int8_t _i8_current_player_number, int8_t _i8_tokens_at_home = -1)
+        + void Display_Progress(int8_t _i8_current_player_number, uint8_t _u8_progress)
+        + void Display_Char(char _ch_first_letter = ' ', char _ch_second_letter = ' ', \n char _ch_third_letter = ' ')
+        + void Display_Clear_Right()
+        + void Blink_Start(en_blink_mode _en_blink_mode, int8_t _i8_blink_cycles,\n en_blink_type _en_blink_type, uint8_t _u8_blink_player_number, int8_t _i8_blink_second_player,\n uint8_t _u8_new_position= 0, bool _bool_occupied_flag = true, uint8_t _u8_old_position = 0)
+        + bool Blink_Update(bool _bool_isr_active)
+        + void Blink_Stop()
+        + bool Blink_Is_On()
+        + void Modify_Position(uint8_t _u8_position, uint8_t _u8_player_number, bool bool_remove)
+        + void Move_Token(uint8_t _u8_player_nr, uint8_t _u8_remove_position, \n uint8_t _u8_add_position)
+        + void Display_Dice(uint8_t _u8_dice_value, uint8_t _u8_dice_roll_counter,\n int8_t _i8_current_player_number, bool _bool_animate = true)
+
     }
-    class cla_buttons{
-        + cla_buttons()
-    }
-    class cla_dice{
-        + cla_dice()
-        + Roll_Dice() int
-    }
+
     class en_blink_mode{
         <<enumeration>>
         Slow
         Fast
         Off
+    }
+
+    class en_blink_type{
+        <<enumeration>>
+        token
+        token_thrown
+        starting_square
+        winner_animation
+    }
+
+    cla_display "1" --* "1" en_blink_type
+    cla_display "1" --* "1" en_blink_mode
+
+    class other_functions{
+        functions in ASL namespace
+        void Setup_Buttons()
+        void Setup_Dice()
+        uint8_t Roll_Dice()
+        void Delay_256(uint16_t _u16_delay)
+    }
+
+    class en_state{
+        <<enumeration>>
+        display_setup_real_players
+        setup_real_players
+        modify_real_player_number
+        display_setup_computer_players
+        setup_computer_players
+        modify_computer_player_number
+        display_setup_computer_player_mode
+        setup_computer_player_mode
+        modify_computer_player_mode        
+        init_game_logic                    
+        wait_for_dice_roll                 
+        roll_the_dice                      
+        wait_for_player_input              
+        display_token                      
+        validate_token                     
+        move_token                         
+        next_player                        
+        game_finished                      
     }
 ```
 
