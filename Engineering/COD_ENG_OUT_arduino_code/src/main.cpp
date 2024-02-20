@@ -36,7 +36,7 @@ void setup() {
   obj_display.Begin();
   ASL::Setup_Buttons();
   ASL::Setup_Dice();
-#if DEBUG
+#if DEBUG || TIMING_DEBUG
   // Set Port K to Output
   DDRK = 0xff;
 #endif
@@ -64,14 +64,14 @@ void loop() {
     // .............................INITIALIZATION................................
     // ...........................................................................
     // This is the first state, so we will set some initial values here.
-    u8_dice_value = 0;
-    u8_dice_roll_counter = 3;
-    en_computer_mode = LOGIC::Student;
-    u8_player_quantity = 1;
-    u8_computer_quantity = 0;
-    i8_current_player_number = 0;
-    i8_current_token_number = 0;
-    bool_blink_flag = false;
+    u8_dice_value = INITIAL_DICE_VALUE;
+    u8_dice_roll_counter = INITIAL_DICE_ROLL_COUNTER;
+    en_computer_mode = INITIAL_COMPUTER_MODE;
+    u8_player_quantity = INITIAL_PLAYER_QUANTITY;
+    u8_computer_quantity = INITIAL_COMPUTER_QUANTITY;
+    i8_current_player_number = INITIAL_CURRENT_PLAYER_NUMBER;
+    i8_current_token_number = INITIAL_CURRENT_TOKEN_NUMBER;
+    bool_blink_flag = INITIAL_BOOL_BLINK_FLAG;
     // ...........................................................................
     if (obj_display.Blink_Is_On()) {
       obj_display.Blink_Stop();
@@ -223,9 +223,10 @@ void loop() {
     // First, stop previous blinking, if it was blinking.
     obj_display.Blink_Stop();
     // Start blinking the token
-    obj_display.Blink_Start(ASL::slow, -1, ASL::token, i8_current_player_number,
-                            u8_occupying_player, u8_new_position,
-                            bool_occupied_flag, u8_old_position);
+    obj_display.Blink_Start(ASL::slow, BLINK_CYCLES_TOKEN, ASL::token,
+                            i8_current_player_number, u8_occupying_player,
+                            u8_new_position, bool_occupied_flag,
+                            u8_old_position);
 
 #if DEBUG
     PORTK = en_current_state | (i8_current_player_number << 4) |
@@ -348,9 +349,9 @@ void loop() {
           u8_occupying_player, u8_new_position,
           obj_session->array_players[u8_occupying_player]->Get_Token_Position(
               u8_occupying_token));
-      obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
-                              i8_current_player_number, u8_occupying_player,
-                              u8_new_position);
+      obj_display.Blink_Start(ASL::fast, BLINK_CYCLES_OCCUPIED_TOKEN,
+                              ASL::token_thrown, i8_current_player_number,
+                              u8_occupying_player, u8_new_position);
       bool_occupied_flag = false;
     }
     // determine the next state
@@ -368,8 +369,9 @@ void loop() {
       obj_display.Display_Clear_Right();
       // Start winner animation
       obj_display.Display_Progress(i8_current_player_number, 28);
-      obj_display.Blink_Start(ASL::slow, -1, ASL::winner_animation,
-                              i8_current_player_number, -1);
+      obj_display.Blink_Start(ASL::slow, BLINK_CYCLES_WINNER_ANIMATION,
+                              ASL::winner_animation, i8_current_player_number,
+                              BLINK_CYCLES_WINNER_ANIMATION);
       delete obj_session;
       en_current_state = ASL::game_finished;
       break;
@@ -413,10 +415,10 @@ void loop() {
       if (obj_session->array_players[i8_current_player_number]
               ->Get_Player_Status() == LOGIC::Start) {
         // roll the dice 3 times
-        u8_dice_roll_counter = 3;
+        u8_dice_roll_counter = DICE_ROLLS_AT_START;
       } else {
         // roll the dice 1 time (unless you get a 6)
-        u8_dice_roll_counter = 1;
+        u8_dice_roll_counter = DICE_ROLLS_NORMAL;
       }
       en_current_state = ASL::wait_for_dice_roll;
       while (obj_display.Blink_Is_On()) {
@@ -430,7 +432,7 @@ void loop() {
           // Computer code here
           u8_dice_value = ASL::Roll_Dice();
           if (u8_dice_value == 6) {
-            u8_dice_roll_counter = 1;
+            u8_dice_roll_counter = DICE_ROLLS_AT_SIX;
           } else {
             u8_dice_roll_counter--;
           }
@@ -460,8 +462,8 @@ void loop() {
                 u8_occupying_player, u8_new_position,
                 obj_session->array_players[u8_occupying_player]
                     ->Get_Token_Position(u8_occupying_token));
-            obj_display.Blink_Start(ASL::fast, 3, ASL::token_thrown,
-                                    i8_current_player_number,
+            obj_display.Blink_Start(ASL::fast, BLINK_CYCLES_OCCUPIED_TOKEN,
+                                    ASL::token_thrown, i8_current_player_number,
                                     u8_occupying_player, u8_new_position);
             bool_occupied_flag = false;
           }

@@ -1,3 +1,6 @@
+#ifndef ASL_HPP
+#define ASL_HPP
+
 #include <../../include/defines.hpp>
 #include <RGBmatrixPanel.h> // Hardware-specific library#
 #include <inttypes.h>
@@ -104,7 +107,8 @@ class cla_display {
 
   /**
    * \brief Stores the Players Colors.
-   * Order: player_nr, bright/dark
+   * Order: player_nr, bright/dark Initital values are blue, green, yellow, red.
+   * Values can be changed using the Set_Colors method.
    */
   uint16_t u16_player_color[4][2] = {
       {0xf800, 0x1000},
@@ -116,7 +120,7 @@ class cla_display {
   /**
    * \brief Stores the Track Color.
    */
-  uint16_t u16_track_color = 0xffff;
+  uint16_t u16_track_color = WHITE_BRIGHT;
 
   // --- variables for the blink function ---
   /** current blink mode */
@@ -341,3 +345,5 @@ uint8_t Roll_Dice();
 void Delay_256(uint16_t _u16_delay);
 
 } // namespace ASL
+
+#endif
