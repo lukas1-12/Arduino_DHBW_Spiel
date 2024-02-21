@@ -1,3 +1,16 @@
+/**
+ * @file ASL.cpp
+ * @brief This file contains the implementation of the Applications Service
+ * Layer.
+ *
+ * This file implements
+ * - the cla_display class
+ * - the ASL::Setup_Buttons() function
+ * - the ASL::Setup_Dice() function
+ * - the ASL::Roll_Dice() function
+ * - the ASL::Delay_256() function
+ */
+
 #include <ASL.hpp>
 #include <Arduino.h>
 

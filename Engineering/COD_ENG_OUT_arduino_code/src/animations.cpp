@@ -1,3 +1,10 @@
+/**
+ * @file animations.cpp
+ * \brief This file contains the animations for the game.
+ *
+ * In this file, all functions that display animations are defined.
+ */
+
 #ifndef ANIMATIONS
 #define ANIMATIONS
 #include <ASL.hpp>
@@ -5,6 +12,19 @@
 #include <defines.hpp>
 #include <logic.hpp>
 
+/**
+ * \brief This function animates the token movement.
+ *
+ * This function animates the movement of a token from one position to another.
+ *
+ * \param _i8_current_player_number The number of the current player.
+ * \param _u8_remove_position The start position for the token to start walking.
+ * \param _u8_add_position The end position for the token to stop walking.
+ * \param _obj_display Pointer to the display object.
+ * \param _obj_session Pointer to the session object.
+ * \param _u8_player_quantity The number of players.
+ * \param _u8_dice_value The distance the token will walk.
+ */
 void Move_Token(int8_t _i8_current_player_number, uint8_t _u8_remove_position,
                 uint8_t _u8_add_position, ASL::cla_display *_obj_display,
                 LOGIC::cla_session *_obj_session, uint8_t _u8_player_quantity,

@@ -1,3 +1,22 @@
+/**
+ * @file ASL.hpp
+ * @brief This is the header file for the ASL library.
+ *
+ * This file contains the forward declarations for:
+ * - the cla_display class
+ * - the ASL::Setup_Buttons() function
+ * - the ASL::Setup_Dice() function
+ * - the ASL::Roll_Dice() function
+ * - the ASL::Delay_256() function
+ *
+ * The cla_display class is used to control the RGB LED Matrix. The
+ * Setup_Buttons() functions sets the interupt buttons. The Setup_Dice()
+ * function sets a timer ot run from 0 to 5 for the dice roll. The Roll_Dice()
+ * reads the value from the Timer that was set up in the Setup_Dice() function.
+ * The Delay_256() function is used to delay the program for a certain amount of
+ * time given by the transfer parameter.
+ */
+
 #ifndef ASL_HPP
 #define ASL_HPP
 

@@ -1,3 +1,10 @@
+/**
+ * \file main.cpp
+ * \brief This file contains the main loop and setup of the game.
+ *
+ * In this file, the setup and loop functions are implemented.
+ */
+
 #include <ASL.hpp>
 #include <Arduino.h>
 #include <defines.hpp>

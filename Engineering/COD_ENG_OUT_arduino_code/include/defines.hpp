@@ -1,3 +1,12 @@
+/**
+ * \file defines.hpp
+ *
+ * \brief This file contains all the defines for the project.
+ *
+ * Use this file to define all the ports, colors, animation speeds, initial
+ * values and debug modes.
+ */
+
 #ifndef DEFINES_HPP
 #define DEFINES_HPP
 
