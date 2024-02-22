@@ -35,6 +35,11 @@ extern void Move_Token(int8_t _i8_current_player_number,
                        LOGIC::cla_session *_obj_session,
                        uint8_t _u8_player_quantity, uint8_t _u8_dice_value);
 
+#if TIMING_DEBUG_INTERN != 0
+volatile uint8_t u8_timing_debug_array[101];
+volatile uint8_t u8_timing_debug_counter = 0;
+#endif
+
 void setup() {
   obj_display.Set_Colors(0, RED_BRIGHT, RED_DARK);
   obj_display.Set_Colors(1, BLUE_BRIGHT, BLUE_DARK);
@@ -46,6 +51,13 @@ void setup() {
 #if DEBUG || TIMING_DEBUG
   // Set Port K to Output
   DDRK = 0xff;
+#endif
+#if TIMING_DEBUG_INTERN != 0
+  // Set Timer 2 to prescaler 0
+  TCCR2A = 0x00;
+  TCCR2B = 0x00;
+  TCCR2B |= (1 << CS20);
+  Serial.begin(9600);
 #endif
 }
 
@@ -502,4 +514,14 @@ void loop() {
     obj_display.Blink_Update(false);
     bool_blink_flag = false;
   }
+#if TIMING_DEBUG_INTERN != 0
+  if (u8_timing_debug_counter > TIMING_DEBUG_COUNT_TO) {
+    obj_display.obj_matrix->dumpMatrix();
+    Serial.println("--------------------");
+    for (uint8_t i = 0; i < TIMING_DEBUG_COUNT_TO; i++) {
+      Serial.print(u8_timing_debug_array[i]);
+      Serial.print(" ");
+    }
+  }
+#endif
 }

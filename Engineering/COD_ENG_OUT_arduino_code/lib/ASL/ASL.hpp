@@ -75,10 +75,17 @@ class cla_display {
   uint8_t u8_matrix_lat; /**< matrix pin lat */
   uint8_t u8_matrix_oe;  /**< matrix pin oe  */
 
+#if TIMING_DEBUG_INTERN != 0
+public:
+#endif
   /**
    * \brief Pointer to the matrix object.
    */
   RGBmatrixPanel *obj_matrix;
+
+#if TIMING_DEBUG_INTERN != 0
+private:
+#endif
 
   /**
    * \brief Stores the track positions.

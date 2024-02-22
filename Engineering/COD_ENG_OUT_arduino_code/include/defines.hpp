@@ -65,6 +65,18 @@
 // Define the Debug Flag
 #define DEBUG false
 #define TIMING_DEBUG false
+// 0 for off
+// 1 for ISR(INT4_vect)
+// 2 for ISR(INT5_vect)
+// 3 for ISR(TIMER3_COMPA_vect)
+// 4 for ISR(TIMER4_COMPA_vect)
+// 5 for ISR(TIMER5_COMPA_vect)
+// 6 for ISR in matrix library (Adafruit_GFX)
+// number 6 must be added individually to the library, as the library is
+// automatically loaded when compiling platformio project for the first time.
+#define TIMING_DEBUG_INTERN 1
+// number of interupts to measure before crash.
+#define TIMING_DEBUG_COUNT_TO 100
 // DICE_MODE 0: Normal, Random Dice
 //           1: Dice input via PORT L
 //           2: marked Dice using Array
