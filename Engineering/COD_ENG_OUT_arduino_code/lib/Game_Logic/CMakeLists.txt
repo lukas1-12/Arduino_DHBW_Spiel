@@ -34,6 +34,9 @@ target_include_directories(uni_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Catch2 should output in JUnit format, and output successful tests, too 
 
+# Set path to CMakeLists.txt in test directory
+set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../test")
+
 set (CATCH2_DEFAULT_PARAMETERS -r junit) 
 
 macro (add_catch2_test) 
@@ -60,6 +63,6 @@ if(BUILD_TESTS)
 
   enable_testing() 
 
-  add_subdirectory(test) 
+add_subdirectory(${TEST_DIR} ${CMAKE_BINARY_DIR}/test) 
 
 endif(BUILD_TESTS) 
