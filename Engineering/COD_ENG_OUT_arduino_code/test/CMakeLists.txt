@@ -12,13 +12,11 @@ message( STATUS "Catch2 Tests included" )
 
 add_executable( ${PROJECT_NAME}-tests 
 
-  000-Main.cpp 
-
   001-TestCase_Requirements.cpp 	
   
   002-TestCase_ComputerPlayer.cpp
 
-  003-TestCase_ManuelPlayer.cpp
+  003-TestCase_Session_and_Player.cpp
 ) 
 
 target_include_directories(${PROJECT_NAME}-tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/Game_logic)

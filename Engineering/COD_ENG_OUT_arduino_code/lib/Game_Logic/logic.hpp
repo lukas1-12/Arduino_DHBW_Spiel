@@ -1,4 +1,26 @@
-#ifndef __AVR__
+/**
+ * @file logic.hpp
+ * @brief This file is the header file for the game logic library.
+ *
+ * This file contains the declaration of the classes cla_session, cla_player,
+ * cla_computer_player and cla_manual_player.
+ * The cla_session class is the main class of the game logic. It initializes the
+ * players with their methods and it provides essential methods for the game
+ * logic.
+ * The cla_player class represents a player in the game. It provides
+ * methods for moving tokens and checking the status of the player. It is an
+ * abstract class and has two derived classes:
+ *  - cla_computer_player
+ *  - cla_manual_player.
+ * The cla_computer_player class represents a computer opponent in the game.
+ * It provides methods for automatic movement of tokens.
+ * The cla_manual_player class represents a manual player in a game.
+ */
+
+#ifndef LOGIC_HPP
+#define LOGIC_HPP
+
+#ifndef __AVR__ // For arduino
 #include <cstdint>
 #else
 #include <Arduino.h>
@@ -211,7 +233,7 @@ protected:
 /**
  * @class cla_manual_player
  * @brief This class represents a manual player in a game.
- * It is derived from the cla_player class. 
+ * It is derived from the cla_player class.
  */
 class cla_manual_player : public cla_player {
 public:
@@ -225,3 +247,5 @@ public:
 };
 
 } // namespace LOGIC
+
+#endif // LOGIC_HPP

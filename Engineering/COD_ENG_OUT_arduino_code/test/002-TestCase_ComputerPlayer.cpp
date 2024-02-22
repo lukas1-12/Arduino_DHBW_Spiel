@@ -1,3 +1,12 @@
+/**
+ * @file 002-TestCase_ComputerPlayer.cpp
+ * @brief Test cases for the computer player
+ *
+ * This file contains multiple game situations for testing the behavior of the
+ * computer player. It covers various situations in which the computer player
+ * has to make decisions and move tokens with different start conditions.
+ */
+
 #include <catch2/catch_test_macros.hpp>
 #include <cstdint>
 #include <iostream>
@@ -34,17 +43,21 @@ TEST_CASE("Test Professor V2", "[cla_computer_player]") {
   game.array_players[0]->Set_Token_Position(3, 27);
   game.array_players[0]->Set_Token_Position(0, 25);
   game.array_players[2]->Set_Token_Position(3, 45);
-  REQUIRE(game.array_players[2]->Auto_Move(6, bool_is_occupied, u8_old_position) == 0);
+  REQUIRE(game.array_players[2]->Auto_Move(6, bool_is_occupied,
+                                           u8_old_position) == 0);
   REQUIRE(game.array_players[2]->Get_Token_Position(0) == 25);
   REQUIRE(game.array_players[0]->Get_Token_Position(0) == 1);
-  REQUIRE(game.array_players[2]->Auto_Move(6, bool_is_occupied, u8_old_position) == 0);
+  REQUIRE(game.array_players[2]->Auto_Move(6, bool_is_occupied,
+                                           u8_old_position) == 0);
   REQUIRE(game.array_players[2]->Get_Token_Position(0) == 31);
   game.array_players[1]->Set_Token_Position(2, 37);
-  REQUIRE(game.array_players[2]->Auto_Move(6, bool_is_occupied, u8_old_position) == 1);
+  REQUIRE(game.array_players[2]->Auto_Move(6, bool_is_occupied,
+                                           u8_old_position) == 1);
   REQUIRE(game.array_players[2]->Get_Token_Position(0) == 31);
   REQUIRE(game.array_players[2]->Get_Token_Position(1) == 25);
   game.array_players[1]->Set_Token_Position(2, 33);
-  REQUIRE(game.array_players[2]->Auto_Move(2, bool_is_occupied, u8_old_position) == 1);
+  REQUIRE(game.array_players[2]->Auto_Move(2, bool_is_occupied,
+                                           u8_old_position) == 1);
   REQUIRE(game.array_players[2]->Get_Token_Position(0) == 31);
   REQUIRE(game.array_players[2]->Get_Token_Position(1) == 27);
   REQUIRE(game.array_players[0]->Get_Token_Position(3) == 4);
@@ -54,7 +67,7 @@ TEST_CASE("Test Professor V2", "[cla_computer_player]") {
 TEST_CASE("Test Auto_Move", "[cla_player]") {
   LOGIC::cla_session game(2, 1, LOGIC::Student);
   bool bool_is_occupied;
-    uint8_t u8_old_position;
+  uint8_t u8_old_position;
 
   game.array_players[0]->Set_Token_Position(0, 10);
   game.array_players[1]->Auto_Move(6, bool_is_occupied, u8_old_position);
@@ -65,7 +78,8 @@ TEST_CASE("Test Auto_Move", "[cla_player]") {
   game.array_players[1]->Set_Token_Position(1, 12);
   game.array_players[1]->Set_Token_Position(2, 13);
   game.array_players[1]->Set_Token_Position(3, 14);
-  REQUIRE(game.array_players[1]->Auto_Move(4, bool_is_occupied, u8_old_position) == 0);
+  REQUIRE(game.array_players[1]->Auto_Move(4, bool_is_occupied,
+                                           u8_old_position) == 0);
   game.array_players[0]->Set_Token_Position(0, 48);
   REQUIRE(game.array_players[1]->Get_Token_Position(0) == 45);
   game.array_players[1]->Auto_Move(3, bool_is_occupied, u8_old_position);
@@ -179,7 +193,7 @@ TEST_CASE("Test if player throws himself in and before finish",
   REQUIRE(game.array_players[1]->Get_Token_Position(3) == 45);
 }
 
-//Test professor mode V2
+// Test professor mode V2
 TEST_CASE("Big test for professor mode", "[cla_computer_player]") {
   LOGIC::cla_session game(4, 2, LOGIC::Professor);
   bool bool_is_occupied;

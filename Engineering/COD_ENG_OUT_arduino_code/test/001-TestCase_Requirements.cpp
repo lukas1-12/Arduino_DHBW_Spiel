@@ -1,3 +1,12 @@
+/**
+ * @file 001-TestCase_Requirements.cpp
+ * @brief This file contains the test cases for the requirements of the game
+ * logic.
+ *
+ * This file contains multiple game situations and checks if the game logic
+ * behaves as expected and as defined in the requirements.
+ */
+
 #include <catch2/catch_test_macros.hpp>
 #include <cstdint>
 #include <iostream>

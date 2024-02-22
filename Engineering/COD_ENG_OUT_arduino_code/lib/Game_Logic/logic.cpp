@@ -1,3 +1,14 @@
+/**
+ * @file logic.cpp
+ * @brief This file contains the implementation of the game logic.
+ *
+ * This file implements:
+ * - The cla_session class
+ * - The cla_player class
+ * - The cla_computer_player class
+ * - The cla_manual_player class
+ */
+
 #include "logic.hpp"
 #ifndef __AVR__
 #include <cstdint>
@@ -397,7 +408,7 @@ uint8_t cla_player::Get_Start_Position() { return u8_start_position; };
 
 int8_t cla_player::Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag,
                              uint8_t &_u8_old_position) {
-  return 10;
+  return -1;
 };
 
 } // namespace LOGIC
