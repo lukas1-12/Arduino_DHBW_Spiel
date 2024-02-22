@@ -371,9 +371,21 @@ AutoMove() might need two return parameters. This could be done like this:
 
 #### Timers
 
+The Game uses 5 of the 6 timers, which is one of the reasons an ATMega2560 was chosen over the ATMega328p:
+
 - Timer 0: ( 8Bit) Runs from 0 to 5 to create a "random" Dice value
 - Timer 1: (16Bit) Used for the LED matrix
 - Timer 2: ( 8Bit) Not in Use
 - Timer 3: (16Bit) Used for Button Debounce
 - Timer 4: (16Bit) Used for Led Blinking
 - TImer 5: (16Bit) Used for Delay function.
+
+Timer 0 is used to create a "random" dice value. The value is random, because no prescaler is used, so pressing the button at the right time to get a desired value is basically impossiple. Therefor, the timer is set up in CTC mode without any interupts.
+
+Timer 1 is used for refreshing the LED matrix. This happens TODOTODOTODO
+
+Timer3 is used for debouncing the Buttons. It will be started in the interupt routine for the Buttons. Prescaler is set to 1/1024. The debounce time can be varied using the ```DEBOUNCE_TIME``` define. 
+
+Timer4 is used for Led Blinking. It will trigger an interupt at a given time interval. Time interval is given by the ```FAST_BLINK``` and ```SLOW_BLINK``` defines. 
+
+Timer5 is used for a delay functions. The Delay function differs from the blink function, because it will delay the program until time passed. This is useful in some cases, because the program is NOT supposed to perform any Task until the Animation is finished.

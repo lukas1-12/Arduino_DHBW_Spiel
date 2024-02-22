@@ -29,6 +29,10 @@
 #define BLUE_DARK 0x0002
 #define WHITE_BRIGHT 0xffff
 
+// Define Debounce time
+// -> T of 0x1000 count cycles: 4096 * 0,000064s = 0,262144s
+#define DEBOUNCE_TIME 0x1000
+
 // See Calculation Excel for more information on the timing.
 #define FAST_BLINK 7813
 #define SLOW_BLINK 15625

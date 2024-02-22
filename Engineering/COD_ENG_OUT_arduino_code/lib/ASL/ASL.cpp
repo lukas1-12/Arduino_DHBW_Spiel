@@ -4,6 +4,7 @@
  * Layer.
  *
  * This file implements
+ *
  * - the cla_display class
  * - the ASL::Setup_Buttons() function
  * - the ASL::Setup_Dice() function
@@ -512,7 +513,7 @@ void ASL::Setup_Buttons() {
   // Set Prescaler to 1024
   TCCR3B |= (1 << CS32) | (1 << CS30);
   // Set Output Compare to 0,262144s:
-  OCR3A = 0x1000;
+  OCR3A = DEBOUNCE_TIME;
   // Enable Interupt:
   TIMSK3 |= 1 << OCIE3A;
 }
