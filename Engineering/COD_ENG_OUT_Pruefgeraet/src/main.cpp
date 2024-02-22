@@ -1,49 +1,63 @@
 #include <Arduino.h>
 
-// Pin für den Eingang des Taktsignals
-const int inputPin = 2;
+const int i_pin = 2; 
+volatile uint32_t u32_start_time_high = 0;
+volatile uint32_t u32_duration_high = 0; 
+volatile uint32_t u32_start_time_low = 0; 
+volatile uint32_t u32_duration_low = 0; 
+float fl_high_frequency = 0.0; 
+float fl_low_frequency = 0.0; 
 
-// Variable für die Anzahl der Interrupts
-volatile unsigned long interruptCount = 0;
-
-// Variable für die Zeitdauer, in der die Interrupts gezählt werden sollen (in
-// Millisekunden)
-const unsigned long measurementPeriod = 2000; // 2 Sekunden für 1,5 Hz
-
-// Variable für die berechnete Frequenz (mit Nachkommastellen)
-volatile double frequency = 0.0;
-
-void countInterrupt();
+void Pin_Change();
 
 void setup() {
-  // Pin-Modus für den Eingang des Taktsignals einstellen
-  pinMode(inputPin, INPUT);
-
-  // Interrupt für steigende Flanke des Taktsignals aktivieren
-  attachInterrupt(digitalPinToInterrupt(inputPin), countInterrupt, RISING);
-
-  // Serielle Kommunikation starten
+  pinMode(i_pin, INPUT);
+  attachInterrupt(digitalPinToInterrupt(i_pin), Pin_Change, CHANGE);
   Serial.begin(9600);
-
-  // Ausgabe eines Header-Titels im Terminal
-  Serial.println("Frequency Measurement");
 }
 
 void loop() {
-  // Interrupts für die Messdauer zählen
-  delay(measurementPeriod);
+  if (u32_duration_high > 0) {
+    fl_high_frequency = 1000000.0 / u32_duration_high; // Calculate frequency for the high state in Hertz
+    Serial.print("Duration of Pin High: ");
+    Serial.print(u32_duration_high);
+    Serial.print(" microseconds, Frequency: ");
+    Serial.print(fl_high_frequency, 3); // Display frequency with 3 decimal places
+    Serial.println(" Hz");
+    u32_duration_high = 0; // Reset duration for the next measurement
+  }
 
-  // Frequenz berechnen (Anzahl der Interrupts pro Messdauer)
-  frequency = (double)interruptCount / (measurementPeriod / 1000.0);
-
-  // Ausgabe der Frequenz über die serielle Schnittstelle
-  Serial.print("Measured Frequency: ");
-  Serial.print(frequency, 3); // Anzeige der Frequenz mit 3 Nachkommastellen
-  Serial.println(" Hz");
-
-  // Interrupt-Zähler zurücksetzen
-  interruptCount = 0;
+  if (u32_duration_low > 0) {
+    fl_low_frequency = 1000000.0 / u32_duration_low; // Calculate frequency for the low state in Hertz
+    Serial.print("Duration of Pin Low: ");
+    Serial.print(u32_duration_low);
+    Serial.print(" microseconds, Frequency: ");
+    Serial.print(fl_low_frequency, 3); // Display frequency with 3 decimal places
+    Serial.println(" Hz");
+    u32_duration_low = 0; // Reset duration for the next measurement
+  }
 }
 
-// Funktion, die bei jedem Interrupt aufgerufen wird
-void countInterrupt() { interruptCount++; }
+/**
+ * \brief kurze beschreibung
+ * 
+ * lange beschreibung
+*/
+void Pin_Change() {
+  int state = digitalRead(i_pin);
+  unsigned long currentTime = micros();
+
+  if (state == HIGH) {
+    u32_start_time_high = currentTime; // Save current time for the beginning of the high state
+    if (u32_duration_low == 0) {
+      u32_duration_low = currentTime - u32_start_time_low; // Calculate elapsed time for low state
+    }
+  } else {
+    u32_start_time_low = currentTime; // Save current time for the beginning of the low state
+    if (u32_duration_high == 0) {
+      u32_duration_high = currentTime - u32_start_time_high; // Calculate elapsed time for high state
+    }
+  }
+}
+
+
