@@ -105,13 +105,14 @@ note:   - : private
         - uint8_t u8_player_quantity
         - uint8_t u8_computer_quantity
         + cla_player *array_players[4]
-        + uint8_t u8_is_occupied_id
+        + uint8_t u8_is_occupied_player_id
         + uint8_t u8_is_occupied_token_number
 
         + cla_session(uint8_t _u8_player_quantity, uint8_t _u8_computer_quantity)
         + Is_Occupied(uint8_t &u8_is_occupied_player_id, uint8_t &u8_is_occupied_token_number, uint8_t _u8_affected_track_position) bool
         + Return_Home(uint8_t _u8_affected_track_position) bool
-        + Get_Variables...()  uint8_t
+        + Get_Player_Quantity()  uint8_t
+        + Get_Computer_Quantity() uint8_t
 
     }
 
@@ -119,8 +120,8 @@ note:   - : private
     class cla_player {
         # uint8_t u8_token_position[4]
         # uint8_t u8_start_position
+        # uint8_t u8_player_id
         # cla_session* obj_my_session
-        + cla_computer_player* array_computer_players[3]
 
         + cla_player(uint8_t _u8_start_position, uint8_t _u8_computer_quantity, cla_session* _obj_my_session)
         + Calculate_Possible_Position(uint8_t _u8_token_number, uint8_t _u8_dice_value) uint8_t
@@ -130,7 +131,9 @@ note:   - : private
         + Get_Token_Progress(uint8_t _u8_token_number) uint8_t
         + Get_Player_Status() status
         + Get_Player_Progress() uint8_t
+        + Is_Start_Field_Occupied_By_Own_Token() int8_t
         + virtual Is_Computer() bool
+        + virtual Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag, uint8_t &_u8_old_position) int8_t
 
     }
 
@@ -139,18 +142,18 @@ note:   - : private
 
     cla_player <|-- cla_computer_player
     class cla_computer_player{
-        - uint8_t u8_en_mode
-        + cla_player *obj_player
+        # mode u8_en_mode
 
-        + cla_computer_player(cla_player *_obj_player, uint8_t _u8_mode)
-        + Auto_Move(uint8_t _u8_dice_value) uint8_t
+        + cla_computer_player(uint8_t _u8_player_id, uint8_t _u8_start_position, uint8_t _u8_computer_quantity, cla_session *_obj_my_session, mode _en_mode)
+        + Auto_Move(uint8_t _u8_dice_value, bool &_bool_occupied_flag, uint8_t &_u8_old_position) int8_t
+        + Is_Computer() bool
     }
 
     mode "1" --* "1" cla_computer_player
     class mode{
         <<typedef enum>>
-        hard
-        easy
+        Student
+        Professor
     }
 ```
 
@@ -234,7 +237,7 @@ Track_Finished      | NO                        | YES                   | YES
 ```cpp
 uint8_t Get_Player_Progress()
 ```
-Adds the u8_token_progress of all tokens together and returns that value (Finished == 166).
+Adds the u8_token_progress of all tokens together and returns that value a value between 1-28 (28 == finished).
 
 ```cpp
 virtual bool Is_Computer()
@@ -246,7 +249,7 @@ Returns ```True``` or ```False```. Method implemented individually in child clas
 ```cpp
 uint8_t Auto_Move(uint8_t _u8_dice_value)
 ```
-Calculates a move automatically depending on en_mode.
+Calculates and executes a move automatically depending on en_mode.
 
 ### Example code snippets
 
