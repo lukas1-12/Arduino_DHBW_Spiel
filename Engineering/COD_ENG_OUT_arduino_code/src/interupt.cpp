@@ -306,7 +306,7 @@ ISR(TIMER5_COMPA_vect) {
 #if TIMING_DEBUG
   PORTK &= 0b11101111;
 #endif
-#if TIMING_DEBUG_INTERN == 1
+#if TIMING_DEBUG_INTERN == 5
   // write TCNT2 value to array
   u8_timing_debug_array[u8_timing_debug_counter] = TCNT2;
   // write next value to next array position
