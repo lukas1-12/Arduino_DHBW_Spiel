@@ -39,9 +39,12 @@ void loop() {
 }
 
 /**
- * \brief kurze beschreibung
- * 
- * lange beschreibung
+ * \ @brief This function is responsible for handling pin state changes.
+ *
+ * This function reads the state of a digital pin and records the timing
+ * information for transitions between HIGH and LOW states. It calculates
+ * the duration of the HIGH and LOW states and updates the corresponding
+ * variables accordingly.
 */
 void Pin_Change() {
   int state = digitalRead(i_pin);
