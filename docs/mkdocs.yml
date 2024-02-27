@@ -9,6 +9,8 @@ theme:
 nav:
   - Requirements: 'DOC_REQ_RE_Requirements.md'
   - Design Description: 
+    - Project Description: 'index.md'
+    - System Architektur: 'DOC_DED_SYA_System_Architecture.md'
     - Software Architektur: 'DOC_DED_SOA_Software_Architecture.md'
   - Management and Development Plan:
     - Schedule: 'DOC_MAD_SH_Schedule.md'
