@@ -74,7 +74,7 @@
 // 6 for ISR in matrix library (Adafruit_GFX)
 // number 6 must be added individually to the library, as the library is
 // automatically loaded when compiling platformio project for the first time.
-#define TIMING_DEBUG_INTERN 1
+#define TIMING_DEBUG_INTERN 0
 // number of interupts to measure before crash.
 #define TIMING_DEBUG_COUNT_TO 100
 // DICE_MODE 0: Normal, Random Dice
