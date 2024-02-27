@@ -12,7 +12,7 @@
         -  First letter must be written in Capital
    * Variables:
         -  Capital letters must not be used.
-        -  ``nt`` variables must start with ``i_``.
+        -  ``int`` variables must start with ``i_``.
         -  ``long`` variables must start with ``l_``.
         -  ``long long`` variables must start with ``ll_``.
         -  ``uint8_t`` variables must start with ``u8_``.
