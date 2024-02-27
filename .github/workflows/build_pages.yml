@@ -24,6 +24,7 @@ jobs:
       - run: pip install mkdocs_custom_fences
       - run: pip install markdown-include
       - run: pip install mkdoxy
+      - run: pip install mkdocs_puml
       - run: |
             cp Requirements/DOC_REQ_RE_Requirements.md docs/docs/DOC_REQ_RE_Requirements.md
             cp Design_Description/Software_Architecture/DOC_DED_SOA_Software_Architecture.md docs/docs/DOC_DED_SOA_Software_Architecture.md

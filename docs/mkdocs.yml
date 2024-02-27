@@ -69,6 +69,9 @@ plugins:
           doxy-cfg:
             FULL_PATH_NAMES: NO
             SHOW_USED_FILES: NO
+  - plantuml:
+      puml_url: https://www.plantuml.com/plantuml/
+      num_workers: 8
 
 markdown_extensions:
   - pymdownx.snippets
