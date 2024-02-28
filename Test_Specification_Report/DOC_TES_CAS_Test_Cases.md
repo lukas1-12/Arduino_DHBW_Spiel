@@ -10,7 +10,7 @@ Die Debugging-Schnittstelle zeigt zusätzlich den aktuellen Status des Zustandsg
 ### Prüfgerät
 Um die Blinkfrequenz des schnellen und langsamen Blinkens zu messen, wurde ein zusätzlicher Arduino als Messeinrichtung verwendet. Auf diesem Arduino wurde ein Code geschrieben, der die Zeiten zwischen den Flankenwechseln an seinem Eingang misst und daraus die Frequenz berechnet. Die Zeiten sowie die entsprechenden Frequenzen, in denen der Eingang High bzw. Low war, werden im Serial Monitor ausgegeben. Bei der Erstellung des Programmcodes lag der Fokus mehr auf der Lesbarkeit als auf der Effizienz, da dieser Code ausschließlich für das Prüfgerät und nicht in einem Serienprodukt verwendet wird.
 
-## Testdokumentation
+### Testdokumentation
 
 Die untenstehende Excel-Tabelle wurde verwendet, um die Testfälle zu strukturieren und zu dokumentieren. Die zu testenden Requirements wurden in verschiedene Testfälle aufgeteilt, die als Registerkarten im Excel-Fenster angezeigt werden. Darüber hinaus wurde ein Verification Control Document erstellt, in dem aufgeführt ist, welches Requirement in welchem Testfall getestet wurde.
 
