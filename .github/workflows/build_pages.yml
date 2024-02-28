@@ -26,9 +26,9 @@ jobs:
       - run: pip install mkdoxy
       - run: pip install mkdocs_puml
       - run: |
-            cp */DOC* docs/docs
-            cp */*/DOC* docs/docs
-            cp */*/*/DOC* docs/docs
+            cp */DOC* docs/docs | true
+            cp */*/DOC* docs/docs | true
+            cp */*/*/DOC* docs/docs | true
             mv docs/docs/DOC_DED_PD_Project_Description.md docs/docs/index.md
             cd docs/ 
             mkdocs gh-deploy --force
