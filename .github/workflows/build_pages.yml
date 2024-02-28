@@ -26,12 +26,9 @@ jobs:
       - run: pip install mkdoxy
       - run: pip install mkdocs_puml
       - run: |
-            cp Requirements/DOC_REQ_RE_Requirements.md docs/docs/DOC_REQ_RE_Requirements.md
-            cp Design_Description/Software_Architecture/DOC_DED_SOA_Software_Architecture.md docs/docs/DOC_DED_SOA_Software_Architecture.md
-            cp Design_Description/System_Architecture/DOC_DED_SYA_System_Architecture.md docs/docs/DOC_DED_SYA_System_Architecture.md
-            cp Management_Development/Schedule/Schedule.md docs/docs/DOC_MAD_SH_Schedule.md
-            cp Test_Specification_Report/* docs/docs/
-            cp Engineering/DOC_ENG_TA_Trades_Analysis.md docs/docs/DOC_ENG_TA_Trades_Analysis.md
-            cp Management_Development/coding_rules/DOC_MAD_SR_coding_rules.md docs/docs
+            cp */DOC* docs/docs
+            cp */*/DOC* docs/docs
+            cp */*/*/DOC* docs/docs
+            mv docs/docs/DOC_DED_PD_Project_Description.md docs/docs/index.md
             cd docs/ 
             mkdocs gh-deploy --force
