@@ -32,5 +32,6 @@ jobs:
             cp Management_Development/Schedule/Schedule.md docs/docs/DOC_MAD_SH_Schedule.md
             cp Test_Specification_Report/* docs/docs/
             cp Engineering/DOC_ENG_TA_Trades_Analysis.md docs/docs/DOC_ENG_TA_Trades_Analysis.md
+            cp Management_Development/coding_rules/DOC_MAD_SR_coding_rules.md docs/docs
             cd docs/ 
             mkdocs gh-deploy --force
