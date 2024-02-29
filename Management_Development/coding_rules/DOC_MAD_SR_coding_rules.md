@@ -3,10 +3,11 @@
 ## General Rules
 1. Code and comments must be written in English.
 2. Code must be written in C/C++.
-3. Every function must have a doxygen comment above.
+3. Every function/method except ```main()``` must have a doxygen comment above.
 4. Comments must be written above the code descripted.
 5. Pre-defined values must be defined using ``#define``.
-6. All variables in classes must be protected or private, if possible.
+6. DEFINE macros must be written in capital letters.
+7. All variables in classes must be protected or private, if possible.
 
 ## Naming Rules
 ### General
@@ -29,6 +30,7 @@
 -  ``vectors`` must start with ``vec_``.
 -  ``enum`` variables must start with ``en_``.
 -  transfer parameters begin with an underscore ``_`` in addition to the above.
+- Variables of a ```typedef``` start with the starting letters of the originating type listed above.
 ### Classes
 - ``classes`` must start with ``cla_``.
 - ``objects`` created from a class must start with ``obj_``
