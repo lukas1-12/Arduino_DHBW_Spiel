@@ -88,7 +88,7 @@
         s10 --> s0 : Button pressed.
 ```
 
-## Class Diagram Game Logic Library
+## Game Logic Library
 
 ### Class Diagram
 
@@ -167,6 +167,59 @@ The absolute position of the token. The track squares are numbered the same for 
 uint8_t u8_token_progress
 ```
 The relative Position of the token. The track squares are numbered individually for each player, so the starting square for each player has the same number.
+
+The following table shows all of the relative positions of the Players with the corresponding absolute position and Position name.
+
+| position    | Player 1 | Player 2 | Player 3 | Player 4 | absolute position |
+|---------|-----------|-----------|-----------|-----------|-------------------|
+| starting square 1  | 1         | 1         | 1         | 1         | 1                 |
+| starting square 2  | 2         | 2         | 2         | 2         | 2                 |
+| starting square 3  | 3         | 3         | 3         | 3         | 3                 |
+| starting square 4  | 4         | 4         | 4         | 4         | 4                 |
+| track position 1  | 5         | 35        | 25        | 15        | 5                 |
+| track position 2  | 6         | 36        | 26        | 16        | 6                 |
+| track position 3  | 7         | 37        | 27        | 17        | 7                 |
+| track position 4  | 8         | 38        | 28        | 18        | 8                 |
+| track position 5  | 9         | 39        | 29        | 19        | 9                 |
+| track position 6  | 10        | 40        | 30        | 20        | 10                |
+| track position 7  | 11        | 41        | 31        | 21        | 11                |
+| track position 8  | 12        | 42        | 32        | 22        | 12                |
+| track position 9  | 13        | 43        | 33        | 23        | 13                |
+| track position 10 | 14        | 44        | 34        | 24        | 14                |
+| track position 11 | 15        | 5         | 35        | 25        | 15                |
+| track position 12 | 16        | 6         | 36        | 26        | 16                |
+| track position 13 | 17        | 7         | 37        | 27        | 17                |
+| track position 14 | 18        | 8         | 38        | 28        | 18                |
+| track position 15 | 19        | 9         | 39        | 29        | 19                |
+| track position 16 | 20        | 10        | 40        | 30        | 20                |
+| track position 17 | 21        | 11        | 41        | 31        | 21                |
+| track position 18 | 22        | 12        | 42        | 32        | 22                |
+| track position 19 | 23        | 13        | 43        | 33        | 23                |
+| track position 20 | 24        | 14        | 44        | 34        | 24                |
+| track position 21 | 25        | 15        | 5         | 35        | 25                |
+| track position 22 | 26        | 16        | 6         | 36        | 26                |
+| track position 23 | 27        | 17        | 7         | 37        | 27                |
+| track position 24 | 28        | 18        | 8         | 38        | 28                |
+| track position 25 | 29        | 19        | 9         | 39        | 29                |
+| track position 26 | 30        | 20        | 10        | 40        | 30                |
+| track position 27 | 31        | 21        | 11        | 41        | 31                |
+| track position 28 | 32        | 22        | 12        | 42        | 32                |
+| track position 29 | 33        | 23        | 13        | 43        | 33                |
+| track position 30 | 34        | 24        | 14        | 44        | 34                |
+| track position 31 | 35        | 25        | 15        | 5         | 35                |
+| track position 32 | 36        | 26        | 16        | 6         | 36                |
+| track position 33 | 37        | 27        | 17        | 7         | 37                |
+| track position 34 | 38        | 28        | 18        | 8         | 38                |
+| track position 35 | 39        | 29        | 19        | 9         | 39                |
+| track position 36 | 40        | 30        | 20        | 10        | 40                |
+| track position 37 | 41        | 31        | 21        | 11        | 41                |
+| track position 38 | 42        | 32        | 22        | 12        | 42                |
+| track position 39 | 43        | 33        | 23        | 13        | 43                |
+| track position 40 | 44        | 34        | 24        | 14        | 44                |
+| finishing square 1  | 45        | 45        | 45        | 45        | 45                |
+| finishing square 2  | 46        | 46        | 46        | 46        | 46                |
+| finishing square 3  | 47        | 47        | 47        | 47        | 47                |
+| finishing square 4  | 48        | 48        | 48        | 48        | 48                |
 
 ### Functional Description of Methods
 
@@ -372,7 +425,7 @@ AutoMove() might need two return parameters. This could be done like this:
     }
 ```
 
-#### Timers
+## Timers
 
 The Game uses 5 of the 6 timers, which is one of the reasons an ATMega2560 was chosen over the ATMega328p:
 
