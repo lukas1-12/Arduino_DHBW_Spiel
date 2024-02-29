@@ -29,6 +29,9 @@ jobs:
             cp */DOC* docs/docs | true
             cp */*/DOC* docs/docs | true
             cp */*/*/DOC* docs/docs | true
+            cp */PIC* docs/docs | true
+            cp */*/PIC* docs/docs | true
+            cp */*/*/PIC* docs/docs | true
             mv docs/docs/DOC_DED_PD_Project_Description.md docs/docs/index.md
             cd docs/ 
             mkdocs gh-deploy --force
