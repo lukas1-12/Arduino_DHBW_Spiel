@@ -360,3 +360,7 @@ Timer 3 is used for debouncing the Buttons. It will be started in the interupt r
 Timer4 is used for Led Blinking. It will trigger an interupt at a given time interval. Time interval is given by the ```FAST_BLINK``` and ```SLOW_BLINK``` defines. 
 
 Timer5 is used for a delay functions. The Delay function differs from the blink function, because it will delay the program until time passed. This is useful in some cases, because the program is NOT supposed to perform any Task until the Animation is finished.
+
+<iframe width=100% height=600px frameborder="0" scrolling="no" src="https://onedrive.live.com/embed?resid=A555585E24922B9A%215354&authkey=%21AGnz5Cf017lT534&em=2&wdAllowInteractivity=False&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True">
+<div>Excel Tabelle mit Berechnungen der Blinkgeschwindigkeit</div>
+</iframe>
