@@ -6,6 +6,10 @@ Dieses Projekt befasst ich mit der Wiederauferstehung eines alten Klassikers. Es
 
 Mit unserem Produkt schließen wir eine unentdeckte Marktlücke, die nun wirklich ein Spiel für Jung und Alt hervorbringt. 
 
+## Bedienungsanleitung
+
+Die Bedienungsanleitung (Dokument DOC_DED_OUT_Betriebsanleitung.pdf) kann [hier](https://1drv.ms/b/s!AporkiReWFWlqhW5HBnykQcEO_Me?e=MIdUqp) angesehen und heruntergeladen werden.
+
 ## Begründung der Hardwareauswahl:
 
 Bei der Hardwareauswahl wurden zunächst verschiedene Ansätze für die Anzeige des Spielfeldes sowie die Auswahl des geeigneten Mikrocontrollers in Betracht gezogen. Es wurde sowohl eine selbstgebaute LED-Anzeige aus einzelnen Leuchtdioden, als auch eine fertige Matrix-LED in Erwägung gezogen. Durch Recherche kristallisierten sich jedoch erhebliche Vorteile der LED-Matrix gegenüber der selbstgebauten Anzeige heraus. Das Team hat gemeinsam beschlossen, aufgrund des hohen Fertigungsaufwands und der hohen Kosten im Vergleich zu einer fertigen Matrix-Anzeige, die im Internet erhältlich ist, auf den eigenen Bau einer Matrix-Anzeige zu verzichten. Die Matrix-Anzeige aus dem Internet bietet zudem einige Vorteile in Bezug auf die Einfachheit der Programmierung sowie die leichte Wiederbeschaffbarkeit.

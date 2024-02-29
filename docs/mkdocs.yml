@@ -14,11 +14,13 @@ nav:
     - Software Architektur: 'DOC_DED_SOA_Software_Architecture.md'
   - Management and Development Plan:
     - Schedule: 'DOC_MAD_SH_Schedule.md'
+    - Cost, Risk and Opportunity: 'DOC_MAD_CRO_Cost_Risk_Opportunities.md'
     - Coding Rules: 'DOC_MAD_SR_coding_rules.md'
     - Configuration Management: 'DOC_MAD_COM_Configuration_Management.md'
   - Test Specification and Report: 'DOC_TES_CAS_Test_Cases.md'
   - Engineering:
     - Trades and Analysis: 'DOC_ENG_TA_Trades_Analysis.md'
+    - Additional Information: 'DOC_ENG_DA_Additional_Drawings_and_Datasheets.md'
     - Device Code: 
       - All Pages: 'DeviceCode/links/index.html'
       - Files: 'DeviceCode/files/index.html'
