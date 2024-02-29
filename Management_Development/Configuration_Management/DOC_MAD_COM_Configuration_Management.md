@@ -25,6 +25,7 @@ Dateityp:
   - ```DOC``` für Dokumentation
   - ```COD``` für Code. Bei Code reicht die Anwendung dieses Schemas auf den übergeordneten Ordner.
   - ```PIC``` für Bilder (nur falls zwingend notwendig für die Dokumentation!)
+  - ```CAD``` für CAD-Dateien.
 
 Ordnerkürzel:
 
@@ -45,7 +46,13 @@ Eine korrekte Benennung der Dateien ist unerlässlich für das automatische Baue
 ### Github Codespace
 
 Für die Programmierung der Spiellogik wurde ein Github Codespace eingerichtet. In diesem sind benötigte Abhängigkeiten für die Entwicklung der Spiellogik Bibliothek bereits vorinstalliert. Für die Programmierung des Gerätecodes eignet sich dieser Codespace jedoch weniger, da eine Anbindung von Hardwarekomponenten (Programmer) an den Codespace konfigurationsbedingt nicht möglich ist. Für diesen Fall empfielt sich die lokale Nutzung von PlatformIO auf einem Rechner mit Linux-basierten Betriebssystem.
-  
+
+### CMake Organisation
+
+Um die Spielelogik zu entwickeln und testen wird CMake verwendet. Die Header und Source Files der Logik befinden sich in einem Unterordner im lib-Verzeichnes (```Game_Logic```). Im gleichem Pfad befindet sich die erste von 2 CMakeLists.txt, diese gibt vor wie das Projekt gebaut werden muss und wo der Code der Logik und der Tests zu finden sind.
+Die Logik wird mittels Catch2 Tests im Test-Verzeichnis auf Funktionsfähigkeit geprüft. In diesem Pfad befindet sich die zweite CMakeLists.txt, diese dient zur Konfiguration der Catch2-Tests. 
+Das ganze Projekt kann durch den Befehl ```./runcmake.sh``` in der Kommandozeile gebaut werden. Dabei werden auch im Anschluss die erstellten Testdateien ausgeführt.
+
 ## Nutzung von PlatformIO für die Mikrocomputerprogrammierung
 
 Für die Programmierung des Arduinos wurde die ```PlatformIO``` Extension für ```VSCode``` verwendet. Dies bietet insbesondere beim Einbinden und Verwalten von Bibliotheken enorme Vorteile gegenüber der ```ArduinoIDE```. PlatformIO bietet dabei eine Grafische Oberfläche zum Kompilieren und Flashen des Codes sowie einen Seriellen Monitor zum Auslesen der Seriellen Schnittstelle.
