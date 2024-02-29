@@ -221,6 +221,8 @@ The following table shows all of the relative positions of the Players with the 
 | finishing square 3  | 47        | 47        | 47        | 47        | 47                |
 | finishing square 4  | 48        | 48        | 48        | 48        | 48                |
 
+![Visuelle Darstellung des Spielfeldes im Code](PIC_DED_SF_Spielfeld.jpg)
+
 ### Player Status
 
 ```cpp 
