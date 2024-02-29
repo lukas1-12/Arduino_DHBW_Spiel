@@ -6,7 +6,7 @@ Um einen reibungsfreien Programmablauf sicherzustellen, wurde die Dauer aller In
 
 Dabei lässt sich festhalten, dass keiner der Werte krtisch groß wird. Der längste Interupt liegt bei 10,31 us, was bei einer Interupt-frequenz von 8 Hz (Taktdauer 0,125 s) 0,0082 % der Taktdauer entspricht.
 
-In der folgenden Grafik ist die benötigte Zeitdauer der verschiedenen INterupts dargestellt. Dabei wurde ausschließlich beim ISR des Timer 1 (Matrix refresh) die Wiederholung des Interupts eingezeichnet, da bei allen anderen Interupts die Wiederholung eine Skalierung der Zeitachse benötigen würde, bei der die eigentliche Dauer der Interupts nicht mehr erkennbar wäre.
+In der folgenden Grafik ist die benötigte Zeitdauer der verschiedenen Interupts dargestellt. Dabei wurde ausschließlich beim ISR des Timer 1 (Matrix refresh) die Wiederholung des Interupts eingezeichnet, da bei allen anderen Interupts die Wiederholung eine Skalierung der Zeitachse benötigen würde, bei der die eigentliche Dauer der Interupts nicht mehr erkennbar wäre.
 
 ```puml
 @startuml
@@ -68,7 +68,7 @@ ISR4a is inactive
 @enduml
 ```
 
-Selbstverständlich werden die Interuptroutinen auf dem AtMega2560 nicht gleichzeitig ausgeführt. Dabei unterbricht ein während einer anderen Interuptserviceroutine eintreffender Interupt die laufende Interuptserviceroutine nicht, sondern wird direkt im anschluss ausgeführt. Entsprechend tritt auch kein Problem bei der Kombination des Matrix-Refresh Interupts mit dem Interupt des Timers 4, welcher für das Blinken zuständig ist, auf. Dieser Fall ist in der nächsten Abbildung genauer betrachtet.
+Selbstverständlich werden die Interuptroutinen auf dem ATMega2560 nicht gleichzeitig ausgeführt. Dabei unterbricht ein während einer anderen Interuptserviceroutine eintreffender Interupt die laufende Interuptserviceroutine nicht, sondern wird direkt im Anschluss ausgeführt. Entsprechend tritt auch kein Problem bei der Kombination des Matrix-Refresh Interupts mit dem Interupt des Timers 4, welcher für das Blinken zuständig ist, auf. Dieser Fall ist in der nächsten Abbildung genauer betrachtet.
 
 ```puml
 @startuml
