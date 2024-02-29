@@ -17,21 +17,26 @@ Es ist darauf zu achten, die Dateien im richtigen Ordner abzulegen. Die Ordner `
 Dateien müssen nach den folgenden Schema benannt werden:
 
 ```
-<Dateityp>_<Ordnerkürzel>_<Kurzname>_<dateiname (individuell)>
+<Dateityp>_<Ordnerkürzel>_<Kurzname>_<dateiname (individuell)>.<Dateiendung>
 ```
 
-- Dateityp
+Dateityp:
+
   - ```DOC``` für Dokumentation
   - ```COD``` für Code. Bei Code reicht die Anwendung dieses Schemas auf den übergeordneten Ordner.
   - ```PIC``` für Bilder (nur falls zwingend notwendig für die Dokumentation!)
-- Ordnerkürzel
+
+Ordnerkürzel:
+
   - Requirements: ```REQ```
   - Design_Description: ```DED```
   - Management_Development: ```MAD```
   - Test_Specification_Report: ```TES```
   - Engineering: ```ENG```
-- Kurzname: Kurzname, individuell. 2-3 Buchstaben.
-- Dateiname: ausgeschriebener Dateiname. Leerzeichen mit Unterstrich.
+
+Kurzname: Kurzname, individuell. 2-3 Buchstaben.
+
+Dateiname: ausgeschriebener Dateiname. Leerzeichen mit Unterstrich.
 
 <div style="background: #8b0000; color: white; padding: 10px; margin: 10px;">
 Eine korrekte Benennung der Dateien ist unerlässlich für das automatische Bauen der Projektwebsite.
