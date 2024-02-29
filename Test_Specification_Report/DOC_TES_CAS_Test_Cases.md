@@ -14,5 +14,7 @@ Um die Blinkfrequenz des schnellen und langsamen Blinkens zu messen, wurde ein z
 
 Die untenstehende Excel-Tabelle wurde verwendet, um die Testfälle zu strukturieren und zu dokumentieren. Die zu testenden Requirements wurden in verschiedene Testfälle aufgeteilt, die als Registerkarten im Excel-Fenster angezeigt werden. Darüber hinaus wurde ein Verification Control Document erstellt, in dem aufgeführt ist, welches Requirement in welchem Testfall getestet wurde.
 
-
+<div style="background: #AFAFAF; padding: 5px">
 <iframe width=100% height=600px frameborder="0" scrolling="no" src="https://onedrive.live.com/embed?resid=A555585E24922B9A%215374&authkey=%21AAeusmggII6N7WQ&em=2&wdAllowInteractivity=False&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>
+Excel Tabelle: DOC_TES_CAS_Test_Cases.xlsx
+</div>
