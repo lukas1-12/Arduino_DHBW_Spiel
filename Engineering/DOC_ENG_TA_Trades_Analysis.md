@@ -71,7 +71,7 @@ ISR4a is inactive
 @enduml
 ```
 
-Selbstverständlich werden die Interuptroutinen auf dem ATMega2560 nicht gleichzeitig ausgeführt. Dabei unterbricht ein während einer anderen Interuptserviceroutine eintreffender Interupt die laufende Interuptserviceroutine nicht, sondern wird direkt im Anschluss ausgeführt. Entsprechend tritt auch kein Problem bei der Kombination des Matrix-Refresh Interupts mit dem Interupt des Timers 4, welcher für das Blinken zuständig ist, auf. Dieser Fall ist in der nächsten Abbildung genauer betrachtet.
+Selbstverständlich werden die Interuptroutinen auf dem ATMega2560 nicht gleichzeitig ausgeführt. Dabei unterbricht ein während einer anderen Interuptserviceroutine eintreffender Interupt die laufende Interuptserviceroutine nicht, sondern wird direkt im Anschluss ausgeführt. Entsprechend tritt auch kein Problem bei der Kombination des Matrix-Refresh Interupts mit dem Interupt des Timers 4, welcher für das Blinken des Hauses zuständig ist, auf. Der Matrix Interupt wird einfach im Anschluss ausgeführt, wobei der Jitter des Interupts  für den Benutzer nicht erkennbar ist. Dieser Fall ist in der nächsten Abbildung genauer betrachtet.
 
 ```puml
 @startuml
