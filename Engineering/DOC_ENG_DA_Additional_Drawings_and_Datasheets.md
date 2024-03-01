@@ -2,7 +2,7 @@
 
 Im folgenden ist der Anschlussplan für die Verwendung des ATMega2560 dargestellt.
 
-![PIC_ENG_OUT_Schematic_Arduino.pdf](PIC_ENG_OUT_Schematic_Arduino.pdf)
+![PIC_ENG_OUT_Schematic_Arduino.pdf](PIC_ENG_OUT_Schematic_Arduino.jpg)
 
 ## Gehäuse
 
