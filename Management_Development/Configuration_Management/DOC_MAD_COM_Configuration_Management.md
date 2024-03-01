@@ -61,6 +61,81 @@ Für die Programmierung des Arduinos wurde die ```PlatformIO``` Extension für `
 
 Die Gesamte Projektdokumentation ist über eine Projektwebsite einsehbar. Diese Website wird bei jedem Push auf dem Main Branch automatisch neu gebaut. Für das Bauen der Website kommt das Programm ```mkdocs``` zum Einsatz. Dieses wurde so konfiguriert, dass eine Einbindung von in ```Mermaid``` oder ```PlantUML``` gezeichneten Grafiken möglich ist. ```mkdocs``` bezieht den Inhalt der Website aus den in den jeweiligen Ordnern gespeicherten Markdown-Dateien, die die Dokumentation enthalten. Diese werden beim Automatischen Bauen der Website zusammengesucht und für die Veröffentlichung in HTML umgewandelt.
 
+## Lokales Hosten der Projektwebsite
+
+Zu Testzwecken kann es durchaus sinnvoll sein, die Projektwebsite temporär lokal zu Hosten, z.B. um die korrekte Einbindung von Grafiken zu testen. Im folgenden wird Schritt für Schritt erklärt, wie die Website lokal gehostet werden kann.
+
+Die folgende Anleitung erklärt das Vorgehen bei der Verwendung von Linux oder MacOS. Für Windows-Nutzer empfielt sich die Nutzung des Windows Subsystem for Linux (WSL) oder des in der Datei ```.devcontainer/Dockerfile``` konfigurierten Docker-Containers.
+
+In den folgenden Schritten wird davon ausgegangen, das ein Terminal-Fenster in der obersten Ebene der Ordnerstruktur des Projektes geöffnet wurde. Eventuell müssen Shell-Skripte mittels 
+```bash
+chmod +x <Pfad/Dateiname.sh>
+```
+ausführbar gemacht werden. Der Teil ```<Pfad/Dateiname.sh>``` ist dabei durch den Pfad und Dateinamen des betroffenen Shell-Skriptes zu ersetzen.
+
+### Schritt 1: Installation von Doxygen
+
+Mkdocs benötigt doxygen für das Bauen der Website. Mit 
+
+```bash
+doxygen --version
+```
+
+kann geprüft werden, ob doxygen bereits installiert ist. Sollte dies nicht der Fall sein, kann doxygen mit dem Befehl
+
+```bash
+sudo apt-get install -y doxygen # Linux
+```
+
+installiert werden. Bei der Nutzung von MacOS empfielt sich die Nutzung von Homebrew, falls dieses bereits installiert ist:
+
+```bash
+brew install doxygen # MacOS
+```
+
+### Schritt 2: Erstellen eines Python Environments
+
+Für das Erstellen eines Python Environments wurde ein Shell-Skript geschrieben, mit dem das Environment automatisch erstellt und konfiguriert wird. Dazu ist der folgende Befehl im Terminal einzugeben:
+
+```bash
+./docs/env_setup.sh
+```
+
+### Schritt 3: Erstellen und Hosten der Seite
+
+Mit dem Skript
+
+```bash
+./docs/launch_site.sh
+```
+
+wird das soeben erstellte Python-environment automatisch gestartet und der Befehl ```mkdocs serve``` ausgeführt, welcher die Website unter ```http://127.0.0.1:8000/``` verfügbar macht.
+
+Mit der Tastenkombination ```Strg```+ ```C``` (```control``` + ```C``` unter MacOS) kann Mkdocs wieder beendet werden. Zum erneuten Starten kann direkt bei Schritt 3 eingestiegen werden.
+
+Darüber hinaus kann die Website mit 
+
+```bash
+./docs/copy_docs.sh
+```
+
+aktualisiert werden.
+
+```bash
+./docs/remove_docs.sh
+```
+
+räumt den ```docs/docs```-Ordner auf. Die Verwendung des Skriptes empfielt sich nach dem Abschluss der Arbeiten mit MkDocs.
+
+<div style="background: #E0FFE0; padding: 10px; margin: 10px;">
+<b>Tipp:</b> Alternativ zum Hosten der Seite kann auch der Quellcode erzeugt werden. Dazu muss zuerst das Python-Environment mittels <code>source docs/env/bin/activate</code> aktiviert werden. Anschließend kann durch Ausführen des Befehls <code>mkdocs build</code> im <code>docs/</code>-Ordner die Seite gebaut werden. Der Quellcode ist dann im Ordner <code>docs/site</code> zu finden.<br>
+Diese Möglichkeit eignet sich zu Untersuchen der Dateistruktur und des Websiteaufbaus, ist aber zum Betrachten der Seite eher ungeeignet, da CSS-Stylesheets eventuell nicht korrekt verlinkt werden.
+</div>
+
+<div style="background: #8b0000; color: white; padding: 10px; margin: 10px;">
+Automatisch generierte Ordner dürfen nicht auf das Repository gepusht werden!
+</div>
+
 ## Onedrive
 
 Da Github für die Verwaltung ausgewählter Dateitypen wie beispielsweise ```.xlsx```-Dateien eher ungeeignet ist, steht für diese Dateien als Ausweich-Option ein Onedrive-Ordner zur Verfügung. In diesem Ordner ist dieselbe Ordnerstruktur vorhanden, wie sie im Kapitel [Ordner-Struktur](#Ordner-Struktur) bereits für das Github-Repository erläutert wurde. 
