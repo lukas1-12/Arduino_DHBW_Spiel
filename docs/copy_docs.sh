@@ -2,7 +2,7 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 # remove all files in docs
-./rmdocs.sh
+./remove_docs.sh
 # copy all DOC*.md files and PIC* files to docs
 cd ..
 cp */DOC*.md docs/docs

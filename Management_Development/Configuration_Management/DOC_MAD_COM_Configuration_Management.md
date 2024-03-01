@@ -61,7 +61,7 @@ Für die Programmierung des Arduinos wurde die ```PlatformIO``` Extension für `
 
 ## Automatisches Bauen der Projektwebsite
 
-Die Gesamte Projektdokumentation ist über eine Projektwebsite einsehbar. Diese Website wird bei jedem Push auf dem Main Branch automatisch neu gebaut. Für das Bauen der Website kommt das Programm ```mkdocs``` zum Einsatz. Dieses wurde so konfiguriert, dass eine Einbindung von in ```Mermaid``` oder ```PlantUML``` gezeichneten Grafiken möglich ist. ```mkdocs``` bezieht den Inhalt der Website aus den in den jeweiligen Ordnern gespeicherten Markdown-Dateien, die die Dokumentation enthalten. Diese werden beim Automatischen Bauen der Website zusammengesucht und für die Veröffentlichung in HTML umgewandelt.
+Die Gesamte Projektdokumentation ist über eine Projektwebsite einsehbar. Diese Website wird bei jedem Push auf dem Main Branch automatisch neu gebaut. Für das Bauen der Website kommt das Programm ```mkdocs``` zum Einsatz. Dieses wurde so konfiguriert, dass eine Einbindung von in ```Mermaid``` oder ```PlantUML``` gezeichneten Grafiken möglich ist. ```mkdocs``` bezieht den Inhalt der Website aus den in den jeweiligen Ordnern gespeicherten Markdown-Dateien, die die Dokumentation enthalten. Diese werden beim Automatischen Bauen der Website zusammengesucht und für die Veröffentlichung in HTML umgewandelt. Darüber hinaus wird mit Doxygen eine Code-Dokumentation erzeugt, die dann ebenfalls über die Website einsehbar ist.
 
 ## Lokales Hosten der Projektwebsite
 
@@ -83,9 +83,10 @@ Mkdocs benötigt doxygen für das Bauen der Website. Mit
 doxygen --version
 ```
 
-kann geprüft werden, ob doxygen bereits installiert ist. Sollte dies nicht der Fall sein, kann doxygen mit dem Befehl
+kann geprüft werden, ob doxygen bereits installiert ist. Sollte dies nicht der Fall sein, kann doxygen mit den Befehlen
 
 ```bash
+sudo apt-get update
 sudo apt-get install -y doxygen # Linux
 ```
 
