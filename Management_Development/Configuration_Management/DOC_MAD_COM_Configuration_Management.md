@@ -10,7 +10,7 @@ Im Github Repository ist die nachfolgende Ordnerstruktur zu finden.
 - Test_Specification_Report
 - Engineering
 
-Es ist darauf zu achten, die Dateien im richtigen Ordner abzulegen. Die Ordner ```docs``` und ```.github``` dienen ausschließlich dem Ablegen von Konfigurationsdateien!
+Es ist darauf zu achten, die Dateien im richtigen Ordner abzulegen. Die Ordner ```docs```, ```.devcontainer``` und ```.github``` dienen ausschließlich dem Ablegen von Konfigurationsdateien!
 
 ### Regeln zur Dateibenennung
 
@@ -46,6 +46,8 @@ Eine korrekte Benennung der Dateien ist unerlässlich für das automatische Baue
 ### Github Codespace
 
 Für die Programmierung der Spiellogik wurde ein Github Codespace eingerichtet. In diesem sind benötigte Abhängigkeiten für die Entwicklung der Spiellogik Bibliothek bereits vorinstalliert. Für die Programmierung des Gerätecodes eignet sich dieser Codespace jedoch weniger, da eine Anbindung von Hardwarekomponenten (Programmer) an den Codespace konfigurationsbedingt nicht möglich ist. Für diesen Fall empfielt sich die lokale Nutzung von PlatformIO auf einem Rechner mit Linux-basierten Betriebssystem.
+
+Der Github Codespace verwendet die in der Datei ```.devcontainer/Dockerfile``` enthaltene Docker-Konfiguration. Diese kann alternativ zur Nutzung mit dem Github-Codespace auch als lokaler Docker-Container genutzt werden.
 
 ### CMake Organisation
 
