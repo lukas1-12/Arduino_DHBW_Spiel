@@ -2,14 +2,14 @@
 
 ```mermaid
     classDiagram
-    class Arduino_Sketch {
-        the Sketch from Arduino IDE
+    class main {
+        cpp file with main code \n(Controller)
     }
-    Arduino_Sketch *--  Game_Logic
+    main *--  Game_Logic
     class Game_Logic{
         Library with all 
         classes and methods 
-        for the Game Logic
+        for the Game Logic (Model)
     }
     ASL *-- RGBmatrixPanel
     class RGBmatrixPanel{
@@ -21,9 +21,9 @@
         Application service Layer*
         Library with all classes
         and methods for the 
-        Hardware handling.
+        Hardware handling. (View)
     }
-    Arduino_Sketch *-- ASL
+    main *-- ASL
     ASL *-- HAL
     RGBmatrixPanel *-- HAL
     class HAL{
@@ -157,16 +157,16 @@ note:   - : private
     }
 ```
 
-### token_track_position and token_progress
+### token_position and token_progress
 
 ```cpp
 token_position
 ```
-The absolute position of the token. The track squares are numbered the same for all players, so the starting square for each player differs.
+The absolute position of the token. The track squares are numbered the same for all players, so the starting track position for each player differs.
 ```cpp
 token_progress
 ```
-The relative Position of the token. The track squares are numbered individually for each player, so the starting square for each player has the same number.
+The relative Position of the token. The track squares are numbered individually for each player, so the starting track position for each player has the same number.
 
 The following table shows all of the relative positions of the Players with the corresponding absolute position and Position name.
 
@@ -221,7 +221,9 @@ The following table shows all of the relative positions of the Players with the 
 | finishing square 3  | 47        | 47        | 47        | 47        | 47                |
 | finishing square 4  | 48        | 48        | 48        | 48        | 48                |
 
-![Visuelle Darstellung des Spielfeldes im Code](PIC_DED_SF_Spielfeld.jpg)
+The following image shows the absolute Track positions:
+
+![absolute Track Positions](PIC_DED_SF_Spielfeld.jpg)
 
 ### Player Status
 
@@ -344,12 +346,12 @@ The Game uses 5 of the 6 timers, which is one of the reasons an ATMega2560 was c
 
 - Timer 0: ( 8Bit) Runs from 0 to 5 to create a "random" Dice value
 - Timer 1: (16Bit) Used for the LED matrix
-- Timer 2: ( 8Bit) Reserved for future features, currently used for measuring interupt times
+- Timer 2: ( 8Bit) Reserved for future features, currently used for measuring interupt durations
 - Timer 3: (16Bit) Used for Button Debounce
 - Timer 4: (16Bit) Used for Led Blinking
 - TImer 5: (16Bit) Used for Delay function.
 
-Timer 0 is used to create a "random" dice value. The value is random, because no prescaler is used, so pressing the button at the right time to get a desired value is basically impossiple. Therefor, the timer is set up in CTC mode without any interupts.
+Timer 0 is used to create a "random" dice value. The value is random, because no prescaler is used, so pressing the button at the right time to get a desired value is basically impossible. Therefore, the timer is set up in CTC mode without any interupts.
 
 Timer 1 is used for refreshing the LED matrix. No prescaler is used for this timer and its value is read out at certain points in the function responsible for refreshing the matrix and the interval time for the refresh cycle is calculated together with other parameters.
 
@@ -357,12 +359,13 @@ Timer 2 is currently used for measuring the interupt time when using the TIMING_
 
 Timer 3 is used for debouncing the Buttons. It will be started in the interupt routine for the Buttons. Prescaler is set to 1/1024. The debounce time can be varied using the ```DEBOUNCE_TIME``` define. 
 
-Timer4 is used for Led Blinking. It will trigger an interupt at a given time interval. Time interval is given by the ```FAST_BLINK``` and ```SLOW_BLINK``` defines. 
-
-Timer5 is used for a delay functions. The Delay function differs from the blink function, because it will delay the program until time passed. This is useful in some cases, because the program is NOT supposed to perform any Task until the Animation is finished.
+Timer4 is used for Led Blinking. It will trigger an interupt at a given time interval. Time interval is given by the ```FAST_BLINK``` and ```SLOW_BLINK``` defines. The values for the defines were calculated using the DOC_ENG_CALC_Timer4_Blinking.xlsx Excel sheet.
 
 <div style="background: #AFAFAF; padding: 5px">
 <iframe width=100% height=600px frameborder="0" scrolling="no" src="https://onedrive.live.com/embed?resid=A555585E24922B9A%215354&authkey=%21AGnz5Cf017lT534&em=2&wdAllowInteractivity=False&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True">
 </iframe>
 Excel Tabelle: DOC_ENG_CALC_Timer4_Blinking.xlsx
 </div>
+<br>
+
+Timer5 is used for the ```Delay_256()``` functions. The Delay function differs from the blink function, because it will delay the program until the given time has passed. This is useful in some cases, because the program is NOT supposed to perform any Task until the Animation is finished.
