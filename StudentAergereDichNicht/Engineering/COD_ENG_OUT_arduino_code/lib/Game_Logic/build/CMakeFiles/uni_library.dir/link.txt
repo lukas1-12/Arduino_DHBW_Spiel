@@ -1,0 +1,2 @@
+/usr/bin/ar qc libuni_library.a CMakeFiles/uni_library.dir/logic.cpp.o
+/usr/bin/ranlib libuni_library.a

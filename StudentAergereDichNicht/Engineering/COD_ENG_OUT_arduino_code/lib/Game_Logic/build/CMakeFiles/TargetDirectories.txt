@@ -1,0 +1,8 @@
+/workspaces/Arduino_DHBW_Spiel/Engineering/COD_ENG_OUT_arduino_code/lib/Game_Logic/build/CMakeFiles/uni_library.dir
+/workspaces/Arduino_DHBW_Spiel/Engineering/COD_ENG_OUT_arduino_code/lib/Game_Logic/build/CMakeFiles/test.dir
+/workspaces/Arduino_DHBW_Spiel/Engineering/COD_ENG_OUT_arduino_code/lib/Game_Logic/build/CMakeFiles/edit_cache.dir
+/workspaces/Arduino_DHBW_Spiel/Engineering/COD_ENG_OUT_arduino_code/lib/Game_Logic/build/CMakeFiles/rebuild_cache.dir
+/workspaces/Arduino_DHBW_Spiel/Engineering/COD_ENG_OUT_arduino_code/lib/Game_Logic/build/test/CMakeFiles/game_logic-tests.dir
+/workspaces/Arduino_DHBW_Spiel/Engineering/COD_ENG_OUT_arduino_code/lib/Game_Logic/build/test/CMakeFiles/test.dir
+/workspaces/Arduino_DHBW_Spiel/Engineering/COD_ENG_OUT_arduino_code/lib/Game_Logic/build/test/CMakeFiles/edit_cache.dir
+/workspaces/Arduino_DHBW_Spiel/Engineering/COD_ENG_OUT_arduino_code/lib/Game_Logic/build/test/CMakeFiles/rebuild_cache.dir
